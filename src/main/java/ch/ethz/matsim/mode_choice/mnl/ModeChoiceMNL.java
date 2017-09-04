@@ -22,7 +22,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	}
 	
 	public String chooseMode(Person person, Link originLink, Link destinationLink) {
-		List<Double> exp = alternatives.stream().map(a -> a.estimateUtility(person, originLink, destinationLink)).collect(Collectors.toList());
+		List<Double> exp = alternatives.stream().map(a -> Math.exp(a.estimateUtility(person, originLink, destinationLink))).collect(Collectors.toList());
 		
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
 		List<Double> probabilities = exp.stream().map(d -> d / total).collect(Collectors.toList());
@@ -31,7 +31,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		cumulativeProbabilities.add(probabilities.get(0));
 		
 		for (int i = 1; i < probabilities.size(); i++) {
-			cumulativeProbabilities.set(i, cumulativeProbabilities.get(i - 1) + probabilities.get(i));
+			cumulativeProbabilities.add(cumulativeProbabilities.get(i - 1) + probabilities.get(i));
 		}
 		
 		double selector = random.nextDouble();

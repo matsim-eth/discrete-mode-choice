@@ -1,16 +1,20 @@
 package ch.ethz.matsim.mode_choice.replanning;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Route;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
+import org.matsim.core.population.routes.GenericRouteImpl;
 import org.matsim.core.population.routes.NetworkRoute;
 
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
@@ -28,13 +32,17 @@ public class ChnageSingleLegModeAlgorithm implements PlanAlgorithm{
 	}
 	
 	@Override
-	public void run(Plan plan) {		
-		ArrayList<Leg> legs = new ArrayList<Leg>();
+	public void run(Plan plan) {	
+		ArrayList<Leg> legs = new ArrayList<>();
+		ArrayList<Activity> activities = new ArrayList<>();
+		
 		int cnt = 0;
 		for (PlanElement pe : plan.getPlanElements()) {
 			if (pe instanceof Leg) {
 				legs.add((Leg) pe);
 				cnt++;
+			} else if (pe instanceof Activity) {
+				activities.add((Activity) pe);
 			}
 		}
 		if (cnt == 0) {
@@ -42,13 +50,13 @@ public class ChnageSingleLegModeAlgorithm implements PlanAlgorithm{
 		}
 		
 		int rndIdx = this.rng.nextInt(cnt);
-		setLegMode(plan.getPerson(), legs.get(rndIdx));
+		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(), activities.get(rndIdx + 1).getLinkId());
 		
 	}
 
-	private void setLegMode(Person person,  Leg leg) {
-		Link startLink = network.getLinks().get(leg.getRoute().getStartLinkId());
-		Link endLink = network.getLinks().get(leg.getRoute().getEndLinkId());
+	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId) {
+		Link startLink = network.getLinks().get(originLinkId);
+		Link endLink = network.getLinks().get(destinationLinkId);
 		String newMode = modeChoiceModel.chooseMode(person, startLink, endLink);
 		
 		leg.setMode(newMode);
@@ -56,6 +64,8 @@ public class ChnageSingleLegModeAlgorithm implements PlanAlgorithm{
 		if ( route != null && route instanceof NetworkRoute) {
 			((NetworkRoute)route).setVehicleId(null);
 		}
+		
+		System.err.println(String.format("%s chooses %s", person.getId().toString(), leg.getMode()));
 		
 	}
 
