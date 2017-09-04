@@ -1,13 +1,12 @@
 package ch.ethz.matsim.mode_choice.mnl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.router.TripStructureUtils.Trip;
 
@@ -22,7 +21,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		this.random = random;
 	}
 	
-	public String chooseMode(Person person, Trip trip) {
+	public String chooseMode(Person person, Link originLink, Link destinationLink) {
 		List<Double> exp = alternatives.stream().map(a -> a.estimateUtility(person, trip)).collect(Collectors.toList());
 		
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
@@ -36,7 +35,14 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		}
 		
 		double selector = random.nextDouble();
-		return null; // TODO
+		
+		for (int i = 0; i < cumulativeProbabilities.size(); i++) {
+			if (selector < cumulativeProbabilities.get(i)) {
+				return modes.get(i);
+			}
+		}
+		
+		throw new IllegalStateException();
 	}
 
 	public void addModeAlternative(String mode, ModeChoiceAlternative alternative) {

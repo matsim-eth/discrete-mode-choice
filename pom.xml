@@ -36,6 +36,13 @@
 			<artifactId>dvrp</artifactId>
 			<version>0.10.0-eth</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>ch.ethz.matsim</groupId>
+			<artifactId>sioux_falls</artifactId>
+			<version>0.1.0</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
