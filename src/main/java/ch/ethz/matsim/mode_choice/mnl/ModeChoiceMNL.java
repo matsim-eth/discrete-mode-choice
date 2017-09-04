@@ -22,7 +22,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	}
 	
 	public String chooseMode(Person person, Link originLink, Link destinationLink) {
-		List<Double> exp = alternatives.stream().map(a -> a.estimateUtility(person, trip)).collect(Collectors.toList());
+		List<Double> exp = alternatives.stream().map(a -> a.estimateUtility(person, originLink, destinationLink)).collect(Collectors.toList());
 		
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
 		List<Double> probabilities = exp.stream().map(d -> d / total).collect(Collectors.toList());
