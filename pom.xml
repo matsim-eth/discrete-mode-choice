@@ -41,7 +41,6 @@
 			<groupId>ch.ethz.matsim</groupId>
 			<artifactId>sioux_falls</artifactId>
 			<version>0.1.0</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
