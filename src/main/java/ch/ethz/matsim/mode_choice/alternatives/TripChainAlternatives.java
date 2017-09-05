@@ -27,7 +27,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 		modes.addAll(chainModes);
 		modes.addAll(nonChainModes);
 		
-		List<List<String>> allChains =  getCh(modes, numberOfTrips);
+		List<List<String>> allChains =  getCh(modes, numberOfTrips, trips, new HashSet<>(chainModes));
 		
 		ListIterator<List<String>> iter = allChains.listIterator();
 		while(iter.hasNext()){
@@ -39,7 +39,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 		return allChains;
 	}
 	
-	private List<List<String>> getCh(Set<String> modes, int size) {
+	private List<List<String>> getCh(Set<String> modes, int size, List<Trip> trips, Set<String> chainModes) {
 		
 		List<List<String>> currentList = new LinkedList<>();
 
@@ -61,7 +61,8 @@ public class TripChainAlternatives implements ChainAlternatives {
 					for (String mode : modes) {
 						List<String> llist = new LinkedList<String>(list);
 						llist.add(mode);
-						newList.add(llist);
+						if (isFeasablePart(llist, trips.subList(0, llist.size()), chainModes))
+							newList.add(llist);
 					}
 				}
 			}
@@ -74,6 +75,37 @@ public class TripChainAlternatives implements ChainAlternatives {
 			
 		
 		return currentList;		
+	}
+	
+	private boolean isFeasablePart(List<String> chain, List<Trip> trips, Set<String> chainModes) {
+		
+		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
+		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
+		int i = -1;
+		for (String mode : chain) {
+			i++;
+			if (chainModes.contains(mode)) {
+				if (i == 0) {
+					
+					locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());
+				}
+				else {
+					
+					if ((locationsOfVehicles.get(mode) != null && locationsOfVehicles.get(mode).
+							equals(trips.get(i).getOriginActivity().getLinkId())) ||
+							(trips.get(i).getOriginActivity().getLinkId().equals(startLinkId) 
+									  && locationsOfVehicles.get(mode) != null &&
+										locationsOfVehicles.get(mode).equals(startLinkId))) {
+						locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());		
+						continue;
+						}
+					else 
+						return false;
+				}				
+			}
+		}
+						
+		return true;		
 	}
 	
 	private boolean isFeasable(List<String> chain, List<Trip> trips, Set<String> chainModes, Set<String> nonChainModes) {
