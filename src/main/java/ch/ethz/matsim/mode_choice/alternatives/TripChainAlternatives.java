@@ -93,7 +93,9 @@ public class TripChainAlternatives implements ChainAlternatives {
 				else {
 					
 					if ((locationsOfVehicles.get(mode) != null && locationsOfVehicles.get(mode).
-							equals(trips.get(i).getOriginActivity().getLinkId())) || trips.get(i).getOriginActivity().getLinkId().equals(startLinkId)) {
+							equals(trips.get(i).getOriginActivity().getLinkId())) || (trips.get(i).getOriginActivity().getLinkId().equals(startLinkId) 
+									  && locationsOfVehicles.get(mode) != null &&
+										!locationsOfVehicles.get(mode).equals(startLinkId))) {
 						locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());		
 						continue;
 							}
