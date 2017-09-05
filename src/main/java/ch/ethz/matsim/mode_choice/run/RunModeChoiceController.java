@@ -54,13 +54,13 @@ public class RunModeChoiceController {
 
 		ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom());
 
-		CrowflyModeChoiceParameters carParameters = new CrowflyModeChoiceParameters(30.0 * 1000.0 / 3600.0, -4.21, -0.176 / 1000.0, -23.29 / 3600.0);
+		CrowflyModeChoiceParameters carParameters = new CrowflyModeChoiceParameters(30.0 * 1000.0 / 3600.0, 0.0, -0.176 / 1000.0, -23.29 / 3600.0);
 		CrowflyModeChoiceParameters ptParameters = new CrowflyModeChoiceParameters(12.0 * 1000.0 / 3600.0, 0.0, -0.25 / 1000.0, -14.43 / 3600.0);
 		CrowflyModeChoiceParameters walkParameters = new CrowflyModeChoiceParameters(8.0 * 1000.0 / 3600.0, 0.0, 0.0, -33.2 / 3600.0);
 		
-		model.addModeAlternative("car", new CrowflyModeChoiceAlternative(carParameters));
-		model.addModeAlternative("pt", new CrowflyModeChoiceAlternative(ptParameters));
-		model.addModeAlternative("walk", new CrowflyModeChoiceAlternative(walkParameters));
+		model.addModeAlternative("car", new CrowflyModeChoiceAlternative(carParameters, true));
+		model.addModeAlternative("pt", new CrowflyModeChoiceAlternative(ptParameters, false));
+		model.addModeAlternative("walk", new CrowflyModeChoiceAlternative(walkParameters, false));
 
 		controler.addOverridingModule(new AbstractModule() {
 			@Override

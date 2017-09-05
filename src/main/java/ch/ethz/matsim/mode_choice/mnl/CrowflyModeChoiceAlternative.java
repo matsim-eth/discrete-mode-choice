@@ -10,9 +10,11 @@ import org.matsim.core.utils.geometry.CoordUtils;
 
 public class CrowflyModeChoiceAlternative implements ModeChoiceAlternative {
 	final private CrowflyModeChoiceParameters params;
-
-	public CrowflyModeChoiceAlternative(CrowflyModeChoiceParameters params) {
+	final private boolean isChainMode;
+	
+	public CrowflyModeChoiceAlternative(CrowflyModeChoiceParameters params, boolean isChainMode) {
 		this.params = params;
+		this.isChainMode = isChainMode;
 	}
 
 	@Override
@@ -26,5 +28,10 @@ public class CrowflyModeChoiceAlternative implements ModeChoiceAlternative {
 		return params.getConstant()
 				+ params.getBetaTravelTime() * crowflyTravelTime
 				+ params.getBetaDistance() * crowflyDistance;
+	}
+
+	@Override
+	public boolean isChainMode() {
+		return isChainMode;
 	}
 }
