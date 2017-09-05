@@ -8,12 +8,12 @@ import org.matsim.core.replanning.modules.AbstractMultithreadedModule;
 
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 
-public class ChooseSingleLegMode extends AbstractMultithreadedModule  {
+public class ChoosePlanModes extends AbstractMultithreadedModule  {
 
 	private ModeChoiceModel modeChoiceModel;
 	private Network network;
 	
-	public ChooseSingleLegMode(GlobalConfigGroup globalConfigGroup, 
+	public ChoosePlanModes(GlobalConfigGroup globalConfigGroup, 
 			ModeChoiceModel modeChoiceModel, Network network) {
 		super(globalConfigGroup);
 		this.modeChoiceModel = modeChoiceModel;
@@ -23,7 +23,7 @@ public class ChooseSingleLegMode extends AbstractMultithreadedModule  {
 	@Override
 	public PlanAlgorithm getPlanAlgoInstance() {
 
-		ChangeSingleLegModeAlgorithm cslma = new ChangeSingleLegModeAlgorithm(
+		ChangePlanModesAlgorithm cslma = new ChangePlanModesAlgorithm(
 				MatsimRandom.getLocalInstance(), modeChoiceModel, network); 
 		
 		return cslma;

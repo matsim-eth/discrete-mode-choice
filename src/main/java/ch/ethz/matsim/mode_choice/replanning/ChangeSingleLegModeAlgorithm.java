@@ -19,12 +19,12 @@ import org.matsim.core.population.routes.NetworkRoute;
 
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 
-public class ChnageSingleLegModeAlgorithm implements PlanAlgorithm{
+public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
 
 	private final Random rng;
 	ModeChoiceModel modeChoiceModel;
 	private Network network;
-	public ChnageSingleLegModeAlgorithm(final Random rng, ModeChoiceModel modeChoiceModel,
+	public ChangeSingleLegModeAlgorithm(final Random rng, ModeChoiceModel modeChoiceModel,
 			Network network) {
 		this.rng = rng;
 		this.modeChoiceModel = modeChoiceModel;

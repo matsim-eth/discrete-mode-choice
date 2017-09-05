@@ -22,24 +22,23 @@ import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
 import ch.ethz.matsim.mode_choice.selectors.OldPlanForRemovalSelector;
 import ch.ethz.matsim.sioux_falls.SiouxFallsUtils;
 
-public class RunModeChoiceController {
+public class RunModeChoiceControllerSF {
 
 	public static void main(String[] args) {
-		//Config config = ConfigUtils.loadConfig(SiouxFallsUtils.getConfigURL());
-		Config config = ConfigUtils.loadConfig("/home/sebastian/modechoice/zurich/config_001.xml");
+		Config config = ConfigUtils.loadConfig(SiouxFallsUtils.getConfigURL());
 		config.strategy().setMaxAgentPlanMemorySize(1);
 
-		//config.strategy().clearStrategySettings();
+		config.strategy().clearStrategySettings();
 
-		/*StrategySettings settings = new StrategySettings();
+		StrategySettings settings = new StrategySettings();
 		settings.setWeight(1.0);
 		settings.setStrategyName("ModeChoiceStrategy");
-		config.strategy().addStrategySettings(settings);*/
+		config.strategy().addStrategySettings(settings);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		Controler controler = new Controler(scenario);
 
-		/*Iterator<? extends Person> personIterator = scenario.getPopulation().getPersons().values().iterator();
+		Iterator<? extends Person> personIterator = scenario.getPopulation().getPersons().values().iterator();
 
 		while (personIterator.hasNext()) {
 			personIterator.next();
@@ -47,7 +46,7 @@ public class RunModeChoiceController {
 			if (MatsimRandom.getRandom().nextDouble() < 0.99) {
 				personIterator.remove();
 			}
-		}*/
+		}
 
 		// Set up MNL
 		

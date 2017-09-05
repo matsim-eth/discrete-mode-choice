@@ -41,7 +41,8 @@ public class ModeChoiceStrategy implements Provider<PlanStrategy> {
 	public PlanStrategy get() {
 		PlanStrategyImpl strategy = new PlanStrategyImpl(new RandomPlanSelector());
 		strategy.addStrategyModule(new TripsToLegsModule(tripRouterProvider, globalConfigGroup));
-		strategy.addStrategyModule(new ChooseSingleLegMode(globalConfigGroup, modeChoiceModel, network));
+		//strategy.addStrategyModule(new ChooseSingleLegMode(globalConfigGroup, modeChoiceModel, network));
+		strategy.addStrategyModule(new ChoosePlanModes(globalConfigGroup, modeChoiceModel, network));
 		strategy.addStrategyModule(new ReRoute(activityFacilities, tripRouterProvider, globalConfigGroup));
 		return strategy;
 	}

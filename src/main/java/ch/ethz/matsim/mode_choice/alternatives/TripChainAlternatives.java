@@ -20,18 +20,18 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 public class TripChainAlternatives implements ChainAlternatives {
 		
 	@Override
-	public List<List<String>> getTripChainAlternatives(Plan plan, String[] chainModes, String[] nonChainModes) {
+	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes) {
 		final List<Trip> trips = TripStructureUtils.getTrips( plan, new StageActivityTypesImpl("") );
 		int numberOfTrips = trips.size();
 		Set<String> modes = new HashSet<>();
-		modes.addAll(Arrays.asList(chainModes));
-		modes.addAll(Arrays.asList(nonChainModes));
+		modes.addAll(chainModes);
+		modes.addAll(nonChainModes);
 		
 		List<List<String>> allChains =  getCh(modes, numberOfTrips);
 		
 		ListIterator<List<String>> iter = allChains.listIterator();
 		while(iter.hasNext()){
-		    if(!isFeasable(iter.next(), trips, new HashSet<>(Arrays.asList(chainModes)), new HashSet<>(Arrays.asList(nonChainModes)))){
+		    if(!isFeasable(iter.next(), trips, new HashSet<>(chainModes), new HashSet<>(nonChainModes))){
 		        iter.remove();
 		    }
 		}
@@ -59,7 +59,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 				for (List<String> list : currentList) {
 					
 					for (String mode : modes) {
-						List<String> llist = new ArrayList(list);
+						List<String> llist = new ArrayList<String>(list);
 						llist.add(mode);
 						newList.add(llist);
 						
