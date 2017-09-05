@@ -1,6 +1,6 @@
 package ch.ethz.matsim.mode_choice.alternatives;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,15 +41,15 @@ public class TripChainAlternatives implements ChainAlternatives {
 	
 	private List<List<String>> getCh(Set<String> modes, int size) {
 		
-		List<List<String>> currentList = new ArrayList<>();
+		List<List<String>> currentList = new LinkedList<>();
 
 		
 		for (int i = 0; i < size; i++){
-			List<List<String>> newList = new ArrayList<>();
+			List<List<String>> newList = new LinkedList<>();
 			if (currentList.isEmpty()) {
 				
 				for (String mode : modes) {
-					List<String> l = new ArrayList<>();
+					List<String> l = new LinkedList<>();
 					l.add(mode);
 					newList.add(l);
 
@@ -59,10 +59,9 @@ public class TripChainAlternatives implements ChainAlternatives {
 				for (List<String> list : currentList) {
 					
 					for (String mode : modes) {
-						List<String> llist = new ArrayList<String>(list);
+						List<String> llist = new LinkedList<String>(list);
 						llist.add(mode);
 						newList.add(llist);
-						
 					}
 				}
 			}
@@ -95,7 +94,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 					if ((locationsOfVehicles.get(mode) != null && locationsOfVehicles.get(mode).
 							equals(trips.get(i).getOriginActivity().getLinkId())) || (trips.get(i).getOriginActivity().getLinkId().equals(startLinkId) 
 									  && locationsOfVehicles.get(mode) != null &&
-										!locationsOfVehicles.get(mode).equals(startLinkId))) {
+										locationsOfVehicles.get(mode).equals(startLinkId))) {
 						locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());		
 						continue;
 							}

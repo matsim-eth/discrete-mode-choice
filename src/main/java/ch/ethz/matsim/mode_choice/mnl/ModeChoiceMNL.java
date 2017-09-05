@@ -32,10 +32,17 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	final private ChainAlternatives chainAlternatives;
 	final private Network network;
 
-	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network) {
+	public enum Mode {
+		SAMPLING, BEST_RESPONSE
+	}
+
+	final private Mode modelMode;
+
+	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode) {
 		this.chainAlternatives = tripChainAlternatives;
 		this.random = random;
 		this.network = network;
+		this.modelMode = modelMode;
 	}
 
 	public String chooseMode(Person person, Link originLink, Link destinationLink) {
@@ -86,19 +93,23 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 	@Override
 	public List<String> chooseModes(Person person, Plan plan) {
+		boolean debug = false;
+		
 		List<List<String>> feasibleTripChains = chainAlternatives.getTripChainAlternatives(plan, chainModes,
 				nonChainModes);
 		List<Double> chainProbabilities = new ArrayList<>(feasibleTripChains.size());
+		
+		//System.gc();
 
 		List<TripStructureUtils.Trip> tt = TripStructureUtils.getTrips(plan,
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE));
-		
+
 		if (tt.size() == 0) {
 			return Collections.emptyList();
 		}
-		
+
 		Id<Link> firstLinkId = tt.get(0).getOriginActivity().getLinkId();
-		
+
 		List<ModeChoiceTrip> trips = new LinkedList<>();
 
 		for (TripStructureUtils.Trip trip : tt) {
@@ -106,9 +117,11 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 					network.getLinks().get(trip.getDestinationActivity().getLinkId())));
 		}
 
-		System.err.println(String.format("%s is choosing modes ...", person.getId().toString()));
-		System.err.println(String.format("   he has %d chain alternatives", feasibleTripChains.size()));
-		System.err.println(String.format("   with %d trips", trips.size()));
+		if (debug) {
+			System.err.println(String.format("%s is choosing modes ...", person.getId().toString()));
+			System.err.println(String.format("   he has %d chain alternatives", feasibleTripChains.size()));
+			System.err.println(String.format("   with %d trips", trips.size()));
+		}
 
 		for (List<String> tripChain : feasibleTripChains) {
 			double logsum = 0.0;
@@ -119,49 +132,67 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 			chainProbabilities.add(Math.exp(logsum));
 		}
-		
-		System.err.println("");
-		System.err.println(String.format("   chain probabilities: min %f max %f",
-				chainProbabilities.stream().mapToDouble(Double::doubleValue).min().getAsDouble(),
-				chainProbabilities.stream().mapToDouble(Double::doubleValue).max().getAsDouble()));
+
+		if (debug) {
+			System.err.println("");
+			System.err.println(String.format("   chain probabilities: min %f max %f",
+					chainProbabilities.stream().mapToDouble(Double::doubleValue).min().getAsDouble(),
+					chainProbabilities.stream().mapToDouble(Double::doubleValue).max().getAsDouble()));
+		}
 
 		double total = chainProbabilities.stream().mapToDouble(Double::doubleValue).sum();
-		
+
 		List<Double> cumulativeProbabilities = new ArrayList<>(chainProbabilities.size());
 		cumulativeProbabilities.add(chainProbabilities.get(0) / total);
 
 		for (int i = 1; i < chainProbabilities.size(); i++) {
 			cumulativeProbabilities.add(cumulativeProbabilities.get(i - 1) + chainProbabilities.get(i) / total);
 		}
-		
-		double selector = random.nextDouble();
 
-		for (int i = 0; i < cumulativeProbabilities.size(); i++) {
-			if (selector < cumulativeProbabilities.get(i)) {
-				
-				System.err.println("");
-				System.err.println(String.format("   Choice: %d (prob %f)", i, chainProbabilities.get(i)));
-				System.err.print("   Chain: ");
-				
-				for (int k = 0; k < feasibleTripChains.get(i).size(); k++) {
-					if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
-						System.err.print("* ");
+		if (modelMode.equals(Mode.SAMPLING)) {
+			double selector = random.nextDouble();
+
+			for (int i = 0; i < cumulativeProbabilities.size(); i++) {
+				if (selector < cumulativeProbabilities.get(i)) {
+
+					System.err.println("");
+					System.err.println(String.format("   Choice: %d (prob %f)", i, chainProbabilities.get(i)));
+					System.err.print("   Chain: ");
+
+					for (int k = 0; k < feasibleTripChains.get(i).size(); k++) {
+						if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
+							System.err.print("* ");
+						}
+
+						System.err.print(feasibleTripChains.get(i).get(k) + " ");
 					}
-					
-					System.err.print(feasibleTripChains.get(i).get(k) + " ");
+
+					if (tt.get(feasibleTripChains.get(i).size() - 1).getDestinationActivity().getLinkId()
+							.equals(firstLinkId)) {
+						System.err.print("*");
+					}
+
+					System.err.println("");
+					System.err.println("END");
+
+					return feasibleTripChains.get(i);
 				}
-				
-				if (tt.get(feasibleTripChains.get(i).size() - 1).getDestinationActivity().getLinkId().equals(firstLinkId)) {
-					System.err.print("*");
-				}
-				
-				System.err.println("");
-				System.err.println("END");
-				
-				return feasibleTripChains.get(i);
 			}
 		}
-
+		
+		if (modelMode.equals(Mode.BEST_RESPONSE)) {
+			double maximumProbability = Double.NEGATIVE_INFINITY;
+			int maximumIndex = 0;
+			
+			for (int i = 0; i < chainProbabilities.size(); i++) {
+				if (chainProbabilities.get(i) > maximumProbability) {
+					maximumIndex = i;
+				}
+			}
+			
+			return feasibleTripChains.get(maximumIndex);
+		}
+		
 		throw new IllegalStateException();
 	}
 }
