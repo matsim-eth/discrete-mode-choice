@@ -23,7 +23,7 @@ import ch.ethz.matsim.mode_choice.mnl.TestLink;
 public class TestTripChainAlternatives {
 
 	@Test
-	public void testRoutingParams() {
+	public void test1() {
 		
 		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives();
 		Plan plan = PopulationUtils.createPlan();
