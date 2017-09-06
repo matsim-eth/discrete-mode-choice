@@ -23,7 +23,33 @@
 			<url>http://dl.bintray.com/matsim-eth/matsim</url>
 		</repository>
 	</repositories>
-	
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<descriptor>src/main/assembly/assembly-release.xml</descriptor>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-archive</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.matsim</groupId>
@@ -36,7 +62,7 @@
 			<artifactId>dvrp</artifactId>
 			<version>0.10.0-eth</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ch.ethz.matsim</groupId>
 			<artifactId>sioux_falls</artifactId>
