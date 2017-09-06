@@ -34,6 +34,7 @@ import ch.ethz.matsim.mode_choice.mnl.prediction.TripPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
 import ch.ethz.matsim.mode_choice.selectors.OldPlanForRemovalSelector;
 import ch.ethz.matsim.mode_choice.utils.BlockingThreadSafeDijkstra;
+import ch.ethz.matsim.mode_choice.utils.QueueBasedThreadSafeDijkstra;
 import ch.ethz.matsim.sioux_falls.SiouxFallsUtils;
 
 public class RunModeChoiceControllerSF {
@@ -77,7 +78,7 @@ public class RunModeChoiceControllerSF {
 				BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
 				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
 				
-				TripPredictor carPredictor = new NetworkPathPredictor(new BlockingThreadSafeDijkstra(network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+				TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(10, network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 				
 				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor));
 				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
