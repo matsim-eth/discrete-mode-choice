@@ -18,6 +18,6 @@ public class TestCrowflyModeChoiceAlternative {
 		BasicModeChoiceParameters params = new BasicModeChoiceParameters(2.0, 0.0, -0.3, false);
 
 		BasicModeChoiceAlternative alternative = new BasicModeChoiceAlternative(params, new FixedSpeedPredictor(30.0, new CrowflyDistancePredictor()));
-		Assert.assertEquals(-8.0, alternative.estimateUtility(null, new DefaultModeChoiceTrip(originLink, destinationLink, 0.0)), 1e-10);
+		Assert.assertEquals(-8.0, alternative.estimateUtility(new DefaultModeChoiceTrip(originLink, destinationLink, 0.0, null)), 1e-10);
 	}
 }

@@ -8,6 +8,6 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.router.TripStructureUtils.Trip;
 
 public interface ModeChoiceModel {
-	String chooseMode(Person person, ModeChoiceTrip trip);
-	List<String> chooseModes(Person person, Plan plan);
+	String chooseMode(ModeChoiceTrip trip);
+	List<String> chooseModes(Plan plan);
 }

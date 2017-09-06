@@ -50,6 +50,8 @@ public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
 			return;
 		}
 		
+		
+		
 		int rndIdx = this.rng.nextInt(cnt);
 		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(), activities.get(rndIdx + 1).getLinkId(), activities.get(rndIdx).getEndTime());
 		
@@ -58,7 +60,7 @@ public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
 	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId, double departureTime) {
 		Link startLink = network.getLinks().get(originLinkId);
 		Link endLink = network.getLinks().get(destinationLinkId);
-		String newMode = modeChoiceModel.chooseMode(person, new DefaultModeChoiceTrip(startLink, endLink, departureTime));
+		String newMode = modeChoiceModel.chooseMode(new DefaultModeChoiceTrip(startLink, endLink, departureTime, person));
 		
 		leg.setMode(newMode);
 		Route route = leg.getRoute() ;

@@ -5,6 +5,6 @@ import org.matsim.api.core.v01.population.Person;
 import ch.ethz.matsim.mode_choice.ModeChoiceTrip;
 
 public interface ModeChoiceAlternative {
-	double estimateUtility(Person person, ModeChoiceTrip trip);
+	double estimateUtility(ModeChoiceTrip trip);
 	boolean isChainMode();
 }

@@ -18,12 +18,12 @@ class MNLDistribution {
 		this.alternatives.add(alternative);
 	}
 
-	public double getProbability(String mode, Person person, ModeChoiceTrip trip) {
+	public double getProbability(String mode, ModeChoiceTrip trip) {
 		List<Double> logits = new ArrayList<>(modes.size());
 
 		for (int i = 0; i < modes.size(); i++) {
 			logits.add(Math
-					.exp(alternatives.get(i).estimateUtility(person, trip)));
+					.exp(alternatives.get(i).estimateUtility(trip)));
 		}
 
 		return logits.get(modes.indexOf(mode)) / logits.stream().mapToDouble(Double::doubleValue).sum();

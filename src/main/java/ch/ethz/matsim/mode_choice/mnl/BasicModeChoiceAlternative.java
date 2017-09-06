@@ -16,7 +16,7 @@ public class BasicModeChoiceAlternative implements ModeChoiceAlternative {
 	}
 
 	@Override
-	public double estimateUtility(Person person, ModeChoiceTrip trip) {
+	public double estimateUtility(ModeChoiceTrip trip) {
 		TripPrediction prediction = tripPredictor.predictTrip(trip);
 
 		return params.getConstant() + params.getBetaTravelTime() * prediction.getPredictedTravelTime()

@@ -45,9 +45,9 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		this.modelMode = modelMode;
 	}
 
-	public String chooseMode(Person person, ModeChoiceTrip trip) {
+	public String chooseMode(ModeChoiceTrip trip) {
 		List<Double> exp = alternatives.stream()
-				.map(a -> Math.exp(a.estimateUtility(person, trip)))
+				.map(a -> Math.exp(a.estimateUtility(trip)))
 				.collect(Collectors.toList());
 
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
@@ -92,7 +92,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	}
 
 	@Override
-	public List<String> chooseModes(Person person, Plan plan) {
+	public List<String> chooseModes(Plan plan) {
 		boolean debug = false;
 		
 		List<List<String>> feasibleTripChains = chainAlternatives.getTripChainAlternatives(plan, chainModes,
@@ -114,11 +114,11 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 		for (TripStructureUtils.Trip trip : tt) {
 			trips.add(new DefaultModeChoiceTrip(network.getLinks().get(trip.getOriginActivity().getLinkId()),
-					network.getLinks().get(trip.getDestinationActivity().getLinkId()), trip.getOriginActivity().getEndTime()));
+					network.getLinks().get(trip.getDestinationActivity().getLinkId()), trip.getOriginActivity().getEndTime(), plan.getPerson()));
 		}
 
 		if (debug) {
-			System.err.println(String.format("%s is choosing modes ...", person.getId().toString()));
+			System.err.println(String.format("%s is choosing modes ...", plan.getPerson().getId().toString()));
 			System.err.println(String.format("   he has %d chain alternatives", feasibleTripChains.size()));
 			System.err.println(String.format("   with %d trips", trips.size()));
 		}
@@ -127,7 +127,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 			double logsum = 0.0;
 
 			for (int j = 0; j < trips.size(); j++) {
-				logsum += Math.log(distribution.getProbability(tripChain.get(j), person, trips.get(j)));
+				logsum += Math.log(distribution.getProbability(tripChain.get(j), trips.get(j)));
 			}
 
 			chainProbabilities.add(Math.exp(logsum));
