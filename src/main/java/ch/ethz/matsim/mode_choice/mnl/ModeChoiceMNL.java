@@ -155,25 +155,27 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 			for (int i = 0; i < cumulativeProbabilities.size(); i++) {
 				if (selector < cumulativeProbabilities.get(i)) {
 
-					System.err.println("");
-					System.err.println(String.format("   Choice: %d (prob %f)", i, chainProbabilities.get(i)));
-					System.err.print("   Chain: ");
-
-					for (int k = 0; k < feasibleTripChains.get(i).size(); k++) {
-						if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
-							System.err.print("* ");
+					if (debug) {
+						System.err.println("");
+						System.err.println(String.format("   Choice: %d (prob %f)", i, chainProbabilities.get(i)));
+						System.err.print("   Chain: ");
+	
+						for (int k = 0; k < feasibleTripChains.get(i).size(); k++) {
+							if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
+								System.err.print("* ");
+							}
+	
+							System.err.print(feasibleTripChains.get(i).get(k) + " ");
 						}
-
-						System.err.print(feasibleTripChains.get(i).get(k) + " ");
+	
+						if (tt.get(feasibleTripChains.get(i).size() - 1).getDestinationActivity().getLinkId()
+								.equals(firstLinkId)) {
+							System.err.print("*");
+						}
+	
+						System.err.println("");
+						System.err.println("END");
 					}
-
-					if (tt.get(feasibleTripChains.get(i).size() - 1).getDestinationActivity().getLinkId()
-							.equals(firstLinkId)) {
-						System.err.print("*");
-					}
-
-					System.err.println("");
-					System.err.println("END");
 
 					return feasibleTripChains.get(i);
 				}
