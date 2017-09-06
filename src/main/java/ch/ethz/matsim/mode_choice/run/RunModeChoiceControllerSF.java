@@ -7,6 +7,8 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.ControlerConfigGroup;
+import org.matsim.core.config.groups.GlobalConfigGroup;
 import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
@@ -70,7 +72,7 @@ public class RunModeChoiceControllerSF {
 			public void install() {}
 			
 			@Singleton @Provides
-			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime) {
+			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime, GlobalConfigGroup config) {
 				ChainAlternatives chainAlternatives = new TripChainAlternatives();
 				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
 
@@ -78,7 +80,7 @@ public class RunModeChoiceControllerSF {
 				BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
 				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
 				
-				TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(10, network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+				TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 				
 				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor));
 				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
