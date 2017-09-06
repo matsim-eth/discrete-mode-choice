@@ -26,7 +26,7 @@ public class RunModeChoiceController {
 
 	public static void main(String[] args) {
 		//Config config = ConfigUtils.loadConfig(SiouxFallsUtils.getConfigURL());
-		Config config = ConfigUtils.loadConfig("/home/sebastian/modechoice/zurich/config_001.xml");
+		Config config = ConfigUtils.loadConfig(args[0]);
 		config.strategy().setMaxAgentPlanMemorySize(1);
 
 		//config.strategy().clearStrategySettings();
