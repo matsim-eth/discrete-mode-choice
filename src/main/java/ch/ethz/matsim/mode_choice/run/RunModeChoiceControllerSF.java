@@ -34,6 +34,7 @@ import ch.ethz.matsim.mode_choice.mnl.prediction.FixedSpeedPredictor;
 import ch.ethz.matsim.mode_choice.mnl.prediction.NetworkPathPredictor;
 import ch.ethz.matsim.mode_choice.mnl.prediction.TripPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
+import ch.ethz.matsim.mode_choice.run.MNLConfigGroup.MNLCarUtility;
 import ch.ethz.matsim.mode_choice.selectors.OldPlanForRemovalSelector;
 import ch.ethz.matsim.mode_choice.utils.BlockingThreadSafeDijkstra;
 import ch.ethz.matsim.mode_choice.utils.QueueBasedThreadSafeDijkstra;

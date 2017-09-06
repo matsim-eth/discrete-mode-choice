@@ -36,13 +36,8 @@ import ch.ethz.matsim.mode_choice.utils.QueueBasedThreadSafeDijkstra;
 public class RunModeChoiceController {
 
 	public static void main(String[] args) {
-		Config config = ConfigUtils.loadConfig(args[0]);
+		Config config = ConfigUtils.loadConfig(args[0], new MNLConfigGroup());
 		config.strategy().setMaxAgentPlanMemorySize(1);
-		
-		List<String> listArgs = Arrays.asList(args);
-		
-		final boolean useBestResponse = listArgs.contains("best-response");
-		final boolean useShortestPath = listArgs.contains("shortest-path");
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		Controler controler = new Controler(scenario);
@@ -59,10 +54,10 @@ public class RunModeChoiceController {
 			@Singleton
 			@Provides
 			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime,
-					GlobalConfigGroup config) {
+					MNLConfigGroup mnlConfig) {
 				ChainAlternatives chainAlternatives = new TripChainAlternatives();
 				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives,
-						scenario.getNetwork(), useBestResponse ? ModeChoiceMNL.Mode.BEST_RESPONSE : ModeChoiceMNL.Mode.SAMPLING);
+						scenario.getNetwork(), mnlConfig.getMode());
 
 				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.176 / 1000.0,
 						-23.29 / 3600.0, true);
@@ -70,12 +65,22 @@ public class RunModeChoiceController {
 						-14.43 / 3600.0, false);
 				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0,
 						false);
+				
+				TripPredictor carPredictor = null;
 
-				TripPredictor carPredictor = useShortestPath ? new NetworkPathPredictor(
-						new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network,
-								new OnlyTimeDependentTravelDisutility(travelTime), travelTime))
-						: new FixedSpeedPredictor(30.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor());
-
+				switch (mnlConfig.getCarUtility()) {
+				case NETWORK:
+					carPredictor = new NetworkPathPredictor(
+							new QueueBasedThreadSafeDijkstra(mnlConfig.getNumberOfThreads(), network,
+									new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+					break;
+				case CROWFLY:
+					carPredictor = new FixedSpeedPredictor(30.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor());
+					break;
+				default:
+					throw new IllegalStateException();
+				}
+				
 				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor));
 				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters,
 						new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
