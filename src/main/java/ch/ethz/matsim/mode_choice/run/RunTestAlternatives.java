@@ -15,7 +15,7 @@ import ch.ethz.matsim.mode_choice.alternatives.TripChainAlternatives;
 
 public class RunTestAlternatives {
 	static public void main(String[] args) {
-		Config config = ConfigUtils.loadConfig("/home/sebastian/modechoice/zurich/config_001.xml");
+		Config config = ConfigUtils.loadConfig(args[0]);
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		
 		new RemoveLongPlans(10).run(scenario.getPopulation());
