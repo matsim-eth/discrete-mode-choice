@@ -23,7 +23,7 @@ class MNLDistribution {
 
 		for (int i = 0; i < modes.size(); i++) {
 			logits.add(Math
-					.exp(alternatives.get(i).estimateUtility(person, trip.getOriginLink(), trip.getDestinationLink())));
+					.exp(alternatives.get(i).estimateUtility(person, trip)));
 		}
 
 		return logits.get(modes.indexOf(mode)) / logits.stream().mapToDouble(Double::doubleValue).sum();

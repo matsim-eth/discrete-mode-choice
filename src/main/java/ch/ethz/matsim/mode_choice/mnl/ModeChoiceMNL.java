@@ -47,7 +47,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 	public String chooseMode(Person person, ModeChoiceTrip trip) {
 		List<Double> exp = alternatives.stream()
-				.map(a -> Math.exp(a.estimateUtility(person, trip.getOriginLink(), trip.getDestinationLink())))
+				.map(a -> Math.exp(a.estimateUtility(person, trip)))
 				.collect(Collectors.toList());
 
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();

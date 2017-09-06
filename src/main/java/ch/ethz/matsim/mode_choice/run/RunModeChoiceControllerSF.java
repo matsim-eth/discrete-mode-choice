@@ -15,9 +15,11 @@ import org.matsim.core.scenario.ScenarioUtils;
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.alternatives.ChainAlternatives;
 import ch.ethz.matsim.mode_choice.alternatives.TripChainAlternatives;
-import ch.ethz.matsim.mode_choice.mnl.CrowflyModeChoiceAlternative;
-import ch.ethz.matsim.mode_choice.mnl.CrowflyModeChoiceParameters;
+import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceAlternative;
+import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceParameters;
 import ch.ethz.matsim.mode_choice.mnl.ModeChoiceMNL;
+import ch.ethz.matsim.mode_choice.mnl.prediction.CrowflyDistancePredictor;
+import ch.ethz.matsim.mode_choice.mnl.prediction.FixedSpeedPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
 import ch.ethz.matsim.mode_choice.selectors.OldPlanForRemovalSelector;
 import ch.ethz.matsim.sioux_falls.SiouxFallsUtils;
@@ -53,13 +55,13 @@ public class RunModeChoiceControllerSF {
 		ChainAlternatives chainAlternatives = new TripChainAlternatives();
 		ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
 
-		CrowflyModeChoiceParameters carParameters = new CrowflyModeChoiceParameters(30.0 * 1000.0 / 3600.0, 0.0, -0.176 / 1000.0, -23.29 / 3600.0);
-		CrowflyModeChoiceParameters ptParameters = new CrowflyModeChoiceParameters(12.0 * 1000.0 / 3600.0, 0.0, -0.25 / 1000.0, -14.43 / 3600.0);
-		CrowflyModeChoiceParameters walkParameters = new CrowflyModeChoiceParameters(8.0 * 1000.0 / 3600.0, 0.0, 0.0, -33.2 / 3600.0);
+		BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.176 / 1000.0, -23.29 / 3600.0, true);
+		BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
+		BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
 		
-		model.addModeAlternative("car", new CrowflyModeChoiceAlternative(carParameters, true));
-		model.addModeAlternative("pt", new CrowflyModeChoiceAlternative(ptParameters, false));
-		model.addModeAlternative("walk", new CrowflyModeChoiceAlternative(walkParameters, false));
+		model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, new FixedSpeedPredictor(30.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
+		model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
+		model.addModeAlternative("walk", new BasicModeChoiceAlternative(walkParameters, new FixedSpeedPredictor(8.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
 
 		controler.addOverridingModule(new AbstractModule() {
 			@Override

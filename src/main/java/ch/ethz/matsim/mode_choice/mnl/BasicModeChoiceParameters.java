@@ -1,17 +1,17 @@
 package ch.ethz.matsim.mode_choice.mnl;
 
-public class CrowflyModeChoiceParameters {
+public class BasicModeChoiceParameters {
 	final private double betaDistance;
 	final private double betaTravelTime;
 	final private double constant;
 	
-	final private double speed;
+	final private boolean isChainBased;
 	
-	public CrowflyModeChoiceParameters(double speed, double constant, double betaDistance, double betaTravelTime) {
+	public BasicModeChoiceParameters(double constant, double betaDistance, double betaTravelTime, boolean isChainBased) {
 		this.betaDistance = betaDistance;
 		this.betaTravelTime = betaTravelTime;
 		this.constant = constant;
-		this.speed = speed;
+		this.isChainBased = isChainBased;
 	}
 
 	public double getBetaDistance() {
@@ -25,8 +25,8 @@ public class CrowflyModeChoiceParameters {
 	public double getConstant() {
 		return constant;
 	}
-
-	public double getSpeed() {
-		return speed;
+	
+	public boolean isChainBased() {
+		return isChainBased;
 	}
 }
