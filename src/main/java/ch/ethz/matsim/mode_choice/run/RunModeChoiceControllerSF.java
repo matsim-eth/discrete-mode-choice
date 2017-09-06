@@ -3,6 +3,7 @@ package ch.ethz.matsim.mode_choice.run;
 import java.util.Iterator;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -10,7 +11,15 @@ import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.gbl.MatsimRandom;
+import org.matsim.core.router.Dijkstra;
+import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
+import org.matsim.core.router.util.TravelDisutility;
+import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.scenario.ScenarioUtils;
+
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.alternatives.ChainAlternatives;
@@ -20,8 +29,11 @@ import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceParameters;
 import ch.ethz.matsim.mode_choice.mnl.ModeChoiceMNL;
 import ch.ethz.matsim.mode_choice.mnl.prediction.CrowflyDistancePredictor;
 import ch.ethz.matsim.mode_choice.mnl.prediction.FixedSpeedPredictor;
+import ch.ethz.matsim.mode_choice.mnl.prediction.NetworkPathPredictor;
+import ch.ethz.matsim.mode_choice.mnl.prediction.TripPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
 import ch.ethz.matsim.mode_choice.selectors.OldPlanForRemovalSelector;
+import ch.ethz.matsim.mode_choice.utils.BlockingThreadSafeDijkstra;
 import ch.ethz.matsim.sioux_falls.SiouxFallsUtils;
 
 public class RunModeChoiceControllerSF {
@@ -52,21 +64,26 @@ public class RunModeChoiceControllerSF {
 
 		// Set up MNL
 		
-		ChainAlternatives chainAlternatives = new TripChainAlternatives();
-		ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
-
-		BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.176 / 1000.0, -23.29 / 3600.0, true);
-		BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
-		BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
-		
-		model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, new FixedSpeedPredictor(30.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
-		model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
-		model.addModeAlternative("walk", new BasicModeChoiceAlternative(walkParameters, new FixedSpeedPredictor(8.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
-
 		controler.addOverridingModule(new AbstractModule() {
 			@Override
-			public void install() {
-				bind(ModeChoiceModel.class).toInstance(model);
+			public void install() {}
+			
+			@Singleton @Provides
+			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime) {
+				ChainAlternatives chainAlternatives = new TripChainAlternatives();
+				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
+
+				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.176 / 1000.0, -23.29 / 3600.0, true);
+				BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
+				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
+				
+				TripPredictor carPredictor = new NetworkPathPredictor(new BlockingThreadSafeDijkstra(network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+				
+				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor));
+				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
+				model.addModeAlternative("walk", new BasicModeChoiceAlternative(walkParameters, new FixedSpeedPredictor(8.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
+				
+				return model;
 			}
 		});
 
