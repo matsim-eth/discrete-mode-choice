@@ -38,6 +38,8 @@ public class RunModeChoiceController {
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		Controler controler = new Controler(scenario);
+		
+		new RemoveLongPlans(10).run(scenario.getPopulation());
 
 		/*Iterator<? extends Person> personIterator = scenario.getPopulation().getPersons().values().iterator();
 

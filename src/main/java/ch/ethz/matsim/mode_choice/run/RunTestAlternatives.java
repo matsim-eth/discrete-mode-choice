@@ -18,6 +18,8 @@ public class RunTestAlternatives {
 		Config config = ConfigUtils.loadConfig("/home/sebastian/modechoice/zurich/config_001.xml");
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		
+		new RemoveLongPlans(10).run(scenario.getPopulation());
+		
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("pt", "walk");
 		
