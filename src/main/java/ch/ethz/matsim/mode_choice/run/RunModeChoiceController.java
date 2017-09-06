@@ -28,6 +28,8 @@ public class RunModeChoiceController {
 		//Config config = ConfigUtils.loadConfig(SiouxFallsUtils.getConfigURL());
 		Config config = ConfigUtils.loadConfig(args[0]);
 		config.strategy().setMaxAgentPlanMemorySize(1);
+		
+		boolean bestResponse = args.length > 1 ? Boolean.valueOf(args[1]) : false;
 
 		//config.strategy().clearStrategySettings();
 
@@ -54,7 +56,7 @@ public class RunModeChoiceController {
 		// Set up MNL
 		
 		ChainAlternatives chainAlternatives = new TripChainAlternatives();
-		ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
+		ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), bestResponse ? ModeChoiceMNL.Mode.BEST_RESPONSE : ModeChoiceMNL.Mode.SAMPLING);
 
 		CrowflyModeChoiceParameters carParameters = new CrowflyModeChoiceParameters(30.0 * 1000.0 / 3600.0, 0.0, -0.176 / 1000.0, -23.29 / 3600.0);
 		CrowflyModeChoiceParameters ptParameters = new CrowflyModeChoiceParameters(12.0 * 1000.0 / 3600.0, 0.0, -0.25 / 1000.0, -14.43 / 3600.0);
