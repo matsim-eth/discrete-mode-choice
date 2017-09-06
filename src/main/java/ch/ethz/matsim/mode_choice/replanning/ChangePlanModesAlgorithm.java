@@ -17,6 +17,7 @@ import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.population.routes.GenericRouteImpl;
 import org.matsim.core.population.routes.NetworkRoute;
 
+import ch.ethz.matsim.mode_choice.DefaultModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 
 public class ChangePlanModesAlgorithm implements PlanAlgorithm{
@@ -59,7 +60,7 @@ public class ChangePlanModesAlgorithm implements PlanAlgorithm{
 	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId) {
 		Link startLink = network.getLinks().get(originLinkId);
 		Link endLink = network.getLinks().get(destinationLinkId);
-		String newMode = modeChoiceModel.chooseMode(person, startLink, endLink);
+		String newMode = modeChoiceModel.chooseMode(person, new DefaultModeChoiceTrip(startLink, endLink, 0.0));
 		
 		leg.setMode(newMode);
 		Route route = leg.getRoute() ;

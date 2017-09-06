@@ -17,6 +17,7 @@ import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.population.routes.GenericRouteImpl;
 import org.matsim.core.population.routes.NetworkRoute;
 
+import ch.ethz.matsim.mode_choice.DefaultModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 
 public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
@@ -50,23 +51,20 @@ public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
 		}
 		
 		int rndIdx = this.rng.nextInt(cnt);
-		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(), activities.get(rndIdx + 1).getLinkId());
+		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(), activities.get(rndIdx + 1).getLinkId(), activities.get(rndIdx).getEndTime());
 		
 	}
 
-	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId) {
+	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId, double departureTime) {
 		Link startLink = network.getLinks().get(originLinkId);
 		Link endLink = network.getLinks().get(destinationLinkId);
-		String newMode = modeChoiceModel.chooseMode(person, startLink, endLink);
+		String newMode = modeChoiceModel.chooseMode(person, new DefaultModeChoiceTrip(startLink, endLink, departureTime));
 		
 		leg.setMode(newMode);
 		Route route = leg.getRoute() ;
 		if ( route != null && route instanceof NetworkRoute) {
 			((NetworkRoute)route).setVehicleId(null);
 		}
-		
-		System.err.println(String.format("%s chooses %s", person.getId().toString(), leg.getMode()));
-		
 	}
 
 }

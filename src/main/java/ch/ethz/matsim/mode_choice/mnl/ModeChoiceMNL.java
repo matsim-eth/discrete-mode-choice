@@ -45,9 +45,9 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		this.modelMode = modelMode;
 	}
 
-	public String chooseMode(Person person, Link originLink, Link destinationLink) {
+	public String chooseMode(Person person, ModeChoiceTrip trip) {
 		List<Double> exp = alternatives.stream()
-				.map(a -> Math.exp(a.estimateUtility(person, originLink, destinationLink)))
+				.map(a -> Math.exp(a.estimateUtility(person, trip.getOriginLink(), trip.getDestinationLink())))
 				.collect(Collectors.toList());
 
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
@@ -114,7 +114,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 		for (TripStructureUtils.Trip trip : tt) {
 			trips.add(new DefaultModeChoiceTrip(network.getLinks().get(trip.getOriginActivity().getLinkId()),
-					network.getLinks().get(trip.getDestinationActivity().getLinkId())));
+					network.getLinks().get(trip.getDestinationActivity().getLinkId()), trip.getOriginActivity().getEndTime()));
 		}
 
 		if (debug) {
