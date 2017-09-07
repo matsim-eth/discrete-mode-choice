@@ -31,7 +31,10 @@ import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceParameters;
 import ch.ethz.matsim.mode_choice.mnl.ModeChoiceMNL;
 import ch.ethz.matsim.mode_choice.mnl.prediction.CrowflyDistancePredictor;
 import ch.ethz.matsim.mode_choice.mnl.prediction.FixedSpeedPredictor;
+import ch.ethz.matsim.mode_choice.mnl.prediction.HashPredictionCache;
 import ch.ethz.matsim.mode_choice.mnl.prediction.NetworkPathPredictor;
+import ch.ethz.matsim.mode_choice.mnl.prediction.PredictionCache;
+import ch.ethz.matsim.mode_choice.mnl.prediction.PredictionCacheCleaner;
 import ch.ethz.matsim.mode_choice.mnl.prediction.TripPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceStrategy;
 import ch.ethz.matsim.mode_choice.run.MNLConfigGroup.MNLCarUtility;
@@ -70,10 +73,22 @@ public class RunModeChoiceControllerSF {
 		
 		controler.addOverridingModule(new AbstractModule() {
 			@Override
-			public void install() {}
+			public void install() {
+				addControlerListenerBinding().to(PredictionCacheCleaner.class);
+			}
 			
 			@Singleton @Provides
-			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime, GlobalConfigGroup config) {
+			public PredictionCacheCleaner providePredictionCacheCleaner(PredictionCache cache) {
+				return new PredictionCacheCleaner(cache);
+			}
+			
+			@Singleton @Provides
+			public PredictionCache providePredictionCache() {
+				return new HashPredictionCache();
+			}
+			
+			@Singleton @Provides
+			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime, GlobalConfigGroup config, PredictionCache cache) {
 				ChainAlternatives chainAlternatives = new TripChainAlternatives();
 				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
 
@@ -83,7 +98,7 @@ public class RunModeChoiceControllerSF {
 				
 				TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 				
-				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor));
+				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor, cache));
 				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
 				model.addModeAlternative("walk", new BasicModeChoiceAlternative(walkParameters, new FixedSpeedPredictor(8.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));
 				
