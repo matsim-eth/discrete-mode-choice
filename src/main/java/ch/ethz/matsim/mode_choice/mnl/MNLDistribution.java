@@ -22,8 +22,13 @@ class MNLDistribution {
 		List<Double> logits = new ArrayList<>(modes.size());
 
 		for (int i = 0; i < modes.size(); i++) {
-			logits.add(Math
-					.exp(alternatives.get(i).estimateUtility(trip)));
+			double utility = alternatives.get(i).estimateUtility(trip);
+			
+			if (Double.isNaN(utility)) {
+				return Double.NaN;
+			}
+			
+			logits.add(Math.exp(utility));
 		}
 
 		return logits.get(modes.indexOf(mode)) / logits.stream().mapToDouble(Double::doubleValue).sum();

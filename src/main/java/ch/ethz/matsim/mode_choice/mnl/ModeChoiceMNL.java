@@ -127,10 +127,17 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 			double logsum = 0.0;
 
 			for (int j = 0; j < trips.size(); j++) {
+				double tripProbability = distribution.getProbability(tripChain.get(j), trips.get(j));
+				
+				if (Double.isNaN(tripProbability)) {
+					logsum = Double.NaN;
+					break;
+				}
+				
 				logsum += Math.log(distribution.getProbability(tripChain.get(j), trips.get(j)));
 			}
 
-			chainProbabilities.add(Math.exp(logsum));
+			chainProbabilities.add(Double.isNaN(logsum) ? 0.0 : Math.exp(logsum));
 		}
 
 		if (debug) {
