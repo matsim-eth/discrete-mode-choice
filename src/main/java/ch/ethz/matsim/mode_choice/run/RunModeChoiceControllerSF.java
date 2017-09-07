@@ -37,6 +37,9 @@ import ch.ethz.matsim.mode_choice.alternatives.ChainAlternatives;
 import ch.ethz.matsim.mode_choice.alternatives.TripChainAlternatives;
 import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceAlternative;
 import ch.ethz.matsim.mode_choice.mnl.BasicModeChoiceParameters;
+import ch.ethz.matsim.mode_choice.mnl.BasicPublicTransitModeChoiceAlternative;
+import ch.ethz.matsim.mode_choice.mnl.BasicPublicTransitModeChoiceParameters;
+import ch.ethz.matsim.mode_choice.mnl.ModeChoiceAlternative;
 import ch.ethz.matsim.mode_choice.mnl.ModeChoiceMNL;
 import ch.ethz.matsim.mode_choice.mnl.prediction.CrowflyDistancePredictor;
 import ch.ethz.matsim.mode_choice.mnl.prediction.FixedSpeedPredictor;
@@ -113,21 +116,39 @@ public class RunModeChoiceControllerSF {
 			@Singleton @Provides
 			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime, GlobalConfigGroup config, @Named("car") PredictionCache carCache, @Named("pt") PredictionCache ptCache, TransitSchedule transitSchedule, Provider<TransitRouter> transitRouterProvider, TransitRouterConfigGroup transitRouterConfig, PlansCalcRouteConfigGroup routeConfig) {
 				ChainAlternatives chainAlternatives = new TripChainAlternatives();
-				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.BEST_RESPONSE);
+				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.SAMPLING);
 
-				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(-4.42, -0.176 / 1000.0, -23.29 / 3600.0, true);
-				BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.25 / 1000.0, -14.43 / 3600.0, false);
+				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.62 / 1000.0, -23.29 / 3600.0, true);
+				BasicModeChoiceParameters ptParameters = new BasicModeChoiceParameters(0.0, -0.5 / 1000.0, -14.43 / 3600.0, false);
 				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0, false);
+				
+				BasicPublicTransitModeChoiceParameters extendedPtParameters = new BasicPublicTransitModeChoiceParameters(-14.43 / 3600.0, -0.5 / 1000.0, -33.2 / 3600.0, 0.0 / 3600.0, -24.13 / 3600.0, -3.0, 0.0);
+				
+				TripPredictor carPredictor = new FixedSpeedPredictor(30.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor());
+				TripPredictor ptPredictor = new FixedSpeedPredictor(14.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor());
+				TripPredictor walkPredictor = new FixedSpeedPredictor(routeConfig.getTeleportedModeSpeeds().get("walk") / routeConfig.getBeelineDistanceFactors().get("walk"), new CrowflyDistancePredictor());
 				
 				double walkDistanceFactor = routeConfig.getTeleportedModeSpeeds().get("walk") / routeConfig.getBeelineDistanceFactors().get("walk");
 				
-				TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+				carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
+				ptPredictor = new PublicTransitPredictor(new QueueBasedThreadSafeTransitRouter(config.getNumberOfThreads(), transitRouterProvider), transitSchedule, walkDistanceFactor);
+				
+				//BasicPublicTransitModeChoiceParameters ptParameters = new BasicPublicTransitModeChoiceParameters(-14.43 / 3600.0, -0.5 / 1000.0, -33.2 / 3600.0, 0.0, 8.0 / 3600.0, -3, 0.0);
+				
+				//
+				//TripPredictor carPredictor = new NetworkPathPredictor(new QueueBasedThreadSafeDijkstra(config.getNumberOfThreads(), network, new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 				//TripPredictor ptPredictor = new PublicTransitPredictor(new QueueBasedThreadSafeTransitRouter(config.getNumberOfThreads(), transitRouterProvider), transitSchedule);
-				TripPredictor ptPredictor = new PublicTransitPredictor(new BlockingThreadSafeTransitRouter(transitRouterProvider), transitSchedule, walkDistanceFactor);
+				//PublicTransitPredictor ptPredictor = new PublicTransitPredictor(new BlockingThreadSafeTransitRouter(transitRouterProvider), transitSchedule, walkDistanceFactor);
 					
-				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor, carCache));
-				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters, ptPredictor, ptCache));
-				model.addModeAlternative("walk", new BasicModeChoiceAlternative(walkParameters, new FixedSpeedPredictor(routeConfig.getTeleportedModeSpeeds().get("walk") / routeConfig.getBeelineDistanceFactors().get("walk"), new CrowflyDistancePredictor())));
+				ModeChoiceAlternative carAlternative = new BasicModeChoiceAlternative(carParameters, carPredictor, carCache);
+				ModeChoiceAlternative ptAlternative = new BasicModeChoiceAlternative(ptParameters, ptPredictor, ptCache);
+				ModeChoiceAlternative walkAlternative = new BasicModeChoiceAlternative(walkParameters, walkPredictor);
+				
+				ptAlternative = new BasicPublicTransitModeChoiceAlternative(extendedPtParameters, (PublicTransitPredictor) ptPredictor, ptCache);
+				
+				model.addModeAlternative("car", carAlternative);
+				model.addModeAlternative("pt", ptAlternative);
+				model.addModeAlternative("walk", walkAlternative);
 				
 				return model;
 			}

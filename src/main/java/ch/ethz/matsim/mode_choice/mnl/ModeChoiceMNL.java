@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.pt.PtConstants;
@@ -46,8 +46,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	}
 
 	public String chooseMode(ModeChoiceTrip trip) {
-		List<Double> exp = alternatives.stream()
-				.map(a -> Math.exp(a.estimateUtility(trip)))
+		List<Double> exp = alternatives.stream().map(a -> Math.exp(a.estimateUtility(trip)))
 				.collect(Collectors.toList());
 
 		double total = exp.stream().mapToDouble(Double::doubleValue).sum();
@@ -94,12 +93,19 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	@Override
 	public List<String> chooseModes(Plan plan) {
 		boolean debug = false;
-		
-		List<List<String>> feasibleTripChains = chainAlternatives.getTripChainAlternatives(plan, chainModes,
+
+		List<String> individualChainModes = chainModes;
+
+		if (PersonUtils.getCarAvail(plan.getPerson()).equals("never")) {// || !PersonUtils.hasLicense(plan.getPerson()))
+																		// {
+			individualChainModes = chainModes.stream().filter(m -> !m.equals("car")).collect(Collectors.toList());
+		}
+
+		List<List<String>> feasibleTripChains = chainAlternatives.getTripChainAlternatives(plan, individualChainModes,
 				nonChainModes);
 		List<Double> chainProbabilities = new ArrayList<>(feasibleTripChains.size());
-		
-		//System.gc();
+
+		// System.gc();
 
 		List<TripStructureUtils.Trip> tt = TripStructureUtils.getTrips(plan,
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE));
@@ -114,11 +120,13 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 		for (TripStructureUtils.Trip trip : tt) {
 			trips.add(new DefaultModeChoiceTrip(network.getLinks().get(trip.getOriginActivity().getLinkId()),
-					network.getLinks().get(trip.getDestinationActivity().getLinkId()), trip.getOriginActivity().getEndTime(), plan.getPerson()));
+					network.getLinks().get(trip.getDestinationActivity().getLinkId()),
+					trip.getOriginActivity().getEndTime(), plan.getPerson()));
 		}
 
 		if (debug) {
-			System.err.println(String.format("%s is choosing modes ...", plan.getPerson().getId().toString()));
+			System.err.println(String.format("%s is choosing modes [%s, %s] ...", plan.getPerson().getId().toString(),
+					individualChainModes, nonChainModes));
 			System.err.println(String.format("   he has %d chain alternatives", feasibleTripChains.size()));
 			System.err.println(String.format("   with %d trips", trips.size()));
 		}
@@ -128,23 +136,23 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 			for (int j = 0; j < trips.size(); j++) {
 				double tripProbability = distribution.getProbability(tripChain.get(j), trips.get(j));
-				
-				if (Double.isNaN(tripProbability)) {
-					logsum = Double.NaN;
+
+				if (tripProbability == 0.0) {
+					logsum = Double.NEGATIVE_INFINITY;
 					break;
 				}
-				
-				logsum += Math.log(distribution.getProbability(tripChain.get(j), trips.get(j)));
-			}
 
-			chainProbabilities.add(Double.isNaN(logsum) ? 0.0 : Math.exp(logsum));
+				logsum += Math.log(tripProbability);
+			}
+			
+			chainProbabilities.add(Math.exp(logsum));
 		}
 
 		if (debug) {
 			System.err.println("");
 			System.err.println(String.format("   chain probabilities: min %f max %f",
 					chainProbabilities.stream().mapToDouble(Double::doubleValue).min().getAsDouble(),
-					chainProbabilities.stream().mapToDouble(Double::doubleValue).max().getAsDouble()));
+					chainProbabilities.stream().mapToDouble(Double::doubleValue).max().getAsDouble()) + chainProbabilities);
 		}
 
 		double total = chainProbabilities.stream().mapToDouble(Double::doubleValue).sum();
@@ -166,20 +174,20 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 						System.err.println("");
 						System.err.println(String.format("   Choice: %d (prob %f)", i, chainProbabilities.get(i)));
 						System.err.print("   Chain: ");
-	
+
 						for (int k = 0; k < feasibleTripChains.get(i).size(); k++) {
 							if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
 								System.err.print("* ");
 							}
-	
+
 							System.err.print(feasibleTripChains.get(i).get(k) + " ");
 						}
-	
+
 						if (tt.get(feasibleTripChains.get(i).size() - 1).getDestinationActivity().getLinkId()
 								.equals(firstLinkId)) {
 							System.err.print("*");
 						}
-	
+
 						System.err.println("");
 						System.err.println("END");
 					}
@@ -187,21 +195,47 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 					return feasibleTripChains.get(i);
 				}
 			}
+			
+			throw new IllegalStateException();
 		}
-		
+
 		if (modelMode.equals(Mode.BEST_RESPONSE)) {
 			double maximumProbability = Double.NEGATIVE_INFINITY;
 			int maximumIndex = 0;
-			
+
 			for (int i = 0; i < chainProbabilities.size(); i++) {
 				if (chainProbabilities.get(i) > maximumProbability) {
 					maximumIndex = i;
+					maximumProbability = chainProbabilities.get(i);
 				}
 			}
-			
+
+			if (debug) {
+				System.err.println("");
+				System.err.println(
+						String.format("   Choice: %d (prob %f)", maximumIndex, chainProbabilities.get(maximumIndex)));
+				System.err.print("   Chain: ");
+
+				for (int k = 0; k < feasibleTripChains.get(maximumIndex).size(); k++) {
+					if (tt.get(k).getOriginActivity().getLinkId().equals(firstLinkId)) {
+						System.err.print("* ");
+					}
+
+					System.err.print(feasibleTripChains.get(maximumIndex).get(k) + " ");
+				}
+
+				if (tt.get(feasibleTripChains.get(maximumIndex).size() - 1).getDestinationActivity().getLinkId()
+						.equals(firstLinkId)) {
+					System.err.print("*");
+				}
+
+				System.err.println("");
+				System.err.println("END");
+			}
+
 			return feasibleTripChains.get(maximumIndex);
 		}
-		
+
 		throw new IllegalStateException();
 	}
 }

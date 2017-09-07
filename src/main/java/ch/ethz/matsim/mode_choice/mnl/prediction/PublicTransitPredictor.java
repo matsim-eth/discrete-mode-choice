@@ -1,7 +1,9 @@
 package ch.ethz.matsim.mode_choice.mnl.prediction;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -29,8 +31,8 @@ public class PublicTransitPredictor implements TripPredictor {
 		this.schedule = schedule;
 		this.walkDistanceFactor = walkDistanceFactor;
 	}
-
-	private double getWaitingTime(double legDepartureTime, ExperimentalTransitRoute route) {
+	
+	private double getNextDepartureTime(double startTime, ExperimentalTransitRoute route) {
 		TransitLine transitLine = schedule.getTransitLines().get(route.getLineId());
 		TransitRoute transitRoute = transitLine.getRoutes().get(route.getRouteId());
 
@@ -39,14 +41,15 @@ public class PublicTransitPredictor implements TripPredictor {
 
 		double departureOffset = stop.getDepartureOffset();
 
-		for (Departure departure : transitRoute.getDepartures().values()) {
+		// TODO: don't sort them everytime, but cache this somehow
+		for (Departure departure : transitRoute.getDepartures().values().stream().sorted((a,b) -> Double.compare(a.getDepartureTime(), b.getDepartureTime())).collect(Collectors.toList())) {
 			double departureTime = departure.getDepartureTime() + departureOffset;
 
-			if (departureTime > legDepartureTime) {
-				return legDepartureTime - departureTime;
+			if (departureTime >= startTime) {
+				return departureTime;
 			}
 		}
-
+		
 		throw new IllegalStateException();
 	}
 
@@ -69,20 +72,34 @@ public class PublicTransitPredictor implements TripPredictor {
 
 		int numberOfLineSwitches = legs.size() - 1;
 		boolean isOnlyTransitWalk = legs.size() == 1 && legs.get(0).getMode().contains("walk");
+		
+		double currentTime = trip.getDepartureTime();
 
 		if (!isOnlyTransitWalk) {
 			for (Leg leg : legs) {
 				if (leg.getMode().equals("pt")) {
 					ExperimentalTransitRoute route = (ExperimentalTransitRoute) leg.getRoute();
+					
+					double nextDepartureTime = getNextDepartureTime(currentTime, route);
+					
+					double legWaitingTime = nextDepartureTime - currentTime;
+					double legTravelTime = leg.getTravelTime() - legWaitingTime;
 
-					double legWaitingTime = getWaitingTime(leg.getDepartureTime(), route);
+					if (legWaitingTime < 0.0) throw new IllegalStateException("Waiting time: " + legWaitingTime);
+					if (legTravelTime < 0.0) {
+						throw new IllegalStateException("Travel time: " + legTravelTime);
+					}
+
 					waitingTime += legWaitingTime;
-
-					vehicleTravelTime += route.getTravelTime() - legWaitingTime;
+					vehicleTravelTime += legTravelTime;
 					vehicleDistance += route.getDistance();
+					
+					currentTime += leg.getTravelTime();
 				} else if (leg.getMode().contains("walk")) {
 					transferTravelTime += leg.getTravelTime();
 					transferDistance += getWalkDistance(leg.getTravelTime());
+					
+					currentTime += leg.getTravelTime();
 				} else {
 					throw new IllegalStateException();
 				}
@@ -91,7 +108,7 @@ public class PublicTransitPredictor implements TripPredictor {
 			transferTravelTime = legs.get(0).getTravelTime();
 			transferDistance = getWalkDistance(legs.get(0).getTravelTime());
 		}
-
+		
 		return new PublicTransitTripPrediction(vehicleTravelTime, vehicleDistance, transferTravelTime, transferDistance,
 				waitingTime, numberOfLineSwitches, isOnlyTransitWalk);
 	}
