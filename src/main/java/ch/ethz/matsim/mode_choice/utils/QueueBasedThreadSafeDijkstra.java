@@ -32,9 +32,17 @@ public class QueueBasedThreadSafeDijkstra implements LeastCostPathCalculator {
 			e.printStackTrace();
 		}
 	}
+	
+	public void close() {
+		executor.shutdownNow();
+	}
 
 	@Override
 	public Path calcLeastCostPath(Node fromNode, Node toNode, double starttime, Person person, Vehicle vehicle) {
+		if (executor.isShutdown()) {
+			throw new IllegalStateException();
+		}
+		
 		try {
 			return executor.submit(new Callable<Path>() {
 				@Override
