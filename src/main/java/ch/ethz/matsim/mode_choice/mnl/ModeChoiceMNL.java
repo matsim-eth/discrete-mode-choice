@@ -145,7 +145,10 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 				logsum += Math.log(tripProbability);
 			}
 			
-			chainProbabilities.add(Math.exp(logsum));
+			double item = Math.exp(logsum);
+			if (Double.isInfinite(item) || Double.isNaN(item)) item = 1e-12;
+			
+			chainProbabilities.add(item + 1e-12);
 		}
 
 		if (debug) {
