@@ -16,9 +16,14 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 
 public class TripChainAlternatives implements ChainAlternatives {
+	final private boolean matsimStyle;
+	
+	public TripChainAlternatives(boolean matsimStyle) {
+		this.matsimStyle = matsimStyle;
+	}
 		
 	@Override
-	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes, boolean matsimStyle) {
+	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes) {
 		final List<Trip> trips = TripStructureUtils.getTrips( plan, new StageActivityTypesImpl("") );
 		int numberOfTrips = trips.size();
 		Set<String> modes = new HashSet<>();

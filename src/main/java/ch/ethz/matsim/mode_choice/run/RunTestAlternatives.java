@@ -23,12 +23,12 @@ public class RunTestAlternatives {
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("pt", "walk");
 		
-		ChainAlternatives chainAlternatives = new TripChainAlternatives();
+		ChainAlternatives chainAlternatives = new TripChainAlternatives(false);
 		
 		Counter counter = new Counter("", "");
 		
 		for (Person person : scenario.getPopulation().getPersons().values()) {
-			for (List<String> chain : chainAlternatives.getTripChainAlternatives(person.getSelectedPlan(), chainModes, nonChainModes, false)) {
+			for (List<String> chain : chainAlternatives.getTripChainAlternatives(person.getSelectedPlan(), chainModes, nonChainModes)) {
 				
 			}
 			

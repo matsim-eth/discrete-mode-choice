@@ -102,7 +102,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 		}
 
 		List<List<String>> feasibleTripChains = chainAlternatives.getTripChainAlternatives(plan, individualChainModes,
-				nonChainModes, false);
+				nonChainModes);
 		List<Double> chainProbabilities = new ArrayList<>(feasibleTripChains.size());
 
 		// System.gc();

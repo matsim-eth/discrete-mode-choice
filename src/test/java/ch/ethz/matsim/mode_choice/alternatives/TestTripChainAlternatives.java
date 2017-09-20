@@ -15,7 +15,7 @@ public class TestTripChainAlternatives {
 	@Test
 	public void test1() {
 
-		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives();
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(false);
 		Plan plan = PopulationUtils.createPlan();
 
 		Activity act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
@@ -33,14 +33,34 @@ public class TestTripChainAlternatives {
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("walk", "pt");
 
-		Assert.assertEquals(6, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, false).size());
-		Assert.assertEquals(4, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, true).size());
+		Assert.assertEquals(6, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
+		
+		
+		
+		tripChainAlternatives = new TripChainAlternatives(true);
+		plan = PopulationUtils.createPlan();
 
+		act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		leg1 = PopulationUtils.createLeg("car");
+		act2 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		leg2 = PopulationUtils.createLeg("car");
+		act3 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+
+		plan.addActivity(act1);
+		plan.addLeg(leg1);
+		plan.addActivity(act2);
+		plan.addLeg(leg2);
+		plan.addActivity(act3);
+
+		chainModes = Arrays.asList("car", "bike");
+		nonChainModes = Arrays.asList("walk", "pt");
+
+		Assert.assertEquals(4, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
 	}
 
 	@Test
 	public void test2() {
-		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives();
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(false);
 		Plan plan = PopulationUtils.createPlan();
 
 		Activity act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
@@ -66,12 +86,12 @@ public class TestTripChainAlternatives {
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("walk");
 
-		Assert.assertEquals(5, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, false).size());
+		Assert.assertEquals(5, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
 	}
 
 	@Test
 	public void test3() {
-		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives();
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(false);
 		Plan plan = PopulationUtils.createPlan();
 		    
 		plan.addActivity(PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("104661")));
@@ -87,7 +107,7 @@ public class TestTripChainAlternatives {
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("walk", "pt");
 		
-		List<List<String>> alternatives = tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, false);
+		List<List<String>> alternatives = tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes);
 		
 		for (List<String> chain : alternatives) {
 			Assert.assertFalse(
@@ -100,7 +120,7 @@ public class TestTripChainAlternatives {
 	
 	@Test
 	public void test4() {
-		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives();
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(false);
 		Plan plan = PopulationUtils.createPlan();
 
 		Activity act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
@@ -126,8 +146,41 @@ public class TestTripChainAlternatives {
 		List<String> chainModes = Arrays.asList("car", "bike");
 		List<String> nonChainModes = Arrays.asList("walk", "pt");
 
-		Assert.assertEquals(26, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, false).size());
-		Assert.assertEquals(10, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes, true).size());
+		Assert.assertEquals(26, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
+
+		
+		
+		
+		
+		
+		
+		tripChainAlternatives = new TripChainAlternatives(true);
+		plan = PopulationUtils.createPlan();
+
+		act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		leg1 = PopulationUtils.createLeg("car");
+		act2 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		leg2 = PopulationUtils.createLeg("car");
+		act3 = PopulationUtils.createActivityFromLinkId("leisure", Id.createLinkId("3"));
+		leg3 = PopulationUtils.createLeg("car");
+		act4 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		leg4 = PopulationUtils.createLeg("car");
+		act5 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+
+		plan.addActivity(act1);
+		plan.addLeg(leg1);
+		plan.addActivity(act2);
+		plan.addLeg(leg2);
+		plan.addActivity(act3);
+		plan.addLeg(leg3);
+		plan.addActivity(act4);
+		plan.addLeg(leg4);
+		plan.addActivity(act5);
+
+		chainModes = Arrays.asList("car", "bike");
+		nonChainModes = Arrays.asList("walk", "pt");
+
+		Assert.assertEquals(10, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
 
 	}
 }

@@ -69,7 +69,7 @@ public class RunModeChoiceController {
 			@Provides
 			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime,
 					MNLConfigGroup mnlConfig, PredictionCache cache) {
-				ChainAlternatives chainAlternatives = new TripChainAlternatives();
+				ChainAlternatives chainAlternatives = new TripChainAlternatives(false);
 				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives,
 						scenario.getNetwork(), mnlConfig.getMode());
 

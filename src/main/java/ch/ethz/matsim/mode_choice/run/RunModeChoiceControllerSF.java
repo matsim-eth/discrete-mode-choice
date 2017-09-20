@@ -115,7 +115,7 @@ public class RunModeChoiceControllerSF {
 			
 			@Singleton @Provides
 			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime, GlobalConfigGroup config, @Named("car") PredictionCache carCache, @Named("pt") PredictionCache ptCache, TransitSchedule transitSchedule, Provider<TransitRouter> transitRouterProvider, TransitRouterConfigGroup transitRouterConfig, PlansCalcRouteConfigGroup routeConfig) {
-				ChainAlternatives chainAlternatives = new TripChainAlternatives();
+				ChainAlternatives chainAlternatives = new TripChainAlternatives(false);
 				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives, scenario.getNetwork(), ModeChoiceMNL.Mode.SAMPLING);
 
 				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.62 / 1000.0, -23.29 / 3600.0, true);
