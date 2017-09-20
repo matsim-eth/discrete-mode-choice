@@ -6,6 +6,6 @@ import org.matsim.api.core.v01.population.Plan;
 
 public interface ChainAlternatives {
 
-	List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes);
+	List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes, boolean matsimStyle);
 
 }

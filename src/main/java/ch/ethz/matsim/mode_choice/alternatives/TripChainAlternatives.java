@@ -1,7 +1,6 @@
 package ch.ethz.matsim.mode_choice.alternatives;
 
 import java.util.LinkedList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.Set;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
@@ -20,7 +18,7 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 public class TripChainAlternatives implements ChainAlternatives {
 		
 	@Override
-	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes) {
+	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes, boolean matsimStyle) {
 		final List<Trip> trips = TripStructureUtils.getTrips( plan, new StageActivityTypesImpl("") );
 		int numberOfTrips = trips.size();
 		Set<String> modes = new HashSet<>();
@@ -31,9 +29,16 @@ public class TripChainAlternatives implements ChainAlternatives {
 		
 		ListIterator<List<String>> iter = allChains.listIterator();
 		while(iter.hasNext()){
-		    if(!isFeasable(iter.next(), trips, new HashSet<>(chainModes), new HashSet<>(nonChainModes))){
-		        iter.remove();
-		    }
+			if ( matsimStyle ) {
+			    if(!isFeasableMATSimStyle(iter.next(), trips, new HashSet<>(chainModes), new HashSet<>(nonChainModes))){
+			        iter.remove();
+			    }
+			}
+			else {
+				if(!isFeasable(iter.next(), trips, new HashSet<>(chainModes), new HashSet<>(nonChainModes))){
+			        iter.remove();
+			    }				
+			}			
 		}
 		
 		return allChains;
@@ -69,11 +74,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 			
 			currentList.clear();
 			currentList.addAll(newList);
-		}
-		
-		
-			
-		
+		}		
 		return currentList;		
 	}
 	
@@ -112,7 +113,6 @@ public class TripChainAlternatives implements ChainAlternatives {
 		
 		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
 		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
-		boolean isFirstHome = trips.get(0).getOriginActivity().getType().startsWith("home");
 		int i = -1;
 		for (String mode : chain) {
 			i++;
@@ -141,6 +141,102 @@ public class TripChainAlternatives implements ChainAlternatives {
 		for (String mode : locationsOfVehicles.keySet()) {
 			
 			if (!locationsOfVehicles.get(mode).equals(startLinkId))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean isFeasableMATSimStyle(List<String> chain, List<Trip> trips, Set<String> chainModes, Set<String> nonchainModes) {
+		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
+		Map<String, Set<Id<Link>>> startLocationMap = new HashMap<>();
+		Map<String, Set<Id<Link>>> endLocationMap = new HashMap<>();
+
+		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
+		int i = -1;
+		for (String mode : chain) {
+			i++;
+			if (chainModes.contains(mode)) {
+				if (i == 0) {
+					
+					locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());
+				}
+				else {
+					
+					if ((locationsOfVehicles.get(mode) != null && locationsOfVehicles.get(mode).
+							equals(trips.get(i).getOriginActivity().getLinkId())) || (trips.get(i).getOriginActivity().getLinkId().equals(startLinkId) 
+									  && locationsOfVehicles.get(mode) != null &&
+										locationsOfVehicles.get(mode).equals(startLinkId))) {
+						locationsOfVehicles.put(mode, trips.get(i).getDestinationActivity().getLinkId());		
+						continue;
+							}
+					else 
+						return false;
+				}
+				
+			}
+			else if (nonchainModes.contains(mode)) {
+				if (i == 0) {
+					
+					Set<Id<Link>> newSet1 = new HashSet<>();
+					newSet1.add(trips.get(i).getOriginActivity().getLinkId());
+					startLocationMap.put(mode, newSet1);
+					Set<Id<Link>> newSet2 = new HashSet<>();
+					newSet2.add(trips.get(i).getDestinationActivity().getLinkId());
+					endLocationMap.put(mode, newSet2);
+				}
+				else {
+					
+					if (endLocationMap.containsKey(mode) && endLocationMap.get(mode).contains(trips.get(i).getOriginActivity().getLinkId())) {
+						
+						endLocationMap.get(mode).remove(trips.get(i).getOriginActivity().getLinkId());
+						endLocationMap.get(mode).add(trips.get(i).getDestinationActivity().getLinkId());
+						
+						if (startLocationMap.containsKey(mode) && startLocationMap.get(mode).contains(trips.get(i).getDestinationActivity().getLinkId())) {
+							
+							startLocationMap.get(mode).remove(trips.get(i).getDestinationActivity().getLinkId());
+						}
+
+					}
+					else {
+						if (!endLocationMap.containsKey(mode)){
+							
+							Set<Id<Link>> newSet2 = new HashSet<>();
+							newSet2.add(trips.get(i).getDestinationActivity().getLinkId());
+							endLocationMap.put(mode, newSet2);
+						}
+						else {
+							Set<Id<Link>> oldSet = startLocationMap.get(mode);
+							oldSet.add(trips.get(i).getDestinationActivity().getLinkId());
+							endLocationMap.put(mode, oldSet);
+							
+						}							
+						
+						if (!startLocationMap.containsKey(mode)) {
+							Set<Id<Link>> newSet1 = new HashSet<>();
+							newSet1.add(trips.get(i).getOriginActivity().getLinkId());
+							startLocationMap.put(mode, newSet1);
+							
+						}
+						else {
+							Set<Id<Link>> oldSet = startLocationMap.get(mode);
+							oldSet.add(trips.get(i).getOriginActivity().getLinkId());
+							startLocationMap.put(mode, oldSet);
+						}							
+					}					
+				}				
+			}
+		}		
+		
+		for (String mode : locationsOfVehicles.keySet()) {
+			
+			if (!locationsOfVehicles.get(mode).equals(startLinkId))
+				return false;
+		}
+		
+		for (String mode : startLocationMap.keySet()) {
+			
+			if (!startLocationMap.get(mode).isEmpty())
 				return false;
 		}
 		

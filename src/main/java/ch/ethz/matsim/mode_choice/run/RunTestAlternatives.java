@@ -28,7 +28,7 @@ public class RunTestAlternatives {
 		Counter counter = new Counter("", "");
 		
 		for (Person person : scenario.getPopulation().getPersons().values()) {
-			for (List<String> chain : chainAlternatives.getTripChainAlternatives(person.getSelectedPlan(), chainModes, nonChainModes)) {
+			for (List<String> chain : chainAlternatives.getTripChainAlternatives(person.getSelectedPlan(), chainModes, nonChainModes, false)) {
 				
 			}
 			
