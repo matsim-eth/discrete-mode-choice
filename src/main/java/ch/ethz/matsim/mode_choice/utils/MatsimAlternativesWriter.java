@@ -3,9 +3,16 @@ package ch.ethz.matsim.mode_choice.utils;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import org.matsim.api.core.v01.Scenario;
@@ -31,7 +38,8 @@ public class MatsimAlternativesWriter {
 				.getTrips(plan.getPlanElements(), new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE))
 				.stream().map(t -> t.getLegsOnly().iterator().next().getMode()).collect(Collectors.toList());
 	}
-	public static void main(String[] args) throws IOException {
+	
+	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 
 		final BufferedWriter outLink = IOUtils.getBufferedWriter(args[1]);
 
@@ -49,7 +57,11 @@ public class MatsimAlternativesWriter {
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
 				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes, random);
 		
-		Counter counter = new Counter("", " persons");
+		final Counter counter = new Counter("", " persons");
+		
+		ExecutorService executor = Executors.newFixedThreadPool(80);
+		
+		List<Future<String>> futures = new LinkedList<>();
 		
 		for (Person person : scenario.getPopulation().getPersons().values()) {	
 			
@@ -62,25 +74,36 @@ public class MatsimAlternativesWriter {
 			if (!((Activity) plan.getPlanElements().get(0)).getType().contains("home")) {
 				throw new IllegalStateException(((Activity) plan.getPlanElements().get(0)).getType());
 			}
-
+			
 			if (plan.getPlanElements().size() > 1) {
-				for (int i = 0; i < 10000; i++) {
-					algorithm.run(plan);					
-					matsimChains.add(String.join(",", getModeChain(plan)));
-				}				
+				futures.add(executor.submit(new Callable<String>() {
+					@Override
+					public String call() throws Exception {
+						for (int i = 0; i < 100000; i++) {
+							algorithm.run(plan);					
+							matsimChains.add(String.join(",", getModeChain(plan)));
+						}	
+						
+						synchronized(counter) {
+							counter.incCounter();
+						}
+						
+						return person.getId().toString() + ";" + String.join(";", matsimChains);
+					}
+				}));
 			}
-			outLink.write(person.getId().toString());
-			for (String chain : matsimChains) {
-				
-				outLink.write(";" + chain);
-			}
+		}
+		
+		for (Future<String> future : futures) {
+			String result = future.get();
+			outLink.write(result);
 			outLink.newLine();
-
-			counter.incCounter();
 		}
 		
 		outLink.flush();
 		outLink.close();
+		
+		executor.shutdown();
 		
 	}
 
