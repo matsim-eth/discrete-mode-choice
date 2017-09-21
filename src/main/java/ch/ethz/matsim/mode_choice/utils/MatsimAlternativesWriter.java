@@ -22,6 +22,7 @@ import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.io.IOUtils;
+import org.matsim.core.utils.misc.Counter;
 import org.matsim.pt.PtConstants;
 
 public class MatsimAlternativesWriter {
@@ -48,6 +49,8 @@ public class MatsimAlternativesWriter {
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
 				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes, random);
 		
+		Counter counter = new Counter("", " persons");
+		
 		for (Person person : scenario.getPopulation().getPersons().values()) {	
 			
 			Set<String> matsimChains = new HashSet<>();
@@ -73,6 +76,7 @@ public class MatsimAlternativesWriter {
 			}
 			outLink.newLine();
 
+			counter.incCounter();
 		}
 		
 		outLink.flush();
