@@ -116,7 +116,7 @@ public class TripChainAlternatives implements ChainAlternatives {
 		return true;		
 	}
 	
-	private boolean isFeasable(List<String> chain, List<Trip> trips, Set<String> chainModes, Set<String> nonChainModes) {
+	public boolean isFeasable(List<String> chain, List<Trip> trips, Set<String> chainModes, Set<String> nonChainModes) {
 		
 		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
 		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
