@@ -87,6 +87,8 @@ public class TripChainAlternatives implements ChainAlternatives {
 		
 		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
 		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
+		for (String mode : chainModes) 
+			locationsOfVehicles.put(mode, startLinkId);
 		int i = -1;
 		for (String mode : chain) {
 			i++;
@@ -118,6 +120,8 @@ public class TripChainAlternatives implements ChainAlternatives {
 		
 		Map<String, Id<Link>> locationsOfVehicles = new HashMap<>();
 		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
+		for (String mode : chainModes) 
+			locationsOfVehicles.put(mode, startLinkId);
 		int i = -1;
 		for (String mode : chain) {
 			i++;
@@ -158,6 +162,10 @@ public class TripChainAlternatives implements ChainAlternatives {
 		Map<String, Set<Id<Link>>> endLocationMap = new HashMap<>();
 
 		Id<Link> startLinkId = trips.get(0).getOriginActivity().getLinkId();
+		for (String mode : chainModes) 
+			locationsOfVehicles.put(mode, startLinkId);
+
+		
 		int i = -1;
 		for (String mode : chain) {
 			i++;

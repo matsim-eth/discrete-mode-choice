@@ -183,4 +183,65 @@ public class TestTripChainAlternatives {
 		Assert.assertEquals(10, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
 
 	}
+	
+	@Test
+	public void test5() {
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(false);
+		Plan plan = PopulationUtils.createPlan();
+
+		Activity act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		Leg leg1 = PopulationUtils.createLeg("car");
+		Activity act2 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		Leg leg2 = PopulationUtils.createLeg("car");
+		Activity act3 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		Leg leg3 = PopulationUtils.createLeg("car");
+		Activity act4 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		Leg leg4 = PopulationUtils.createLeg("car");
+		Activity act5 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+
+		plan.addActivity(act1);
+		plan.addLeg(leg1);
+		plan.addActivity(act2);
+		plan.addLeg(leg2);
+		plan.addActivity(act3);
+		plan.addLeg(leg3);
+		plan.addActivity(act4);
+		plan.addLeg(leg4);
+		plan.addActivity(act5);
+
+		List<String> chainModes = Arrays.asList("car");
+		List<String> nonChainModes = Arrays.asList("walk");
+
+		Assert.assertEquals(5, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());		
+		
+		
+		tripChainAlternatives = new TripChainAlternatives(true);
+		plan = PopulationUtils.createPlan();
+
+		act1 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		leg1 = PopulationUtils.createLeg("car");
+		act2 = PopulationUtils.createActivityFromLinkId("work", Id.createLinkId("2"));
+		leg2 = PopulationUtils.createLeg("car");
+		act3 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+		leg3 = PopulationUtils.createLeg("car");
+		act4 = PopulationUtils.createActivityFromLinkId("leisure", Id.createLinkId("3"));
+		leg4 = PopulationUtils.createLeg("car");
+		act5 = PopulationUtils.createActivityFromLinkId("home", Id.createLinkId("1"));
+
+		plan.addActivity(act1);
+		plan.addLeg(leg1);
+		plan.addActivity(act2);
+		plan.addLeg(leg2);
+		plan.addActivity(act3);
+		plan.addLeg(leg3);
+		plan.addActivity(act4);
+		plan.addLeg(leg4);
+		plan.addActivity(act5);
+
+		chainModes = Arrays.asList("car");
+		nonChainModes = Arrays.asList("walk", "pt");
+
+		Assert.assertEquals(9, tripChainAlternatives.getTripChainAlternatives(plan, chainModes, nonChainModes).size());
+
+	}
 }
