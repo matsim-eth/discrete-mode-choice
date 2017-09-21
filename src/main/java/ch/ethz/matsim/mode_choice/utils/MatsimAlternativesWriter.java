@@ -32,7 +32,7 @@ public class MatsimAlternativesWriter {
 	}
 	public static void main(String[] args) throws IOException {
 
-		final BufferedWriter outLink = IOUtils.getBufferedWriter("C:\\LocalDocuments\\Projects\\ModeChoiceMatsim\\alternativesmatsim.txt");
+		final BufferedWriter outLink = IOUtils.getBufferedWriter(args[0]);
 
 		Config config = ConfigUtils.createConfig();
 		Scenario scenario = ScenarioUtils.createScenario(config);
