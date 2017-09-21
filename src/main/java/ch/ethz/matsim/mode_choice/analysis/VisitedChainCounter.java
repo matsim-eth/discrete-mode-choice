@@ -53,7 +53,7 @@ public class VisitedChainCounter implements IterationEndsListener, StartupListen
 				List<String> modeChain = getModeChain(person.getSelectedPlan());
 				int modeChainHash = String.join(":", modeChain).hashCode();
 				observedModeChains.get(person.getId()).add(modeChainHash);
-				writer.write(String.format("%s %d", person.getId().toString(),
+				writer.write(String.format("%s %d\n", person.getId().toString(),
 						observedModeChains.get(person.getId()).size()));
 				writer.flush();
 			}
