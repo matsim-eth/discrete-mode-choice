@@ -22,6 +22,8 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.PtConstants;
 
+import ch.ethz.matsim.mode_choice.alternatives.ChainAlternatives;
+import ch.ethz.matsim.mode_choice.alternatives.CrazyMATSimChainAlternatives;
 import ch.ethz.matsim.mode_choice.alternatives.TripChainAlternatives;
 
 public class CompareSubtourModeChoiceSet {
@@ -46,10 +48,13 @@ public class CompareSubtourModeChoiceSet {
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
 				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes, random);
 
-		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(true);
-
+		//TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(true);
+		
+		ChainAlternatives tripChainAlternatives = new CrazyMATSimChainAlternatives(new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
+				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes);
+		
 		for (Person person : scenario.getPopulation().getPersons().values()) {	
-			if (!person.getId().toString().equals("1021284300")) continue;
+			//if (!person.getId().toString().equals("1021284300")) continue;
 			
 			Set<String> matsimChains = new HashSet<>();
 			Set<String> balacChains = new HashSet<>();
@@ -84,7 +89,7 @@ public class CompareSubtourModeChoiceSet {
 				// CRAZY GUY : 1021284300
 				
 				// 1021284300 1010992300  1033584800
-				if (person.getId().toString().equals("1021284300")) {
+				/*if (person.getId().toString().equals("1021284300")) {
 					System.out.println(String.join(":", TripStructureUtils.getActivities(plan, new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE)).stream().map(a -> a.getType()).collect(Collectors.toList())));
 					System.out.println(String.join(":", TripStructureUtils.getActivities(plan, new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE)).stream().map(a -> a.getLinkId().toString()).collect(Collectors.toList())));
 					
@@ -93,7 +98,7 @@ public class CompareSubtourModeChoiceSet {
 					System.out.println("----");
 					for (String s : balacChains) System.out.println(s + (!matsimChains.contains(s) ? " *" : ""));
 					System.out.println("----");
-				}
+				}*/
 			}
 		}
 	}
