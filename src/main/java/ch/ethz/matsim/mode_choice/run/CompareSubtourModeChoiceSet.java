@@ -48,10 +48,10 @@ public class CompareSubtourModeChoiceSet {
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
 				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes, random);
 
-		//TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(true);
+		TripChainAlternatives tripChainAlternatives = new TripChainAlternatives(true);
 		
-		ChainAlternatives tripChainAlternatives = new CrazyMATSimChainAlternatives(new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
-				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes);
+		//ChainAlternatives tripChainAlternatives = new CrazyMATSimChainAlternatives(new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
+		//		new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes);
 		
 		for (Person person : scenario.getPopulation().getPersons().values()) {	
 			//if (!person.getId().toString().equals("1021284300")) continue;
@@ -68,7 +68,7 @@ public class CompareSubtourModeChoiceSet {
 			}
 
 			if (plan.getPlanElements().size() > 1) {
-				for (int i = 0; i < 1000000; i++) {
+				for (int i = 0; i < 100; i++) {
 					algorithm.run(plan);
 					matsimChains.add(String.join(":", getModeChain(plan)));
 				}

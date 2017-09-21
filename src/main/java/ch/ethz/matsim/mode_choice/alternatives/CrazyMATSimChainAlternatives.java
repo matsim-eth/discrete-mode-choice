@@ -12,7 +12,9 @@ import java.util.Set;
 import org.matsim.api.core.v01.BasicLocation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Activity;
+import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Plan;
+import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.contrib.locationchoice.utils.PlanUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
@@ -89,18 +91,44 @@ public class CrazyMATSimChainAlternatives implements ChainAlternatives {
 						permissibleModesForThisPlan);
 		
 		for (Candidate c : choiceSet) {
-			Plan newPlan = PlanUtils.createCopy(plan);
-			applyChange( c , newPlan );			
-			
 			List<String> l = new LinkedList<>();
-
-			for (Trip t : TripStructureUtils.getTrips(newPlan,stageActivityTypes)) {
-				l.add(mainModeIdentifier.identifyMainMode( t.getTripElements() ));				
+			
+			int index = -1;
+			boolean origin = false;
+			List<Trip> trips = TripStructureUtils.getTrips( plan , stageActivityTypes );
+			
+			for (Trip tr : trips) {
+				l.add(mainModeIdentifier.identifyMainMode( tr.getTripElements() ));
 			}
+			
+			for (Trip trip : c.subtour.getTrips()) {				
+				index = -1;
+				for (PlanElement pe : plan.getPlanElements()) {					
+					
+					if (pe instanceof Activity) {
+						
+						if (pe == trip.getOriginActivity()) {
+							origin = true;
+							
+						}
+						else if (pe == trip.getDestinationActivity() && origin) {
+							l.set(index, c.newTransportMode);
+							origin = false;
+						}
+						else
+							origin = false;
+						index++;
+					}
+
+				}
+				
+				
+			}		
+			
 			allChains.add(l);
 			
 		}			
-		return null;
+		return allChains;
 	}
 
 	
