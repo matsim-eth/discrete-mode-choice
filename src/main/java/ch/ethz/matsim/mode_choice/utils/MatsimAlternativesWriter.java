@@ -79,7 +79,7 @@ public class MatsimAlternativesWriter {
 				futures.add(executor.submit(new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						for (int i = 0; i < 100000; i++) {
+						for (int i = 0; i < Integer.parseInt(args[2]); i++) {
 							algorithm.run(plan);					
 							matsimChains.add(String.join(",", getModeChain(plan)));
 						}	
