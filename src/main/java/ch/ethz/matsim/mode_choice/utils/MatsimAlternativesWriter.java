@@ -55,7 +55,7 @@ public class MatsimAlternativesWriter {
 
 		final ChooseRandomLegModeForSubtour algorithm = new ChooseRandomLegModeForSubtour(
 				new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE), new MainModeIdentifierImpl(),
-				new PermissibleModesCalculatorImpl(availableModes, false), availableModes, chainBasedModes, random);
+				new PermissibleModesCalculatorImpl(availableModes, true), availableModes, chainBasedModes, random);
 		
 		final Counter counter = new Counter("", " persons");
 		
