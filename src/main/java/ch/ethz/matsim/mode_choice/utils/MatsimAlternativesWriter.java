@@ -59,7 +59,7 @@ public class MatsimAlternativesWriter {
 		
 		final Counter counter = new Counter("", " persons");
 		
-		ExecutorService executor = Executors.newFixedThreadPool(80);
+		ExecutorService executor = Executors.newFixedThreadPool(Integer.parseInt(args[3]));
 		
 		List<Future<String>> futures = new LinkedList<>();
 		

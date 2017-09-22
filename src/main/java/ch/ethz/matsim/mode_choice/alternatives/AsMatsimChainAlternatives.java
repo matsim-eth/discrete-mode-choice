@@ -1,5 +1,6 @@
 package ch.ethz.matsim.mode_choice.alternatives;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,7 @@ public class AsMatsimChainAlternatives implements ChainAlternatives {
 
 	@Override
 	public List<List<String>> getTripChainAlternatives(Plan plan, List<String> chainModes, List<String> nonChainModes) {		
-		
-		return this.alternatives.get(plan.getPerson().getId());
+		return this.alternatives.getOrDefault(plan.getPerson().getId(), Collections.emptyList());
 	}
 
 }
