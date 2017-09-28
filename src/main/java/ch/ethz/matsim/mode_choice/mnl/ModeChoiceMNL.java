@@ -31,6 +31,9 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 	final private ChainAlternatives chainAlternatives;
 	final private Network network;
+	
+	final static private double defaultChainPrior = 1e-12;
+	final private double chainPrior;
 
 	public enum Mode {
 		SAMPLING, BEST_RESPONSE
@@ -38,11 +41,16 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 	final private Mode modelMode;
 
-	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode) {
+	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode, double chainPrior) {
 		this.chainAlternatives = tripChainAlternatives;
 		this.random = random;
 		this.network = network;
 		this.modelMode = modelMode;
+		this.chainPrior = chainPrior;
+	}
+
+	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode) {
+		this(random, tripChainAlternatives, network, modelMode, defaultChainPrior);
 	}
 
 	public String chooseMode(ModeChoiceTrip trip) {
@@ -148,7 +156,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 			double item = Math.exp(logsum);
 			if (Double.isInfinite(item) || Double.isNaN(item)) item = 1e-12;
 			
-			chainProbabilities.add(item + 1e-12);
+			chainProbabilities.add(item + chainPrior);
 		}
 
 		if (debug) {
