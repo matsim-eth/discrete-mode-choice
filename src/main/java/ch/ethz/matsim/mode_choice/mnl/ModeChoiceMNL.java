@@ -104,8 +104,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 		List<String> individualChainModes = chainModes;
 
-		if (PersonUtils.getCarAvail(plan.getPerson()).equals("never")) {// || !PersonUtils.hasLicense(plan.getPerson()))
-																		// {
+		if (PersonUtils.getCarAvail(plan.getPerson()).equals("never") || !PersonUtils.hasLicense(plan.getPerson())) {
 			individualChainModes = chainModes.stream().filter(m -> !m.equals("car")).collect(Collectors.toList());
 		}
 
