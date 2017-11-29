@@ -9,7 +9,7 @@ import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelTime;
 import org.matsim.vehicles.Vehicle;
 
-public class BlockingThreadSafeDijkstra implements LeastCostPathCalculator {
+public class BlockingThreadSafeDijkstra implements ThreadSafeLeastCostPathCalculator {
 	final private Dijkstra delegate;
 	
 	public BlockingThreadSafeDijkstra(Network network, TravelDisutility travelDisutility, TravelTime travelTime) {

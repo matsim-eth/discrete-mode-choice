@@ -15,7 +15,7 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
-public class QueueBasedThreadSafeTransitRouter implements TransitRouter {
+public class QueueBasedThreadSafeTransitRouter implements ThreadSafeTransitRouter {
 	final private ExecutorService executor;
 	final private BlockingQueue<TransitRouter> instanceQueue = new LinkedBlockingQueue<>();
 

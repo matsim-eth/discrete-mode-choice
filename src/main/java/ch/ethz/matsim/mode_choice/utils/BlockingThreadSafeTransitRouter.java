@@ -9,7 +9,7 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
-public class BlockingThreadSafeTransitRouter implements TransitRouter {
+public class BlockingThreadSafeTransitRouter implements ThreadSafeTransitRouter {
 	final private TransitRouter delegate;
 
 	public BlockingThreadSafeTransitRouter(Provider<TransitRouter> factory) {

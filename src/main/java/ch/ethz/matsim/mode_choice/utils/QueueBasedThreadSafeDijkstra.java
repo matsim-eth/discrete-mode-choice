@@ -16,7 +16,7 @@ import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelTime;
 import org.matsim.vehicles.Vehicle;
 
-public class QueueBasedThreadSafeDijkstra implements LeastCostPathCalculator {
+public class QueueBasedThreadSafeDijkstra implements ThreadSafeLeastCostPathCalculator {
 	final private ExecutorService executor;
 	final private BlockingQueue<Dijkstra> instanceQueue = new LinkedBlockingQueue<>();
 
