@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.router.Dijkstra;
+import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelTime;
@@ -26,7 +27,8 @@ public class QueueBasedThreadSafeDijkstra implements ThreadSafeLeastCostPathCalc
 
 		try {
 			for (int i = 0; i < numberOfInstances; i++) {
-				instanceQueue.put(new Dijkstra(network, travelDisutility, travelTime));
+				DijkstraFactory factory = new DijkstraFactory();
+				instanceQueue.put((Dijkstra) factory.createPathCalculator(network, travelDisutility, travelTime));
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
