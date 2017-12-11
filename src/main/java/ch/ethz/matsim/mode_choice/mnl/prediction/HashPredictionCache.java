@@ -1,12 +1,13 @@
 package ch.ethz.matsim.mode_choice.mnl.prediction;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.ethz.matsim.mode_choice.ModeChoiceTrip;
 
 public class HashPredictionCache implements PredictionCache {
-	final private Map<ModeChoiceTrip, TripPrediction> cache = new HashMap<>();
+	final private Map<ModeChoiceTrip, TripPrediction> cache = Collections.synchronizedMap(new HashMap<>());
 	
 	@Override
 	public TripPrediction get(ModeChoiceTrip trip) {
