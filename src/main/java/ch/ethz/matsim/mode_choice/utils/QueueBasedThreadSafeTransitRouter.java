@@ -12,8 +12,6 @@ import javax.inject.Provider;
 
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.controler.events.ShutdownEvent;
-import org.matsim.core.controler.listener.ShutdownListener;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
@@ -50,13 +48,8 @@ public class QueueBasedThreadSafeTransitRouter implements ThreadSafeTransitRoute
 			throw new RuntimeException();
 		}
 	}
-
-	public ShutdownListener getShutdownListener() {
-		return new ShutdownListener() {
-			@Override
-			public void notifyShutdown(ShutdownEvent event) {
-				executor.shutdownNow();
-			}
-		};
+	
+	public void close() {
+		this.executor.shutdownNow();
 	}
 }
