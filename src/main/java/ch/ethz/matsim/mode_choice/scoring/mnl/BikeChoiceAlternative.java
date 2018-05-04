@@ -25,4 +25,9 @@ public class BikeChoiceAlternative implements ModeChoiceAlternative {
 	public boolean isChainMode() {
 		return true;
 	}
+	
+	@Override
+	public boolean isFeasible(ModeChoiceTrip trip) {
+		return true;
+	}
 }

@@ -16,6 +16,11 @@ public class BasicPublicTransitModeChoiceAlternative implements ModeChoiceAltern
 		this.transitPredictor = transitPredictor;
 		this.cache = cache;
 	}
+	
+	@Override
+	public boolean isFeasible(ModeChoiceTrip trip) {
+		return true;
+	}
 
 	@Override
 	public double estimateUtility(ModeChoiceTrip trip) {

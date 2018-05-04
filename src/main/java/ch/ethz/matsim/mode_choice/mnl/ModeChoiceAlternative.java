@@ -6,5 +6,6 @@ import ch.ethz.matsim.mode_choice.ModeChoiceTrip;
 
 public interface ModeChoiceAlternative {
 	double estimateUtility(ModeChoiceTrip trip);
+	boolean isFeasible(ModeChoiceTrip trip);
 	boolean isChainMode();
 }

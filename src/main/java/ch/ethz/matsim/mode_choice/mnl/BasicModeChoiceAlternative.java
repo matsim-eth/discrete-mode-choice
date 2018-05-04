@@ -21,6 +21,11 @@ public class BasicModeChoiceAlternative implements ModeChoiceAlternative {
 	public BasicModeChoiceAlternative(BasicModeChoiceParameters params, TripPredictor tripPredictor) {
 		this(params, tripPredictor, new EmptyPredictionCache());
 	}
+	
+	@Override
+	public boolean isFeasible(ModeChoiceTrip trip) {
+		return true;
+	}
 
 	@Override
 	public double estimateUtility(ModeChoiceTrip trip) {

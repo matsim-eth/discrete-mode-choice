@@ -26,4 +26,9 @@ public class WalkChoiceAlternative implements ModeChoiceAlternative {
 	public boolean isChainMode() {
 		return false;
 	}
+	
+	@Override
+	public boolean isFeasible(ModeChoiceTrip trip) {
+		return true;
+	}
 }
