@@ -1,16 +1,11 @@
 package ch.ethz.matsim.mode_choice.run;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.GlobalConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
 import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -54,13 +49,15 @@ public class RunModeChoiceController {
 			public void install() {
 				addControlerListenerBinding().to(PredictionCacheCleaner.class);
 			}
-			
-			@Singleton @Provides
+
+			@Singleton
+			@Provides
 			public PredictionCacheCleaner providePredictionCacheCleaner(PredictionCache cache) {
 				return new PredictionCacheCleaner(cache);
 			}
-			
-			@Singleton @Provides
+
+			@Singleton
+			@Provides
 			public PredictionCache providePredictionCache() {
 				return new HashPredictionCache();
 			}
@@ -70,8 +67,7 @@ public class RunModeChoiceController {
 			public ModeChoiceModel provideModeChoiceModel(Network network, @Named("car") TravelTime travelTime,
 					MNLConfigGroup mnlConfig, PredictionCache cache) {
 				ChainAlternatives chainAlternatives = new TripChainAlternatives(false);
-				ModeChoiceMNL model = new ModeChoiceMNL(MatsimRandom.getRandom(), chainAlternatives,
-						scenario.getNetwork(), mnlConfig.getMode());
+				ModeChoiceMNL model = new ModeChoiceMNL(chainAlternatives, scenario.getNetwork(), mnlConfig.getMode());
 
 				BasicModeChoiceParameters carParameters = new BasicModeChoiceParameters(0.0, -0.176 / 1000.0,
 						-23.29 / 3600.0, true);
@@ -79,7 +75,7 @@ public class RunModeChoiceController {
 						-14.43 / 3600.0, false);
 				BasicModeChoiceParameters walkParameters = new BasicModeChoiceParameters(0.0, 0.0, -33.2 / 3600.0,
 						false);
-				
+
 				TripPredictor carPredictor = null;
 
 				switch (mnlConfig.getCarUtility()) {
@@ -94,7 +90,7 @@ public class RunModeChoiceController {
 				default:
 					throw new IllegalStateException();
 				}
-				
+
 				model.addModeAlternative("car", new BasicModeChoiceAlternative(carParameters, carPredictor, cache));
 				model.addModeAlternative("pt", new BasicModeChoiceAlternative(ptParameters,
 						new FixedSpeedPredictor(12.0 * 1000.0 / 3600.0, new CrowflyDistancePredictor())));

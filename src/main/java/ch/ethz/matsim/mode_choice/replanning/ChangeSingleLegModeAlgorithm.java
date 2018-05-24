@@ -1,7 +1,6 @@
 package ch.ethz.matsim.mode_choice.replanning;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import org.matsim.api.core.v01.Id;
@@ -19,23 +18,22 @@ import org.matsim.core.population.routes.NetworkRoute;
 import ch.ethz.matsim.mode_choice.DefaultModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.ModeChoiceModel;
 
-public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
+public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm {
+	private final Random random;
+	private final ModeChoiceModel modeChoiceModel;
+	private final Network network;
 
-	private final Random rng;
-	ModeChoiceModel modeChoiceModel;
-	private Network network;
-	public ChangeSingleLegModeAlgorithm(final Random rng, ModeChoiceModel modeChoiceModel,
-			Network network) {
-		this.rng = rng;
+	public ChangeSingleLegModeAlgorithm(Random random, ModeChoiceModel modeChoiceModel, Network network) {
+		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
 		this.network = network;
 	}
-	
+
 	@Override
-	public void run(Plan plan) {	
+	public void run(Plan plan) {
 		ArrayList<Leg> legs = new ArrayList<>();
 		ArrayList<Activity> activities = new ArrayList<>();
-		
+
 		int cnt = 0;
 		for (PlanElement pe : plan.getPlanElements()) {
 			if (pe instanceof Leg) {
@@ -48,23 +46,24 @@ public class ChangeSingleLegModeAlgorithm implements PlanAlgorithm{
 		if (cnt == 0) {
 			return;
 		}
-		
-		
-		
-		int rndIdx = this.rng.nextInt(cnt);
-		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(), activities.get(rndIdx + 1).getLinkId(), activities.get(rndIdx).getEndTime());
-		
+
+		int rndIdx = random.nextInt(cnt);
+		setLegMode(plan.getPerson(), legs.get(rndIdx), activities.get(rndIdx).getLinkId(),
+				activities.get(rndIdx + 1).getLinkId(), activities.get(rndIdx).getEndTime());
+
 	}
 
-	private void setLegMode(Person person,  Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId, double departureTime) {
+	private void setLegMode(Person person, Leg leg, Id<Link> originLinkId, Id<Link> destinationLinkId,
+			double departureTime) {
 		Link startLink = network.getLinks().get(originLinkId);
 		Link endLink = network.getLinks().get(destinationLinkId);
-		String newMode = modeChoiceModel.chooseMode(new DefaultModeChoiceTrip(startLink, endLink, departureTime, person));
-		
+		String newMode = modeChoiceModel
+				.chooseMode(new DefaultModeChoiceTrip(startLink, endLink, departureTime, person), random);
+
 		leg.setMode(newMode);
-		Route route = leg.getRoute() ;
-		if ( route != null && route instanceof NetworkRoute) {
-			((NetworkRoute)route).setVehicleId(null);
+		Route route = leg.getRoute();
+		if (route != null && route instanceof NetworkRoute) {
+			((NetworkRoute) route).setVehicleId(null);
 		}
 	}
 

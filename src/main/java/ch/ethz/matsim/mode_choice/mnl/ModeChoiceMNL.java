@@ -22,8 +22,6 @@ import ch.ethz.matsim.mode_choice.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.alternatives.ChainAlternatives;
 
 public class ModeChoiceMNL implements ModeChoiceModel {
-	final private Random random;
-
 	final private List<String> modes = new LinkedList<>();
 	final private List<ModeChoiceAlternative> alternatives = new LinkedList<>();
 
@@ -41,19 +39,18 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 
 	final private Mode modelMode;
 
-	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode, double chainPrior) {
+	public ModeChoiceMNL(ChainAlternatives tripChainAlternatives, Network network, Mode modelMode, double chainPrior) {
 		this.chainAlternatives = tripChainAlternatives;
-		this.random = random;
 		this.network = network;
 		this.modelMode = modelMode;
 		this.chainPrior = chainPrior;
 	}
 
-	public ModeChoiceMNL(Random random, ChainAlternatives tripChainAlternatives, Network network, Mode modelMode) {
-		this(random, tripChainAlternatives, network, modelMode, defaultChainPrior);
+	public ModeChoiceMNL(ChainAlternatives tripChainAlternatives, Network network, Mode modelMode) {
+		this(tripChainAlternatives, network, modelMode, defaultChainPrior);
 	}
 
-	public String chooseMode(ModeChoiceTrip trip) {
+	public String chooseMode(ModeChoiceTrip trip, Random random) {
 		List<Double> exp = alternatives.stream().map(a -> Math.exp(a.estimateUtility(trip)))
 				.collect(Collectors.toList());
 
@@ -99,7 +96,7 @@ public class ModeChoiceMNL implements ModeChoiceModel {
 	}
 
 	@Override
-	public List<String> chooseModes(Plan plan) {
+	public List<String> chooseModes(Plan plan, Random random) {
 		boolean debug = false;
 
 		List<String> individualChainModes = chainModes;
