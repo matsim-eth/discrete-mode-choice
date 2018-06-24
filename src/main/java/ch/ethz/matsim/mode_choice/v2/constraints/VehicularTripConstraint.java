@@ -60,7 +60,7 @@ public class VehicularTripConstraint implements TripConstraint {
 		currentIndex++;
 	}
 
-	public class Factory implements TripConstraintFactory {
+	public static class Factory implements TripConstraintFactory {
 		final private Collection<String> constrainedModes;
 		final private Optional<InitialVehicleLinkFinder> linkFinder;
 
