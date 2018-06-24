@@ -6,4 +6,6 @@ public interface UtilitySelector<T extends UtilityCandidate> {
 	void addCandidate(T candidate);
 
 	T select(Random random);
+	
+	int getNumberOfCandidates();
 }

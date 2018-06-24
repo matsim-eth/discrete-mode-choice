@@ -13,9 +13,9 @@ public class CompositeTripConstraint implements TripConstraint {
 	}
 
 	@Override
-	public boolean validateBeforeEstimation(String mode) {
+	public boolean validateBeforeEstimation(String mode, List<String> previousModes) {
 		for (TripConstraint constraint : constraints) {
-			if (!constraint.validateBeforeEstimation(mode)) {
+			if (!constraint.validateBeforeEstimation(mode, previousModes)) {
 				return false;
 			}
 		}
@@ -24,20 +24,13 @@ public class CompositeTripConstraint implements TripConstraint {
 	}
 
 	@Override
-	public boolean validateAfterEstimation(TripCandidate candidate) {
+	public boolean validateAfterEstimation(TripCandidate candidate, List<TripCandidate> previousCandidates) {
 		for (TripConstraint constraint : constraints) {
-			if (!constraint.validateAfterEstimation(candidate)) {
+			if (!constraint.validateAfterEstimation(candidate, previousCandidates)) {
 				return false;
 			}
 		}
 
 		return true;
-	}
-
-	@Override
-	public void acceptCandidate(TripCandidate candidate) {
-		for (TripConstraint constraint : constraints) {
-			constraint.acceptCandidate(candidate);
-		}
 	}
 }

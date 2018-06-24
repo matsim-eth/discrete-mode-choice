@@ -33,23 +33,31 @@ public class TripBasedModel implements ModeChoiceModel {
 		List<String> modes = new ArrayList<>(modeAvailability.getAvailableModes(trips));
 		TripConstraint constraint = constraintFactory.createConstraint(trips, modes);
 
-		List<TripCandidate> result = new ArrayList<>(trips.size());
+		List<TripCandidate> tripCandidates = new ArrayList<>(trips.size());
+		List<String> tripCandidateModes = new ArrayList<>(trips.size());
 
 		for (ModeChoiceTrip trip : trips) {
 			UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
 
-			modes.stream() //
-					.filter(constraint::validateBeforeEstimation) //
-					.map(m -> estimator.estimateTrip(m, trip, result)) //
-					.filter(constraint::validateAfterEstimation) //
-					.forEach(selector::addCandidate);
+			for (String mode : modes) {
+				if (!constraint.validateBeforeEstimation(mode, tripCandidateModes)) {
+					continue;
+				}
+
+				TripCandidate candidate = estimator.estimateTrip(mode, trip, tripCandidates);
+
+				if (!constraint.validateAfterEstimation(candidate, tripCandidates)) {
+					continue;
+				}
+
+				selector.addCandidate(candidate);
+			}
 
 			TripCandidate selectedCandidate = selector.select(random);
-
-			result.add(selectedCandidate);
-			constraint.acceptCandidate(selectedCandidate);
+			tripCandidates.add(selectedCandidate);
+			tripCandidateModes.add(selectedCandidate.getMode());
 		}
 
-		return result;
+		return tripCandidates;
 	}
 }

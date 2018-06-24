@@ -20,9 +20,14 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 	}
 
 	@Override
+	public int getNumberOfCandidates() {
+		return candidates.size();
+	}
+
+	@Override
 	public T select(Random random) {
 		if (candidates.size() == 0) {
-			throw new IllegalStateException("No feasible candidate found for trip");
+			throw new IllegalStateException("No feasible candidate found");
 		}
 
 		List<Double> density = candidates.stream() //

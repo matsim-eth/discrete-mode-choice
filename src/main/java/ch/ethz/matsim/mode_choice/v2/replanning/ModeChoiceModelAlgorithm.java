@@ -34,7 +34,8 @@ public class ModeChoiceModelAlgorithm implements PlanAlgorithm {
 		List<ModeChoiceTrip> choiceTrips = new ArrayList<>(trips.size());
 
 		for (Trip trip : trips) {
-			choiceTrips.add(new DefaultModeChoiceTrip(plan.getPerson(), trips, trip));
+			String initialMode = trip.getLegsOnly().get(0).getMode();
+			choiceTrips.add(new DefaultModeChoiceTrip(plan.getPerson(), trips, trip, initialMode));
 		}
 
 		List<TripCandidate> selectedTrips = modeChoiceModel.chooseModes(choiceTrips, random);

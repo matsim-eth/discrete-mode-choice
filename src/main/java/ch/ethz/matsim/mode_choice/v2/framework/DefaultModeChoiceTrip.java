@@ -9,11 +9,13 @@ public class DefaultModeChoiceTrip implements ModeChoiceTrip {
 	final private Person person;
 	final private List<Trip> plan;
 	final private Trip trip;
+	final private String initialMode;
 
-	public DefaultModeChoiceTrip(Person person, List<Trip> plan, Trip trip) {
+	public DefaultModeChoiceTrip(Person person, List<Trip> plan, Trip trip, String initialMode) {
 		this.person = person;
 		this.plan = plan;
 		this.trip = trip;
+		this.initialMode = initialMode;
 	}
 
 	@Override
@@ -29,5 +31,10 @@ public class DefaultModeChoiceTrip implements ModeChoiceTrip {
 	@Override
 	public Trip getTripInformation() {
 		return trip;
+	}
+
+	@Override
+	public String getInitialMode() {
+		return initialMode;
 	}
 }

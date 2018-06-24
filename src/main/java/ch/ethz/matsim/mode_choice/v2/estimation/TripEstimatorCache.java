@@ -29,12 +29,17 @@ public class TripEstimatorCache implements IterationStartsListener {
 		public TripCandidate estimateTrip(String mode, ModeChoiceTrip trip, List<TripCandidate> preceedingTrips) {
 			String key = buildKey(trip, mode);
 
-			if (cache.containsKey(key)) {
-				return cache.get(key);
+			synchronized (cache) {
+				if (cache.containsKey(key)) {
+					return cache.get(key);
+				}
 			}
 
 			TripCandidate result = delegate.estimateTrip(mode, trip, preceedingTrips);
-			cache.put(key, result);
+
+			synchronized (cache) {
+				cache.put(key, result);
+			}
 
 			return result;
 		}

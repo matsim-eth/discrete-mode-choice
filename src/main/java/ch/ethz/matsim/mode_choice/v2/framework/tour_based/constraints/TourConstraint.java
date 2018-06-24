@@ -5,9 +5,7 @@ import java.util.List;
 import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourCandidate;
 
 public interface TourConstraint {
-	boolean validateBeforeEstimation(List<String> modes);
+	boolean validateBeforeEstimation(List<String> modes, List<List<String>> previousModes);
 
-	boolean validateAfterEstimation(TourCandidate candidates);
-
-	void acceptTour(TourCandidate candidate);
+	boolean validateAfterEstimation(TourCandidate candidates, List<TourCandidate> previousCandidates);
 }

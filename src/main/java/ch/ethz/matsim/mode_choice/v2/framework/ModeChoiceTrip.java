@@ -11,4 +11,6 @@ public interface ModeChoiceTrip {
 	List<Trip> getPlan();
 
 	Trip getTripInformation();
+	
+	String getInitialMode();
 }

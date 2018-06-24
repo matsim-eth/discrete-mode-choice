@@ -15,6 +15,11 @@ public class MaximumUtilitySelector<T extends UtilityCandidate> implements Utili
 	}
 
 	@Override
+	public int getNumberOfCandidates() {
+		return bestCandidate == null ? 0 : 1;
+	}
+
+	@Override
 	public T select(Random random) {
 		if (bestCandidate == null) {
 			throw new IllegalStateException("No feasible candidate found for trip");
