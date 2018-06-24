@@ -7,7 +7,7 @@ import java.util.Random;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
-import org.matsim.core.router.StageActivityTypes;
+import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 
@@ -19,18 +19,15 @@ import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripCandida
 public class ModeChoiceModelAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final ModeChoiceModel modeChoiceModel;
-	private final StageActivityTypes stageActivityTypes;
 
-	public ModeChoiceModelAlgorithm(Random random, StageActivityTypes stageActivityTypes,
-			ModeChoiceModel modeChoiceModel) {
+	public ModeChoiceModelAlgorithm(Random random, ModeChoiceModel modeChoiceModel) {
 		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
-		this.stageActivityTypes = stageActivityTypes;
 	}
 
 	@Override
 	public void run(Plan plan) {
-		List<Trip> trips = TripStructureUtils.getTrips(plan, stageActivityTypes);
+		List<Trip> trips = TripStructureUtils.getTrips(plan, new StageActivityTypesImpl());
 		List<ModeChoiceTrip> choiceTrips = new ArrayList<>(trips.size());
 
 		for (Trip trip : trips) {

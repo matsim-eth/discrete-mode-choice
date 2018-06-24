@@ -4,25 +4,25 @@ import org.matsim.core.config.groups.GlobalConfigGroup;
 import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.replanning.modules.AbstractMultithreadedModule;
-import org.matsim.core.router.StageActivityTypes;
+
+import com.google.inject.Provider;
 
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
 
 public class ModeChoiceModelModule extends AbstractMultithreadedModule {
-	final private StageActivityTypes stageActivityTypes;
-	final private ModeChoiceModel modeChoiceModel;
+	final private Provider<ModeChoiceModel> modeChoiceModelProvider;
 
-	public ModeChoiceModelModule(GlobalConfigGroup globalConfigGroup, ModeChoiceModel modeChoiceModel,
-			StageActivityTypes stageActivityTyes) {
+	public ModeChoiceModelModule(GlobalConfigGroup globalConfigGroup,
+			Provider<ModeChoiceModel> modeChoiceModelProvider) {
 		super(globalConfigGroup);
 
-		this.modeChoiceModel = modeChoiceModel;
-		this.stageActivityTypes = stageActivityTyes;
+		this.modeChoiceModelProvider = modeChoiceModelProvider;
 	}
 
 	@Override
 	public PlanAlgorithm getPlanAlgoInstance() {
-		return new ModeChoiceModelAlgorithm(MatsimRandom.getLocalInstance(), stageActivityTypes, modeChoiceModel);
+		ModeChoiceModel modeChoiceModel = modeChoiceModelProvider.get();
+		return new ModeChoiceModelAlgorithm(MatsimRandom.getLocalInstance(), modeChoiceModel);
 	}
 
 }
