@@ -40,13 +40,13 @@ public class TripBasedModel implements ModeChoiceModel {
 			UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
 
 			for (String mode : modes) {
-				if (!constraint.validateBeforeEstimation(mode, tripCandidateModes)) {
+				if (!constraint.validateBeforeEstimation(trip, mode, tripCandidateModes)) {
 					continue;
 				}
 
 				TripCandidate candidate = estimator.estimateTrip(mode, trip, tripCandidates);
 
-				if (!constraint.validateAfterEstimation(candidate, tripCandidates)) {
+				if (!constraint.validateAfterEstimation(trip, candidate, tripCandidates)) {
 					continue;
 				}
 

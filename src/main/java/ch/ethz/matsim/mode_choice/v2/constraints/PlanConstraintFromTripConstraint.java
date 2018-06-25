@@ -28,7 +28,7 @@ public class PlanConstraintFromTripConstraint implements PlanConstraint {
 		TripConstraint constraint = factory.createConstraint(trips, availableModes);
 
 		for (int i = 0; i < modes.size(); i++) {
-			if (!constraint.validateBeforeEstimation(modes.get(i), modes.subList(0, i))) {
+			if (!constraint.validateBeforeEstimation(trips.get(i), modes.get(i), modes.subList(0, i))) {
 				return false;
 			}
 		}
@@ -42,7 +42,8 @@ public class PlanConstraintFromTripConstraint implements PlanConstraint {
 		List<TripCandidate> tripCandidates = planCandidate.getTripCandidates();
 
 		for (int i = 0; i < tripCandidates.size(); i++) {
-			if (!constraint.validateAfterEstimation(tripCandidates.get(i), tripCandidates.subList(0, i))) {
+			if (!constraint.validateAfterEstimation(trips.get(i), tripCandidates.get(i),
+					tripCandidates.subList(0, i))) {
 				return false;
 			}
 		}
