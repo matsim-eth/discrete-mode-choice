@@ -23,7 +23,7 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 	public int getNumberOfCandidates() {
 		return candidates.size();
 	}
-
+	
 	@Override
 	public T select(Random random) {
 		if (candidates.size() == 0) {
@@ -46,7 +46,7 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 		}
 
 		double pointer = random.nextDouble() * totalDensity;
-
+		
 		int selection = (int) cumulativeDensity.stream().filter(f -> f < pointer).count();
 		return candidates.get(selection);
 	}

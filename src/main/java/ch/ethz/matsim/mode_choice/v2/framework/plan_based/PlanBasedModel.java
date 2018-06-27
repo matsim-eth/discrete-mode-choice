@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 import ch.ethz.matsim.mode_choice.v2.framework.ModeAvailability;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
@@ -19,6 +21,8 @@ import ch.ethz.matsim.mode_choice.v2.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.v2.framework.utils.ModeChainGeneratorFactory;
 
 public class PlanBasedModel implements ModeChoiceModel {
+	final private Logger logger = Logger.getLogger(PlanBasedModel.class);
+	
 	final private PlanEstimator estimator;
 	final private ModeAvailability modeAvailability;
 	final private PlanConstraintFactory constraintFactory;
@@ -60,8 +64,9 @@ public class PlanBasedModel implements ModeChoiceModel {
 		}
 
 		if (selector.getNumberOfCandidates() == 0) {
+			logger.warn("No feasible mode choice candidate for agent " + trips.get(0).getPerson().getId());
+			
 			List<String> initialModes = trips.stream().map(ModeChoiceTrip::getInitialMode).collect(Collectors.toList());
-			System.err.println(trips.get(0).getPerson().getId() + " " + initialModes);
 			return estimator.estimatePlan(initialModes, trips).getTripCandidates();
 		}
 
