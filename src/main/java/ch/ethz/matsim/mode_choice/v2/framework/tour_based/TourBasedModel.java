@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 import ch.ethz.matsim.mode_choice.v2.framework.ModeAvailability;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
@@ -20,6 +22,8 @@ import ch.ethz.matsim.mode_choice.v2.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.v2.framework.utils.ModeChainGeneratorFactory;
 
 public class TourBasedModel implements ModeChoiceModel {
+	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
+
 	final private TourFinder tourFinder;
 	final private TourEstimator estimator;
 	final private ModeAvailability modeAvailability;
@@ -67,7 +71,18 @@ public class TourBasedModel implements ModeChoiceModel {
 				selector.addCandidate(candidate);
 			}
 
-			TourCandidate selectedCandidate = (TourCandidate) selector.select(random);
+			TourCandidate selectedCandidate;
+
+			if (selector.getNumberOfCandidates() > 0) {
+				selectedCandidate = (TourCandidate) selector.select(random);
+			} else {
+				logger.warn("No feasible mode choice candidate for agent " + trips.get(0).getPerson().getId());
+
+				List<String> initialModes = trips.stream().map(ModeChoiceTrip::getInitialMode)
+						.collect(Collectors.toList());
+
+				selectedCandidate = estimator.estimateTour(initialModes, tourTrips, tourCandidates);
+			}
 
 			tourCandidates.add(selectedCandidate);
 			tourCandidateModes.add(
