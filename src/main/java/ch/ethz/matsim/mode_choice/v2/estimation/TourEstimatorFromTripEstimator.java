@@ -4,20 +4,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.v2.framework.plan_based.estimation.PlanCandidate;
-import ch.ethz.matsim.mode_choice.v2.framework.plan_based.estimation.PlanEstimator;
+import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourCandidate;
+import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourEstimator;
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripCandidate;
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripEstimator;
 
-public class PlanEstimatorFromTripEstimator implements PlanEstimator {
+public class TourEstimatorFromTripEstimator implements TourEstimator {
 	final private TripEstimator delegate;
 
-	public PlanEstimatorFromTripEstimator(TripEstimator delegate) {
+	public TourEstimatorFromTripEstimator(TripEstimator delegate) {
 		this.delegate = delegate;
 	}
 
 	@Override
-	public PlanCandidate estimatePlan(List<String> modes, List<ModeChoiceTrip> trips) {
+	public TourCandidate estimateTour(List<String> modes, List<ModeChoiceTrip> trips,
+			List<TourCandidate> preceedingTours) {
 		List<TripCandidate> tripCandidates = new LinkedList<>();
 		double utility = 0.0;
 
@@ -31,6 +32,6 @@ public class PlanEstimatorFromTripEstimator implements PlanEstimator {
 			tripCandidates.add(tripCandidate);
 		}
 
-		return new DefaultPlanCandidate(utility, tripCandidates);
+		return new DefaultTourCandidate(utility, tripCandidates);
 	}
 }

@@ -7,5 +7,5 @@ import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourCandida
 public interface TourConstraint {
 	boolean validateBeforeEstimation(List<String> modes, List<List<String>> previousModes);
 
-	boolean validateAfterEstimation(TourCandidate candidates, List<TourCandidate> previousCandidates);
+	boolean validateAfterEstimation(TourCandidate candidate, List<TourCandidate> previousCandidates);
 }
