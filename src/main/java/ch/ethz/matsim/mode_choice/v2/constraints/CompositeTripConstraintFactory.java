@@ -2,6 +2,7 @@ package ch.ethz.matsim.mode_choice.v2.constraints;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
@@ -9,10 +10,17 @@ import ch.ethz.matsim.mode_choice.v2.framework.trip_based.constraints.TripConstr
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.constraints.TripConstraintFactory;
 
 public class CompositeTripConstraintFactory implements TripConstraintFactory {
-	final private List<TripConstraintFactory> factories;
+	final private List<TripConstraintFactory> factories = new LinkedList<>();
+
+	public CompositeTripConstraintFactory() {
+	}
 
 	public CompositeTripConstraintFactory(List<TripConstraintFactory> factories) {
-		this.factories = factories;
+		this.factories.addAll(factories);
+	}
+
+	public void addFactory(TripConstraintFactory factory) {
+		this.factories.add(factory);
 	}
 
 	@Override
