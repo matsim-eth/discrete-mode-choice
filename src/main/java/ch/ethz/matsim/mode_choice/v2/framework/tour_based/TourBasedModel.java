@@ -10,12 +10,12 @@ import org.apache.log4j.Logger;
 
 import ch.ethz.matsim.mode_choice.v2.framework.ModeAvailability;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
+import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceResult;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.v2.framework.tour_based.constraints.TourConstraint;
 import ch.ethz.matsim.mode_choice.v2.framework.tour_based.constraints.TourConstraintFactory;
 import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourCandidate;
 import ch.ethz.matsim.mode_choice.v2.framework.tour_based.estimation.TourEstimator;
-import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripCandidate;
 import ch.ethz.matsim.mode_choice.v2.framework.utilities.UtilitySelector;
 import ch.ethz.matsim.mode_choice.v2.framework.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.mode_choice.v2.framework.utils.ModeChainGenerator;
@@ -44,7 +44,7 @@ public class TourBasedModel implements ModeChoiceModel {
 	}
 
 	@Override
-	public List<TripCandidate> chooseModes(List<ModeChoiceTrip> trips, Random random) {
+	public ModeChoiceResult chooseModes(List<ModeChoiceTrip> trips, Random random) {
 		List<String> modes = new ArrayList<>(modeAvailability.getAvailableModes(trips));
 		TourConstraint constraint = constraintFactory.createConstraint(trips, modes);
 
@@ -89,8 +89,6 @@ public class TourBasedModel implements ModeChoiceModel {
 					selectedCandidate.getTripCandidates().stream().map(c -> c.getMode()).collect(Collectors.toList()));
 		}
 
-		List<TripCandidate> tripResult = new ArrayList<>(trips.size());
-		tourCandidates.forEach(tour -> tripResult.addAll(tour.getTripCandidates()));
-		return tripResult;
+		return new TourBasedModeChoiceResult(tourCandidates);
 	}
 }

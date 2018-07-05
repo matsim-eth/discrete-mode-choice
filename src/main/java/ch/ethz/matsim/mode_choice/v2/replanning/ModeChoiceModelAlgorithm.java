@@ -13,6 +13,7 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 
 import ch.ethz.matsim.mode_choice.v2.framework.DefaultModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
+import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceResult;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripCandidate;
 
@@ -35,13 +36,13 @@ public class ModeChoiceModelAlgorithm implements PlanAlgorithm {
 			choiceTrips.add(new DefaultModeChoiceTrip(plan.getPerson(), trips, trip, initialMode));
 		}
 
-		List<TripCandidate> selectedTrips = modeChoiceModel.chooseModes(choiceTrips, random);
+		ModeChoiceResult result = modeChoiceModel.chooseModes(choiceTrips, random);
 
 		// TODO Here we can also set routes etc. directly!
 
 		for (int i = 0; i < trips.size(); i++) {
 			Leg leg = trips.get(i).getLegsOnly().get(0);
-			TripCandidate candidate = selectedTrips.get(i);
+			TripCandidate candidate = result.getTripCandidates().get(i);
 
 			leg.setMode(candidate.getMode());
 			leg.setRoute(null);

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import ch.ethz.matsim.mode_choice.v2.framework.DefaultModeChoiceResult;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeAvailability;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceModel;
+import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceResult;
 import ch.ethz.matsim.mode_choice.v2.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.constraints.TripConstraint;
 import ch.ethz.matsim.mode_choice.v2.framework.trip_based.constraints.TripConstraintFactory;
@@ -29,7 +31,7 @@ public class TripBasedModel implements ModeChoiceModel {
 	}
 
 	@Override
-	public List<TripCandidate> chooseModes(List<ModeChoiceTrip> trips, Random random) {
+	public ModeChoiceResult chooseModes(List<ModeChoiceTrip> trips, Random random) {
 		List<String> modes = new ArrayList<>(modeAvailability.getAvailableModes(trips));
 		TripConstraint constraint = constraintFactory.createConstraint(trips, modes);
 
@@ -58,6 +60,6 @@ public class TripBasedModel implements ModeChoiceModel {
 			tripCandidateModes.add(selectedCandidate.getMode());
 		}
 
-		return tripCandidates;
+		return new DefaultModeChoiceResult(tripCandidates);
 	}
 }
