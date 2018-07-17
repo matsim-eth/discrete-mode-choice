@@ -5,6 +5,7 @@ import ch.ethz.matsim.mode_choice.v2.framework.trip_based.estimation.TripCandida
 public class DefaultTripCandidate implements TripCandidate {
 	final private double utility;
 	final private String mode;
+	private boolean isFallback;
 
 	public DefaultTripCandidate(double utility, String mode) {
 		this.utility = utility;
@@ -19,5 +20,15 @@ public class DefaultTripCandidate implements TripCandidate {
 	@Override
 	public String getMode() {
 		return mode;
+	}
+
+	@Override
+	public boolean isFallback() {
+		return isFallback;
+	}
+
+	@Override
+	public void setFallback(boolean isFallback) {
+		this.isFallback = isFallback;
 	}
 }

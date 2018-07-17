@@ -1,5 +1,6 @@
 package ch.ethz.matsim.mode_choice.v2.framework.utilities;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class MaximumUtilitySelector<T extends UtilityCandidate> implements UtilitySelector<T> {
@@ -20,12 +21,12 @@ public class MaximumUtilitySelector<T extends UtilityCandidate> implements Utili
 	}
 
 	@Override
-	public T select(Random random) {
+	public Optional<T> select(Random random) {
 		if (bestCandidate == null) {
-			throw new IllegalStateException("No feasible candidate found for trip");
+			return Optional.empty();
 		}
 
-		return bestCandidate;
+		return Optional.of(bestCandidate);
 	}
 
 	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {

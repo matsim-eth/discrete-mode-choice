@@ -3,6 +3,7 @@ package ch.ethz.matsim.mode_choice.v2.framework.utilities;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -23,11 +24,11 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 	public int getNumberOfCandidates() {
 		return candidates.size();
 	}
-	
+
 	@Override
-	public T select(Random random) {
+	public Optional<T> select(Random random) {
 		if (candidates.size() == 0) {
-			throw new IllegalStateException("No feasible candidate found");
+			return Optional.empty();
 		}
 
 		List<Double> density = candidates.stream() //
@@ -46,9 +47,9 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 		}
 
 		double pointer = random.nextDouble() * totalDensity;
-		
+
 		int selection = (int) cumulativeDensity.stream().filter(f -> f < pointer).count();
-		return candidates.get(selection);
+		return Optional.of(candidates.get(selection));
 	}
 
 	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {
