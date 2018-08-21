@@ -18,10 +18,13 @@ public class LicenseAndOwnershipModeAvailability extends DefaultModeAvailability
 
 	@Override
 	public Collection<String> getAvailableModes(List<ModeChoiceTrip> trips) {
-		Person person = trips.get(0).getPerson();
+		if (trips.size() > 0) {
+			Person person = trips.get(0).getPerson();
 
-		if (!PersonUtils.hasLicense(person) || PersonUtils.getCarAvail(person).equals("never")) {
-			return super.getAvailableModes(trips).stream().filter(m -> !CAR_MODE.equals(m)).collect(Collectors.toSet());
+			if (!PersonUtils.hasLicense(person) || PersonUtils.getCarAvail(person).equals("never")) {
+				return super.getAvailableModes(trips).stream().filter(m -> !CAR_MODE.equals(m))
+						.collect(Collectors.toSet());
+			}
 		}
 
 		return super.getAvailableModes(trips);
