@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>mode_choice</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.1.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -20,10 +20,17 @@
 			<url>http://download.osgeo.org/webdav/geotools</url>
 		</repository>
 		<repository>
-			<id>matsim-eth</id>
-			<url>http://dl.bintray.com/matsim-eth/matsim</url>
+			<id>matsim</id>
+			<url>http://dl.bintray.com/matsim/matsim</url>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>matsim-eth</id>
+			<url>https://api.bintray.com/maven/matsim-eth/matsim/mode_choice/;publish=1</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -43,13 +50,13 @@
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim</artifactId>
-			<version>0.10.0-nov17</version>
+			<version>0.10.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.matsim.contrib</groupId>
-			<artifactId>dvrp</artifactId>
-			<version>0.10.0-nov17</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 
 		<dependency>
