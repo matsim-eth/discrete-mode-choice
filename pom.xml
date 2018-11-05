@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>mode_choice</artifactId>
-	<version>0.2.0</version>
-	<description>Compatible with MATSim 0.10.1</description>
+	<version>0.3.0</version>
+	<description>Compatible with MATSim 0.11.0-SNAPSHOT</description>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim</artifactId>
-			<version>0.10.1</version>
+			<version>0.11.0-2018w44</version>
 		</dependency>
 
 		<dependency>
