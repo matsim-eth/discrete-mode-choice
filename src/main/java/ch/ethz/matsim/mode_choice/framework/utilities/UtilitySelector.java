@@ -7,6 +7,4 @@ public interface UtilitySelector<T extends UtilityCandidate> {
 	void addCandidate(T candidate);
 
 	Optional<T> select(Random random);
-
-	int getNumberOfCandidates();
 }

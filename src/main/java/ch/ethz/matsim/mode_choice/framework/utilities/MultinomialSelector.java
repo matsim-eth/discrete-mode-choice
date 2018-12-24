@@ -21,19 +21,21 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 	}
 
 	@Override
-	public int getNumberOfCandidates() {
-		return candidates.size();
-	}
-
-	@Override
 	public Optional<T> select(Random random) {
 		if (candidates.size() == 0) {
 			return Optional.empty();
 		}
 
-		List<Double> density = candidates.stream() //
+		List<T> filteredCandidates = candidates.stream() //
+				.filter(c -> c.getUtility() > -utilityCutoff) //
+				.collect(Collectors.toList());
+
+		if (filteredCandidates.size() == 0) {
+			return Optional.empty();
+		}
+
+		List<Double> density = filteredCandidates.stream() //
 				.map(UtilityCandidate::getUtility) //
-				.map(u -> Math.max(u, -utilityCutoff)) //
 				.map(u -> Math.min(u, utilityCutoff)) //
 				.map(Math::exp) //
 				.collect(Collectors.toList());
@@ -49,7 +51,7 @@ public class MultinomialSelector<T extends UtilityCandidate> implements UtilityS
 		double pointer = random.nextDouble() * totalDensity;
 
 		int selection = (int) cumulativeDensity.stream().filter(f -> f < pointer).count();
-		return Optional.of(candidates.get(selection));
+		return Optional.of(filteredCandidates.get(selection));
 	}
 
 	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {

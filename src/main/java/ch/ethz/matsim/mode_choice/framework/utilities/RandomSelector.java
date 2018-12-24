@@ -22,11 +22,6 @@ public class RandomSelector<T extends UtilityCandidate> implements UtilitySelect
 		return Optional.of(candidates.get(random.nextInt(candidates.size())));
 	}
 
-	@Override
-	public int getNumberOfCandidates() {
-		return candidates.size();
-	}
-
 	static public class Factory<T extends UtilityCandidate> implements UtilitySelectorFactory<T> {
 		@Override
 		public UtilitySelector<T> createUtilitySelector() {
