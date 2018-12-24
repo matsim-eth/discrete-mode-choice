@@ -3,6 +3,7 @@ package ch.ethz.matsim.mode_choice.framework.tour_based;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,20 @@ public class TourBasedModel implements ModeChoiceModel {
 			TourCandidate selectedCandidate = null;
 
 			if (selector.getNumberOfCandidates() > 0) {
-				selectedCandidate = selector.select(random).get();
+				Optional<TourCandidate> cand = selector.select(random);
+				if (cand.isPresent())
+					selectedCandidate = cand.get();
+				else {
+					if (fallbackBehaviour.equals(FallbackBehaviour.INITIAL_CHOICE)) {
+						selectedCandidate = handleInitialChoiceFallback(tourTrips, tourCandidates);
+					} else if (fallbackBehaviour.equals(FallbackBehaviour.EXCEPTION)) {
+						throw new NoFeasibleChoiceException(
+								buildFallbackMessage(tourTrips.get(0).getPerson(), "Throwing exception."));
+					} else if (fallbackBehaviour.equals(FallbackBehaviour.IGNORE_AGENT)) {
+						ignoreAgentRequested = true;
+						break;
+					}
+				}
 			} else if (fallbackBehaviour.equals(FallbackBehaviour.INITIAL_CHOICE)) {
 				selectedCandidate = handleInitialChoiceFallback(tourTrips, tourCandidates);
 			} else if (fallbackBehaviour.equals(FallbackBehaviour.EXCEPTION)) {
@@ -120,7 +134,7 @@ public class TourBasedModel implements ModeChoiceModel {
 
 	private List<TourCandidate> handleIgnoreAgentFallback(List<ModeChoiceTrip> trips) {
 		logger.warn(buildFallbackMessage(trips.get(0).getPerson(), "Ignoring agent."));
-		
+
 		List<TourCandidate> tourCandidates = new LinkedList<>();
 
 		for (List<ModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {

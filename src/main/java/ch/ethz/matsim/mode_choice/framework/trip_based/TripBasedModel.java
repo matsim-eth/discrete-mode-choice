@@ -3,6 +3,7 @@ package ch.ethz.matsim.mode_choice.framework.trip_based;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -69,7 +70,20 @@ public class TripBasedModel implements ModeChoiceModel {
 			TripCandidate selectedCandidate = null;
 
 			if (selector.getNumberOfCandidates() > 0) {
-				selectedCandidate = selector.select(random).get();
+				Optional<TripCandidate> cand = selector.select(random);
+				if (cand.isPresent())
+					selectedCandidate = cand.get();
+				else {
+					if (fallbackBehaviour.equals(FallbackBehaviour.INITIAL_CHOICE)) {
+						selectedCandidate = handleInitialChoiceFallback(trip, tripCandidates);
+					} else if (fallbackBehaviour.equals(FallbackBehaviour.EXCEPTION)) {
+						throw new NoFeasibleChoiceException(
+								buildFallbackMessage(trip.getPerson(), "Throwing exception."));
+					} else if (fallbackBehaviour.equals(FallbackBehaviour.IGNORE_AGENT)) {
+						ignoreAgentRequested = true;
+						break;
+					}
+				}
 			} else if (fallbackBehaviour.equals(FallbackBehaviour.INITIAL_CHOICE)) {
 				selectedCandidate = handleInitialChoiceFallback(trip, tripCandidates);
 			} else if (fallbackBehaviour.equals(FallbackBehaviour.EXCEPTION)) {
@@ -105,7 +119,7 @@ public class TripBasedModel implements ModeChoiceModel {
 
 	private List<TripCandidate> handleIgnoreAgentFallback(List<ModeChoiceTrip> trips) {
 		logger.warn(buildFallbackMessage(trips.get(0).getPerson(), "Ignoring agent."));
-		
+
 		List<TripCandidate> tripCandidates = new LinkedList<>();
 
 		for (ModeChoiceTrip trip : trips) {
