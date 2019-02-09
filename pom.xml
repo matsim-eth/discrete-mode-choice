@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
-	<artifactId>mode_choice</artifactId>
+	<artifactId>discrete_mode_choice</artifactId>
 	<version>0.3.0</version>
 	<description>Compatible with MATSim 0.11.0-SNAPSHOT</description>
 
@@ -29,7 +29,7 @@
 	<distributionManagement>
 		<repository>
 			<id>matsim-eth</id>
-			<url>https://api.bintray.com/maven/matsim-eth/matsim/mode_choice/;publish=1</url>
+			<url>https://api.bintray.com/maven/matsim-eth/matsim/discrete_mode_choice/;publish=1</url>
 		</repository>
 	</distributionManagement>
 
