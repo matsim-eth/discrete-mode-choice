@@ -136,7 +136,7 @@ In the fourth step, an [Estimator](components/Estimator.md) implementation is us
 
 The example above chooses the tour estimator `Uniform`. This estimator simply assigns a `0` utility to all alternatives. Since we want to perform a random choice of alternatives, we do not bother calculating anything fancy here. However, more complex estimators can look at the single trips and estimate, for instance, travel times, waiting times for taxi trips, line switches for public transit connections, and so on (more on that later) and assign utilities those choice inputs. 
 
-Again, often one would like to create a tour-based model, but in terms of utility the alternatives are merely independent. In that case the tour *estimator* `Cumulative` can be used, which will estimate every trip independently with whatever is defined as the `tripEstimator`.
+Again, often one would like to create a tour-based model, but in terms of utility the alternatives are merely independent. In that case the tour *estimator* `Cumulative` can be used, which will estimate every trip independently with whatever is defined as the `tripEstimator` and sum up the trip utilities.
 
 ### 5. Apply choice constraints
 
