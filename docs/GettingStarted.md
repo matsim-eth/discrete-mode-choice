@@ -246,7 +246,6 @@ public class MyDMCExtension extends AbstractDiscreteModeChoiceExtension {
 
 // ...
 
-
 controller.addOverridingModule(new MyDMCExtenson());
 ```
 
