@@ -156,7 +156,7 @@ For now, we continue with the Getting Started guide and use the information we j
 
 ## An importance sampling model
 
-In order to let agents make more intelligent decisions, we first need to give them the ability to compare alternatives. For that, an estimator needs to be implemented. There is one standard implementation (called `MATSimDayScoring`), which scores all *trips* (no activities) the same way the standard MATSim scoring function would assign utilities to them. Here, we want to add our first custom component. 
+In order to let agents make more intelligent decisions, we first need to give them the ability to compare alternatives. For that, an estimator needs to be implemented or chosen. There is one standard implementation (called `MATSimDayScoring`), which assigns utilities to all *trips* (no activities) the same way the standard MATSim scoring function would score them. 
 
 A trip estimator can be implemented in one class:
 
