@@ -154,13 +154,6 @@ While there is a number of standard implementations for [Mode Availability](comp
 
 For now, we continue with the Getting Started guide and use the information we just got to construct a bit more interesting models than a random selection.
 
-## A more intelligent selection model
-
-In order to let agents make more intelligent decisions, we first need to give them the ability to commpare alternatives. Here, we do that by changing the `Uniform` estimator to the `MATSimScoring` estimator:
-
-
-
-
 ## An importance sampling model
 
 In order to let agents make more intelligent decisions, we first need to give them the ability to compare alternatives. For that, an estimator needs to be implemented. There is one standard implementation (called `MATSimDayScoring`), which scores all *trips* (no activities) the same way the standard MATSim scoring function would assign utilities to them. Here, we want to add our first custom component. 
