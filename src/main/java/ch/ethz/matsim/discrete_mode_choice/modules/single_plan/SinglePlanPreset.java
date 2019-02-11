@@ -60,7 +60,7 @@ public class SinglePlanPreset {
 		check(strategyConfigGroup);
 
 		DiscreteModeChoiceConfigGroup dcmConfig = (DiscreteModeChoiceConfigGroup) config.getModules()
-				.get(DiscreteModeChoiceConfigGroup.NAME);
+				.get(DiscreteModeChoiceConfigGroup.GROUP_NAME);
 
 		if (dcmConfig == null) {
 			dcmConfig = new DiscreteModeChoiceConfigGroup();

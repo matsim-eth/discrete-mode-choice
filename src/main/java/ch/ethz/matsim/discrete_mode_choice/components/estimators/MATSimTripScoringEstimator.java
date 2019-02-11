@@ -7,18 +7,15 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.core.router.LinkWrapperFacility;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ModeUtilityParameters;
 import org.matsim.core.scoring.functions.ScoringParameters;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.facilities.ActivityFacilities;
-import org.matsim.facilities.Facility;
 import org.matsim.pt.routes.ExperimentalTransitRoute;
 
-import ch.ethz.matsim.discrete_mode_choice.components.utils.PublicTransitWaitingTimeEstimator;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
-import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
 /**
@@ -28,46 +25,20 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
  * @author sebhoerl
  *
  */
-public class MATSimTripScoringEstimator implements TripEstimator {
-	private final Network network;
-	private final ActivityFacilities facilities;
-	private final TripRouter tripRouter;
+public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	private final ScoringParametersForPerson scoringParametersForPerson;
-	private final PublicTransitWaitingTimeEstimator waitingTimeEstimator;
+	private final PTWaitingTimeEstimator waitingTimeEstimator;
 
 	public MATSimTripScoringEstimator(Network network, ActivityFacilities facilities, TripRouter tripRouter,
-			PublicTransitWaitingTimeEstimator waitingTimeEstimator,
-			ScoringParametersForPerson scoringParametersForPerson) {
-		this.network = network;
-		this.facilities = facilities;
-		this.tripRouter = tripRouter;
+			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson) {
+		super(tripRouter, network, facilities);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 	}
 
 	@Override
-	public TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
-			List<TripCandidate> previousTrips) {
-		// I) Find the correct origin and destination facilities
-		Facility originFacility = facilities.getFacilities().get(trip.getOriginActivity().getFacilityId());
-
-		if (originFacility == null) {
-			originFacility = new LinkWrapperFacility(network.getLinks().get(trip.getOriginActivity().getLinkId()));
-		}
-
-		Facility destinationFacility = facilities.getFacilities().get(trip.getDestinationActivity().getFacilityId());
-
-		if (destinationFacility == null) {
-			destinationFacility = new LinkWrapperFacility(
-					network.getLinks().get(trip.getDestinationActivity().getLinkId()));
-		}
-
-		// II) Perform the routing
-		List<? extends PlanElement> elements = tripRouter.calcRoute(mode, originFacility, destinationFacility,
-				trip.getDepartureTime(), person);
-
-		// III) Perform the scoring, although we can only do that approximatively
-
+	protected TripCandidate estimateTripCandidate(Person person, String mode, DiscreteModeChoiceTrip trip,
+			List<TripCandidate> previousTrips, List<? extends PlanElement> elements) {
 		ComputationResult result = null;
 		ScoringParameters parameters = scoringParametersForPerson.getScoringParameters(person);
 

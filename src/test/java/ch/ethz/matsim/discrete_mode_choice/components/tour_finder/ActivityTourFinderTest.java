@@ -1,4 +1,4 @@
-package ch.ethz.matsim.discrete_mode_choice.framework.tour_based;
+package ch.ethz.matsim.discrete_mode_choice.components.tour_finder;
 
 import java.util.LinkedList;
 import java.util.List;

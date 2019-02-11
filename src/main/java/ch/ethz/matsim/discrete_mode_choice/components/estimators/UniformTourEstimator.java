@@ -11,7 +11,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultTripCandidate;
 
-public class NullTourEstimator implements TourEstimator {
+public class UniformTourEstimator implements TourEstimator {
 	@Override
 	public TourCandidate estimateTour(Person person, List<String> modes, List<DiscreteModeChoiceTrip> trips,
 			List<TourCandidate> previousTours) {

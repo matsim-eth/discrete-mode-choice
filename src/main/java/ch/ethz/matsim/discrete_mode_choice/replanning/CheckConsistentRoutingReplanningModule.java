@@ -30,10 +30,11 @@ public class CheckConsistentRoutingReplanningModule extends AbstractMultithreade
 						Leg leg = (Leg) element;
 
 						if (leg.getRoute() == null) {
-							throw new IllegalStateException(String.format(
-									"%s.%s is turned off, but route is missing in plan for agent %s",
-									DiscreteModeChoiceConfigGroup.NAME, DiscreteModeChoiceConfigGroup.PERFORM_REROUTE,
-									plan.getPerson().getId().toString()));
+							throw new IllegalStateException(
+									String.format("%s.%s is turned off, but route is missing in plan for agent %s",
+											DiscreteModeChoiceConfigGroup.GROUP_NAME,
+											DiscreteModeChoiceConfigGroup.PERFORM_REROUTE,
+											plan.getPerson().getId().toString()));
 						}
 					}
 				}

@@ -8,14 +8,10 @@ import java.util.Map;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
-import org.matsim.core.controler.AbstractModule;
 
-import com.google.inject.Binder;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.LinkAttributeConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.ShapeFileConstraint;
@@ -32,33 +28,26 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.LinkAttributeConstrain
 import ch.ethz.matsim.discrete_mode_choice.modules.config.ShapeFileConstraintConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleConstraintConfigGroup;
 
-public class ConstraintModule extends AbstractModule {
-	static public LinkedBindingBuilder<TourConstraintFactory> bindTourConstraintFactory(Binder binder, String name) {
-		return MapBinder.newMapBinder(binder, String.class, TourConstraintFactory.class).addBinding(name);
-	}
-
-	static public LinkedBindingBuilder<TripConstraintFactory> bindTripConstraintFactory(Binder binder, String name) {
-		return MapBinder.newMapBinder(binder, String.class, TripConstraintFactory.class).addBinding(name);
-	}
-
+public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	public final static String FROM_TRIP_BASED = "FromTripBased";
-	public final static String VEHICLE_TOUR = "VehicleTour";
+	public final static String VEHICLE_CONTINUITY = "VehicleContinuity";
 
 	public final static String SHAPE_FILE = "ShapeFile";
+	public final static String LINK_ATTRIBUTE = "LinkAttribute";
 	public final static String TRANSIT_WALK = "TransitWalk";
-	public final static String VEHICLE_TRIP = "VehicleTrip";
 
-	public final Collection<String> CONSTRAINTS = Arrays.asList(FROM_TRIP_BASED, VEHICLE_TOUR, SHAPE_FILE, TRANSIT_WALK,
-			VEHICLE_TRIP);
+	public final Collection<String> CONSTRAINTS = Arrays.asList(FROM_TRIP_BASED, VEHICLE_CONTINUITY, SHAPE_FILE,
+			TRANSIT_WALK, VEHICLE_CONTINUITY);
 
 	@Override
-	public void install() {
-		bindTourConstraintFactory(binder(), FROM_TRIP_BASED).to(TourFromTripConstraintFactory.class);
-		bindTourConstraintFactory(binder(), VEHICLE_TOUR).to(VehicleTourConstraint.Factory.class);
+	public void installExtension() {
+		bindTourConstraintFactory(FROM_TRIP_BASED).to(TourFromTripConstraintFactory.class);
+		bindTourConstraintFactory(VEHICLE_CONTINUITY).to(VehicleTourConstraint.Factory.class);
 
-		bindTripConstraintFactory(binder(), SHAPE_FILE).to(ShapeFileConstraint.Factory.class);
-		bindTripConstraintFactory(binder(), TRANSIT_WALK).to(TransitWalkConstraint.Factory.class);
-		bindTripConstraintFactory(binder(), VEHICLE_TRIP).to(VehicleTripConstraint.Factory.class);
+		bindTripConstraintFactory(SHAPE_FILE).to(ShapeFileConstraint.Factory.class);
+		bindTripConstraintFactory(LINK_ATTRIBUTE).to(LinkAttributeConstraint.Factory.class);
+		bindTripConstraintFactory(TRANSIT_WALK).to(TransitWalkConstraint.Factory.class);
+		bindTripConstraintFactory(VEHICLE_CONTINUITY).to(VehicleTripConstraint.Factory.class);
 	}
 
 	private TourConstraintFactory getTourConstraintFactory(String name,
@@ -89,7 +78,7 @@ public class ConstraintModule extends AbstractModule {
 	@Singleton
 	public TourConstraintFactory provideTourConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
 			Map<String, Provider<TourConstraintFactory>> components) {
-		Collection<String> names = dmcConfig.getActiveTourConstraints();
+		Collection<String> names = dmcConfig.getTourConstraints();
 
 		if (names.size() == 0) {
 			return getTourConstraintFactory(names.iterator().next(), components);
@@ -108,7 +97,7 @@ public class ConstraintModule extends AbstractModule {
 	@Singleton
 	public TripConstraintFactory provideTripConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
 			Map<String, Provider<TripConstraintFactory>> components) {
-		Collection<String> names = dmcConfig.getActiveTourConstraints();
+		Collection<String> names = dmcConfig.getTripConstraints();
 
 		if (names.size() == 0) {
 			return getTripConstraintFactory(names.iterator().next(), components);

@@ -28,13 +28,13 @@ import org.matsim.pt.transitSchedule.api.TransitSchedule;
  * 
  * @author sebhoerl
  */
-public class PublicTransitWaitingTimeEstimator {
-	private static final Logger logger = Logger.getLogger(PublicTransitWaitingTimeEstimator.class);
+public class ScheduleWaitingTimeEstimator implements PTWaitingTimeEstimator {
+	private static final Logger logger = Logger.getLogger(ScheduleWaitingTimeEstimator.class);
 
 	private final TransitSchedule transitSchedule;
 	private final Map<Tuple<Id<TransitLine>, Id<TransitRoute>>, List<Double>> orderedDepartureTimes = new HashMap<>();
 
-	public PublicTransitWaitingTimeEstimator(TransitSchedule transitSchedule) {
+	public ScheduleWaitingTimeEstimator(TransitSchedule transitSchedule) {
 		this.transitSchedule = transitSchedule;
 
 		for (TransitLine transitLine : transitSchedule.getTransitLines().values()) {
@@ -50,6 +50,7 @@ public class PublicTransitWaitingTimeEstimator {
 		return new Tuple<>(transitLine.getId(), transitRoute.getId());
 	}
 
+	@Override
 	public double estimateWaitingTime(double agentDepartureTime, ExperimentalTransitRoute route) {
 		TransitLine transitLine = transitSchedule.getTransitLines().get(route.getLineId());
 		TransitRoute transitRoute = transitLine.getRoutes().get(route.getRouteId());

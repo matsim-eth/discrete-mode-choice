@@ -29,21 +29,22 @@ public class ModelModule extends AbstractModule {
 		install(new EstimatorModule());
 		install(new TourFinderModule());
 		install(new SelectorModule());
+		install(new ConstraintModule());
 
 		bind(ModeChainGeneratorFactory.class).to(DefaultModeChainGenerator.Factory.class);
 	}
 
 	public enum ModelType {
-		TRIP, TOUR
+		Trip, Tour
 	}
 
 	@Provides
 	public DiscreteModeChoiceModel provideDiscreteModeChoiceModel(DiscreteModeChoiceConfigGroup dmcConfig,
 			Provider<TourBasedModel> tourBasedProvider, Provider<TripBasedModel> tripBasedProvider) {
 		switch (dmcConfig.getModelType()) {
-		case TOUR:
+		case Tour:
 			return tourBasedProvider.get();
-		case TRIP:
+		case Trip:
 			return tripBasedProvider.get();
 		default:
 			throw new IllegalStateException();
