@@ -237,7 +237,7 @@ Here we make use of the `AbstractTripRoutedEstimator` class, which already perfo
 To make use of the new estimator, we need to register it. For that, we can create a custom extension, which is a simple `AbstractModule` from MATSim, but with some additional functionality for convenience:
 
 ```java
-public class TourFinderModule extends AbstractDiscreteModeChoiceExtension {
+public class MyDMCExtension extends AbstractDiscreteModeChoiceExtension {
    @Override
    public void installExtension() {
       bindTripEstimator("MyEstimatorName").to(MyTripEstimator.class);
