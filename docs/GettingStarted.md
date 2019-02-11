@@ -243,6 +243,11 @@ public class MyDMCExtension extends AbstractDiscreteModeChoiceExtension {
       bindTripEstimator("MyEstimatorName").to(MyTripEstimator.class);
    }
 }
+
+// ...
+
+
+controller.addOverridingModule(new MyDMCExtenson());
 ```
 
 The new estimator implementation is now registered with the name `MyEstimatorName`. Since it is a trip estimator, but we want to use it on a tour level, we can make use of the `Cumulative` tour estimator:
