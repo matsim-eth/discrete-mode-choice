@@ -1,6 +1,6 @@
 # Getting Started
 
-There are some tools included in the DMC component that make it easy to get started right away. The following sections are a first primer on how to use the extension. Step by step its features will be introduced. Some prior knowledge on how to work with MATSim form code will be needed. (TODO: Is there a tutorial that we can refer to here?)
+There are some tools included in the DMC component that make it easy to get started right away. The following sections are a first primer on how to use the extension. Step by step its features will be introduced. Some prior knowledge on how to work with MATSim form code will be needed. Some guidelines on how to use MATSim can be found [here](https://matsim.org/docs/tutorials/general).
 
 ## Setting up an example
 
@@ -25,7 +25,7 @@ public class RunRandomSelection {
 
 Running this script will create the `output` directory and perform some iterations for the Sioux Falls scenario. If you look at the output you will see that agents are making mode choices (`modeshare.png`, TODO include). 
 
-In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replaning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. In that sense, also the whole plan can be one of these subtours if it starts and ends at the same spot. Once a subtour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
+In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replanning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. In that sense, also the whole plan can be one of these sub-tours if it starts and ends at the same spot. Once a sub-tour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
 
 The first step of this exercise will be to replicate that behaviour with the DMC extension.
 
@@ -43,7 +43,7 @@ This adds the module, but does not activate anything. Running the script would r
 DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
 ```
 
-This helper can always be used when one has a scenario with `SubtourModeChoice` and wants to get started with a more complex choice model. It replaces the `SubtourModeChoice` replanning module, adds the `DiscreteModeChoiceConfigGroup` if it is not present already in the `Config` object and configures the DMC model choice model such that it behaves exactly as `SubtourModeChoice`. The script can be run again now and should produce the same output as before.
+This helper can always be used when one has a scenario with `SubtourModeChoice` and wants to get started with a more complex choice model. It replaces the `SubtourModeChoice` replanning module, adds the `DiscreteModeChoiceConfigGroup` if it is not present already in the `Config` object and configures the DMC choice model such that it behaves exactly as `SubtourModeChoice`. The script can be run again now and should produce the same output as before.
 
 The same result can also be achieved not by using the `DiscreteModeChoiceConfigurator` helper, but by configuring DMC via the config file. For that, we can go back to the initial example and add the config group when the file is loaded: 
 
@@ -91,7 +91,7 @@ Mainly, a model in the DMC extension consists of a number of components: the [Mo
 There are two types of base models in DMC: tour-based and trip-based. The replanning of one agent's plan looks as follows:
 
 ### 1. Obtain all modes that the agent can use
-This part is covered by the [Mode Availability](components/ModeAvailability.md). Multiple implementations of this stage exist. By settings `modeAvailability` in the configuration above to `Car` we choose the implementation called `Car`. Another implementation would be `Default`, which simply assigns all possible modes to each agent. However, `Car` restricts the use of the "car" mode for agents who have the attribute `carAvailability` set to `never` or who don't have a driver's license (`hasLicense` is set to `false`). But how does this "mode availability component" know which modes are there in the first place? The `Car` (as well as `Default`) implementation needs additional configuration, which in the example above is given in `<parameterset type="modeAvailability:Car">`. There, we define a list of `availableModes`.  
+This part is covered by the [Mode Availability](components/ModeAvailability.md). Multiple implementations of this stage exist. By setting `modeAvailability` in the configuration above to `Car` we choose the implementation called `Car`. Another implementation would be `Default`, which simply assigns all possible modes to each agent. However, `Car` restricts the use of the "car" mode for agents who have the attribute `carAvailability` set to `never` or who don't have a driver's license (`hasLicense` is set to `false`). But how does this "mode availability component" know which modes are there in the first place? The `Car` (as well as `Default`) implementation needs additional configuration, which in the example above is given in `<parameterset type="modeAvailability:Car">`. There, we define a list of `availableModes`.  
 
 ### 2. Construct all possible choices for the agent
 Next step in the replanning is to take the set of modes that are available to the agent and construct all possible alternatives for the choice situations. In a trip-based model, each trip is a separate choice situation. At each stage during an agent's plan any of the available modes can be chosen at this stage. In a tour-based model the situation is more complicated. Here, the agent is supposed to choose between different *tours*. One tour is by definition a chain of trips, i.e. for the case of mode choice a chain of modes. So if there is a tour consisting of three trips and the two modes `pt` and `walk` are available, the full set of choice alternatives is:
@@ -100,7 +100,7 @@ Next step in the replanning is to take the set of modes that are available to th
 { [walk, walk, walk], [walk, walk, pt], [walk, pt, walk], [walk, pt, pt], [pt, walk, walk], ... }
 ```
 
-Clearly, the longer a tour is the more alternatives must be generated. This is why internally never the whole set of tours is constructed, but created iteratively. But how do we define a tour? It is defined by a configurable [TourFinder](components/TourFinder). In the configuration above we set `tourFinder` to `PlanBased`, which means that the whole plan of an agent is considered as one long tour. Consequently, we could also say that we have configured a "plan-based" model. It should be noted that in the Sioux Falls example no overly long plans exist. In other situations it may not be feasible to use the `PlanBased` tour finder.
+Clearly, the longer a tour is, the more alternatives must be generated. This is why internally never the whole set of tours is constructed, but created iteratively. But how do we define a tour? It is defined by a configurable [TourFinder](components/TourFinder). In the configuration above we set `tourFinder` to `PlanBased`, which means that the whole plan of an agent is considered as one long tour. Consequently, we could also say that we have configured a "plan-based" model. It should be noted that in the Sioux Falls example no overly long plans exist. In other situations it may not be feasible to use the `PlanBased` tour finder.
 
 As an alternative we could have chosen the `ActivityBased` tour finder. It would need a little piece of additional configuration (althrough these are the standard values):
 
@@ -134,7 +134,7 @@ The `Cumulative` tour-based constraint is a special contraint, which looks up al
 
 In the fourth step, an [Estimator](components/Estimator.md) implementation is used to assign a utility value to each of the alternatives. In a tour-based model whatever is configured as the `tourEstimator` is used, while trip-based models refer to the `tripEstimator` option. 
 
-The example above chooses the tour estimator `Uniform`. This estimator simply assigns a `0` utility to all alternatives. Since we want to perform a random choice of alternatives, we do not bother calculating anything fancy here. However, more complex estimators can look at the single trips and estimate, for instance, travel times, waiting times for taxi trips, line switches for public transit connections, and so on (more on that later) and assign utilities those choice inputs. 
+The example above chooses the tour estimator `Uniform`. This estimator simply assigns a `0` utility to all alternatives. Since we want to perform a random choice of alternatives, we do not bother calculating anything fancy here. However, more complex estimators can look at the single trips and estimate, for instance, travel times, waiting times for taxi trips, line switches for public transit connections, and so on (more on that later) and assign utilities to these choice inputs. 
 
 Again, often one would like to create a tour-based model, but in terms of utility the alternatives are merely independent. In that case the tour *estimator* `Cumulative` can be used, which will estimate every trip independently with whatever is defined as the `tripEstimator` and sum up the trip utilities.
 
@@ -256,7 +256,7 @@ The new estimator implementation is now registered with the name `MyEstimatorNam
 <param name="tourEstimator" value="Cumulative" />
 ```
 
-Now the utility of one tour gets calculate by summing up all the utilities of the trips, which are returned by `MyTripEstimator`. It is now perfectly possible to run this utility function with the setup as above using a multinomial logit selection. Unfortunately, if these parameters don't fit well what MATSim uses in the scoring of the the Sioux Falls scenario we will create misleading solutions.
+Now the utility of one tour gets calculated by summing up all the utilities of the trips, which are returned by `MyTripEstimator`. It is now perfectly possible to run this utility function with the setup as above using a multinomial logit selection. Unfortunately, if these parameters don't fit well with what MATSim uses in the scoring of the the Sioux Falls scenario we will create misleading solutions.
 
 However, the plan is to use the model directly in that case, i.e. whenever an agent is replanned, we simply assign the result of the mode choice and we make sure that the agent keeps only one plan. This way, no scoring or selection in MATSim is even necessary. We achieve this by setting a couple of configuration options:
 
