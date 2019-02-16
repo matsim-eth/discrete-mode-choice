@@ -18,6 +18,9 @@ import ch.ethz.matsim.discrete_mode_choice.components.constraints.ShapeFileConst
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.TransitWalkConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.VehicleTourConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.VehicleTripConstraint;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.ActivityTypeHomeFinder;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.FirstActivityHomeFinder;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.HomeFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.constraints.CompositeTourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.constraints.CompositeTripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.constraints.TourFromTripConstraintFactory;
@@ -151,7 +154,21 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	@Singleton
 	public VehicleTourConstraint.Factory provideVehicleTourConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
 		VehicleConstraintConfigGroup config = dmcConfig.getVehicleTourConstraintConfig();
+
+		HomeFinder homeFinder = null;
+
+		switch (config.getHomeType()) {
+		case USE_ACTIVITY_TYPE:
+			homeFinder = new ActivityTypeHomeFinder(config.getHomeActivityType());
+			break;
+		case USE_FIRST_ACTIVITY:
+			homeFinder = new FirstActivityHomeFinder();
+			break;
+		default:
+			throw new IllegalStateException();
+		}
+
 		return new VehicleTourConstraint.Factory(config.getRequireStartAtHome(), config.getRequireContinuity(),
-				config.getRequireEndAtHome(), config.getRequireHomeExists());
+				config.getRequireEndAtHome(), config.getRequireHomeExists(), homeFinder);
 	}
 }

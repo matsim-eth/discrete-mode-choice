@@ -12,6 +12,9 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/*
+ * TODO: This should be generalized to Id<? extends BasicLocation>
+ */
 public class VehicleTripConstraint implements TripConstraint {
 	private final List<DiscreteModeChoiceTrip> trips;
 

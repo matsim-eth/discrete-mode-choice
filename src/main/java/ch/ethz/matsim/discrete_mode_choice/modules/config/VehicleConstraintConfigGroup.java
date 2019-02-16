@@ -12,11 +12,19 @@ public class VehicleConstraintConfigGroup extends ComponentConfigGroup {
 	private Collection<String> requireEndAtHome = new HashSet<>();
 	private Collection<String> requireContinuity = new HashSet<>(Arrays.asList("car", "bike"));
 	private boolean requireHomeExists = false;
+	private HomeType homeType = HomeType.USE_FIRST_ACTIVITY;
+	private String homeActivityType = "home";
 
 	private static final String REQUIRE_START_AT_HOME = "requireStartAtHome";
 	private static final String REQUIRE_END_AT_HOME = "requireEndAtHome";
 	private static final String REQUIRE_CONTINUITY = "requireContinuity";
 	private static final String REQUIRE_HOME_EXISTS = "requireHomeExists";
+	private static final String HOME_TYPE = "homeType";
+	private static final String HOME_ACTIVITY_TYPE = "homeActivityType";
+
+	public enum HomeType {
+		USE_FIRST_ACTIVITY, USE_ACTIVITY_TYPE
+	}
 
 	public VehicleConstraintConfigGroup(String componentType, String componentName) {
 		super(componentType, componentName);
@@ -32,6 +40,9 @@ public class VehicleConstraintConfigGroup extends ComponentConfigGroup {
 				"List of vehicular modes that must be consistent, i.e. a trip can only be performed if the vehicle has been moved there before.");
 		comments.put(REQUIRE_HOME_EXISTS,
 				"Defines whether an agent without a home activity can use a constrained vehicular mode. If it is set to true agents without a home activity cannot use constrained modes. If it is set to false they can use constrained modes at any stage during their plan.");
+		comments.put(HOME_TYPE, "Defines how to determine where the home of an agent is.");
+		comments.put(HOME_ACTIVITY_TYPE,
+				"If USE_ACTIVITY_TYPE is chosen for homeType, this option defines which activity type to look for.");
 
 		return comments;
 	}
@@ -101,5 +112,25 @@ public class VehicleConstraintConfigGroup extends ComponentConfigGroup {
 	@StringGetter(REQUIRE_CONTINUITY)
 	public String getRequireContinuityAsString() {
 		return String.join(", ", requireContinuity);
+	}
+
+	@StringGetter(HOME_ACTIVITY_TYPE)
+	public String getHomeActivityType() {
+		return homeActivityType;
+	}
+
+	@StringSetter(HOME_ACTIVITY_TYPE)
+	public void setHomeActivityType(String homeActivityType) {
+		this.homeActivityType = homeActivityType;
+	}
+
+	@StringGetter(HOME_TYPE)
+	public HomeType getHomeType() {
+		return homeType;
+	}
+
+	@StringSetter(HOME_TYPE)
+	public void setHomeType(HomeType homeType) {
+		this.homeType = homeType;
 	}
 }

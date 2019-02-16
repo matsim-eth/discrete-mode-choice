@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim-examples</artifactId>
-			<version>0.11.0-SNAPSHOT</version>
+			<version>0.10.1</version>
 		</dependency>
 
 		<dependency>
