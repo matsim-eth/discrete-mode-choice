@@ -42,13 +42,13 @@ public class MyTripEstimator extends AbstractTripRouterEstimator {
 
 		switch (mode) {
 		case TransportMode.car:
-			utility = -0.562 - 0.4 * 0.062 * totalTravelDistance;
+			utility = -0.5 - 0.025 * totalTravelDistance;
 			break;
 		case TransportMode.pt:
-			utility = -0.124 - 0.18 * totalTravelTime;
+			utility = -0.15 - 0.15 * totalTravelTime;
 			break;
 		case TransportMode.walk:
-			utility = -1.14 * totalTravelTime;
+			utility = -1.0 * totalTravelTime;
 			break;
 		}
 
