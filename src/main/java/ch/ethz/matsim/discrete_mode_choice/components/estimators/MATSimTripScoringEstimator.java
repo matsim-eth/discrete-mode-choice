@@ -72,6 +72,10 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			double travelDistance) {
 		ModeUtilityParameters modeParams = parameters.modeParams.get(mode);
 
+		if (modeParams == null && mode.contains(TransportMode.walk)) {
+			modeParams = parameters.modeParams.get(TransportMode.walk);
+		}
+
 		double utility = modeParams.constant;
 		utility += modeParams.marginalUtilityOfTraveling_s * travelTime;
 		utility += modeParams.marginalUtilityOfDistance_m * travelDistance;

@@ -27,7 +27,10 @@ public class CarModeAvailability extends DefaultModeAvailability {
 
 	@Override
 	public Collection<String> getAvailableModes(Person person, List<DiscreteModeChoiceTrip> trips) {
-		if (!PersonUtils.hasLicense(person) || PersonUtils.getCarAvail(person).equals("never")) {
+		boolean carAvailability = !"no".equals(PersonUtils.getLicense(person));
+		carAvailability &= !"never".equals(PersonUtils.getCarAvail(person));
+
+		if (!carAvailability) {
 			return super.getAvailableModes(person, trips).stream().filter(m -> !TransportMode.car.equals(m))
 					.collect(Collectors.toSet());
 		}

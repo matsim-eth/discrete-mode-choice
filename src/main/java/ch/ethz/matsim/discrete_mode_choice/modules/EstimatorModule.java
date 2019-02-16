@@ -32,8 +32,8 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String CUMULATIVE = "Cumulative";
 	public static final String UNIFORM = "Uniform";
 
-	public static final Collection<String> ESTIMATORS = Arrays.asList(MATSIM_TRIP_SCORING, MATSIM_DAY_SCORING,
-			CUMULATIVE, UNIFORM);
+	public static final Collection<String> TRIP_COMPONENTS = Arrays.asList(MATSIM_TRIP_SCORING, UNIFORM);
+	public static final Collection<String> TOUR_COMPONENTS = Arrays.asList(MATSIM_DAY_SCORING, CUMULATIVE, UNIFORM);
 
 	@Override
 	public void installExtension() {

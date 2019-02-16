@@ -29,14 +29,16 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 
 	private final double maximumUtility;
 	private final double minimumUtility;
+	private final boolean considerMinimumUtility;
 
 	/**
 	 * Creates a MultinomialSelector. The utility cutoff value defines the maximum
 	 * utility possible.
 	 */
-	public MultinomialLogitSelector(double maximumUtility, double minimumUtility) {
+	public MultinomialLogitSelector(double maximumUtility, double minimumUtility, boolean considerMinimumUtility) {
 		this.maximumUtility = maximumUtility;
 		this.minimumUtility = minimumUtility;
+		this.considerMinimumUtility = considerMinimumUtility;
 	}
 
 	@Override
@@ -52,15 +54,19 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 		}
 
 		// II) Filter candidates that have a very low utility
-		List<T> filteredCandidates = candidates.stream() //
-				.filter(c -> c.getUtility() > -minimumUtility) //
-				.collect(Collectors.toList());
+		List<T> filteredCandidates = candidates;
 
-		if (filteredCandidates.size() == 0) {
-			logger.warn(String.format(
-					"Encountered choice where all utilities were smaller than %f (minimum configured utility)",
-					minimumUtility));
-			return Optional.empty();
+		if (considerMinimumUtility) {
+			filteredCandidates = candidates.stream() //
+					.filter(c -> c.getUtility() > -minimumUtility) //
+					.collect(Collectors.toList());
+
+			if (filteredCandidates.size() == 0) {
+				logger.warn(String.format(
+						"Encountered choice where all utilities were smaller than %f (minimum configured utility)",
+						minimumUtility));
+				return Optional.empty();
+			}
 		}
 
 		// III) Create a probability distribution over candidates
@@ -71,10 +77,10 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 
 			// Warn if there is a utility that is exceeding the feasible range
 			if (utility > maximumUtility) {
-				utility = maximumUtility;
 				logger.warn(String.format(
-						"Encountered choice where a utility is larger than %f (axmimum configured utility)",
-						maximumUtility));
+						"Encountered choice where a utility (%f) is larger than %f (maximum configured utility)",
+						utility, maximumUtility));
+				utility = maximumUtility;
 			}
 
 			density.add(Math.exp(utility));
@@ -99,15 +105,17 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {
 		private final double minimumUtility;
 		private final double maximumUtility;
+		private final boolean considerMinimumUtility;
 
-		public Factory(double minimumUtility, double maximumUtility) {
+		public Factory(double minimumUtility, double maximumUtility, boolean considerMinimumUtility) {
 			this.minimumUtility = minimumUtility;
 			this.maximumUtility = maximumUtility;
+			this.considerMinimumUtility = considerMinimumUtility;
 		}
 
 		@Override
 		public UtilitySelector<TF> createUtilitySelector() {
-			return new MultinomialLogitSelector<>(minimumUtility, maximumUtility);
+			return new MultinomialLogitSelector<>(maximumUtility, minimumUtility, considerMinimumUtility);
 		}
 	}
 }

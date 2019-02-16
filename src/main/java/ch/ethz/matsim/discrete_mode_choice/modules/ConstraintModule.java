@@ -36,8 +36,10 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	public final static String LINK_ATTRIBUTE = "LinkAttribute";
 	public final static String TRANSIT_WALK = "TransitWalk";
 
-	public final Collection<String> CONSTRAINTS = Arrays.asList(FROM_TRIP_BASED, VEHICLE_CONTINUITY, SHAPE_FILE,
-			TRANSIT_WALK, VEHICLE_CONTINUITY);
+	public final static Collection<String> TRIP_COMPONENTS = Arrays.asList(VEHICLE_CONTINUITY, SHAPE_FILE,
+			LINK_ATTRIBUTE, TRANSIT_WALK);
+
+	public final static Collection<String> TOUR_COMPONENTS = Arrays.asList(FROM_TRIP_BASED, VEHICLE_CONTINUITY);
 
 	@Override
 	public void installExtension() {

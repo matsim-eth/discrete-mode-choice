@@ -17,7 +17,7 @@ public class ModeAvailabilityModule extends AbstractDiscreteModeChoiceExtension 
 	public static final String DEFAULT = "Default";
 	public static final String CAR = "Car";
 
-	public static Collection<String> MODE_AVAILABILITIES = Arrays.asList(DEFAULT, CAR);
+	public static final Collection<String> COMPONENTS = Arrays.asList(DEFAULT, CAR);
 
 	@Override
 	public void installExtension() {

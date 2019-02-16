@@ -18,7 +18,7 @@ public class TourFinderModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String PLAN_BASED = "PlanBased";
 	public static final String ACTIVITY_BASED = "ActivityBased";
 
-	public static final Collection<String> TOUR_FINDERS = Arrays.asList(PLAN_BASED, ACTIVITY_BASED);
+	public static final Collection<String> COMPONENTS = Arrays.asList(PLAN_BASED, ACTIVITY_BASED);
 
 	@Override
 	public void installExtension() {

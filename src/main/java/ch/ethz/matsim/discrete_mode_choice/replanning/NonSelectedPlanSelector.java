@@ -3,11 +3,7 @@ package ch.ethz.matsim.discrete_mode_choice.replanning;
 import org.matsim.api.core.v01.population.HasPlansAndId;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.core.replanning.PlanStrategy;
-import org.matsim.core.replanning.PlanStrategyImpl;
 import org.matsim.core.replanning.selectors.PlanSelector;
-
-import com.google.inject.Provider;
 
 /**
  * This is a plan selector for replanning that always selects a plan that is
@@ -28,12 +24,5 @@ public class NonSelectedPlanSelector implements PlanSelector<Plan, Person> {
 			}
 		}
 		return null;
-	}
-
-	static public class SelectorProvider implements Provider<PlanStrategy> {
-		@Override
-		public PlanStrategy get() {
-			return new PlanStrategyImpl.Builder(new NonSelectedPlanSelector()).build();
-		}
 	}
 }

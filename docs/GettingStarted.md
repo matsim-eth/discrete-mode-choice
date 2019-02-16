@@ -1,6 +1,6 @@
 # Getting Started
 
-There are some tools included in the DMC component that make it easy to get started right away. The following sections are a first primer on how to use the extension and step by step its features will be introduced. Some prior knowledge on how to work with MATSim form code will be needed. (TODO: Is there a tutorial that we can refer to here?)
+There are some tools included in the DMC component that make it easy to get started right away. The following sections are a first primer on how to use the extension. Step by step its features will be introduced. Some prior knowledge on how to work with MATSim form code will be needed. (TODO: Is there a tutorial that we can refer to here?)
 
 ## Setting up an example
 
@@ -25,7 +25,7 @@ public class RunRandomSelection {
 
 Running this script will create the `output` directory and perform some iterations for the Sioux Falls scenario. If you look at the output you will see that agents are making mode choices (`modeshare.png`, TODO include). 
 
-In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replaning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. In that sense, also the whole plan can be one of these subtours. Once a subtour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
+In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replaning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. In that sense, also the whole plan can be one of these subtours if it starts and ends at the same spot. Once a subtour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
 
 The first step of this exercise will be to replicate that behaviour with the DMC extension.
 
@@ -186,7 +186,7 @@ The DMC choice as an important sampler can also be configured using
 DiscreteModeChoiceConfigurator.configureAsImportanceSampler(config);
 ```
 
-## A pure mode choice implementation
+## An only-mode-choice implementation
 
 Sometimes, we are not interested in things such as activity scheduling. If we perform a bare mode choice experiment with MATSim, we now have the possibility to skip the evolutionary selection model in MATSim. Instead, we can feed the choices from the choice model directly to the replanning agents. In that case we can even define new specific utility estimator. The framework makes this easy, as in this example:
 
@@ -202,31 +202,31 @@ public class MyTripEstimator extends AbstractTripRouterEstimator {
 			List<TripCandidate> previousTrips, List<? extends PlanElement> routedTrip) {
 		// I) Calculate total travel time
 		double totalTravelTime = 0.0;
+		double totalTravelDistance = 0.0;
 
 		for (PlanElement element : routedTrip) {
 			if (element instanceof Leg) {
 				Leg leg = (Leg) element;
-				totalTravelTime += leg.getTravelTime();
+				totalTravelTime += leg.getTravelTime() / 3600.0;
+				totalTravelDistance += leg.getRoute().getDistance() * 1e-3;
 			}
 		}
 
-		// II) Attach mode-specific factor
-
-		double beta = 0.0;
+		// II) Compute mode-specific utility
+		double utility = 0;
 
 		switch (mode) {
 		case TransportMode.car:
-			beta = -0.2;
+			utility = -0.562 - 4.0 * 1e-4 * 0.062 * totalTravelDistance;
 			break;
 		case TransportMode.pt:
-		    beta = -0.1;
-		    break;
+			utility = -0.124 - 0.18 * totalTravelTime;
+			break;
 		case TransportMode.walk:
-		    beta = -0.3;
-		    break;
+			utility = -1.14 * totalTravelTime;
+			break;
 		}
 
-		double utility = beta * totalTravelTime;
 		return utility;
 	}
 }
@@ -281,3 +281,86 @@ Such a setup allows us to test discrete choice models as they are measured from 
 ```java
 DiscreteModeChoiceConfigurator.configureAsModeChoiceInTheLoop(config);
 ```
+
+## Frozen randomness
+
+With the knowledge we have obtained by now, we can get a bit creative. One interesting concept in discrete choices is "frozen randomness". A simple multinomial logit model can be phrased as a maximum selection problem for a single choice:
+
+```
+u_choice = max { u_1, ..., u_N } ; with u_i = v_i + e_i
+```
+
+So here we choose the alternative with the maximum utility form a set of options. However, the utilities of those options are composed of a deterministic term `v_i`, which would represent our utility function as we have defined it previously. The other component is `e_i`, which is a random error component. It can be shown mathematically that if `e_i` is chosen to be following an extreme value distribution, the probability of observing a certain alternative `u_i` is exactly the same in the formulation here and further above (the equation with the exponential terms). So if we would just repeatedly evaluate the expression here with ever changing error values and count how many times we see a certain alternative, we arrive at the same fractions as if we would have calculated the probabilities above.
+
+Now performing a random selection in a simulation like MATSim is not ideal in some cases. Imaging a situation where there are two alternatives (car and public transport), but their utilities are almost equal. Looking at the choice probability, we arrive at:
+
+```
+P(car) = exp(u_car) / ( exp(u_car) + exp(u_pt)) ; with u_car == u_pt
+```
+
+Then, it is easy to see that we have a probability of `0.5` for both alternatives. This means that if an agent replans a certain trip in two consecutive iterations, the choice will once be `car` and once `pt`. In fact, it is quite likely that the agent will frequently switch back and forth between the two modes, even if the surrounding transport system is merely equilibrated.
+
+One option to overcome this problem is to introduce "frozen randomness". As we've seen there is always an error component, explicitly or implicitly, included in our choice model. But what if we say that these errors are not sampled on a case-by-case basis, but for a combination of agent, trip and mode it always stays the same? In that case we erase the variability on the agent level. If we arrive at such a 50%/50% situation there will always be one alternative that is dominant because we have a fixed error term. On the macroscopic level (e.g. looking at overall mode share), however, we will still see the same values as before under the condition that the fixed ("frozen") error terms have been sampled according to the correct distribution.
+
+With the tools that we've seen so far it is easy to set such a "frozen randomness choice" up. The ingredients we need are:
+
+- An estimator that figures out a fixed error term for the alternative at hand and adds it to the utility
+- A maximum utility selection (which will now be affected by the frozen error)
+
+We've seen already that we can set up both components easily using the Discrete Mode Choice extension.
+
+### A frozen randomness estimator
+
+We can go back to the `MyTripEstimator` example. We can simply get the frozen error term from the activity attributes in the agents' plans. This probably not the most efficient way of implementing frozen randomness, but it will demonstrate the point. We can extend the utility calculation as follows:
+
+```java
+utility += (Double) trip.getOriginActivity().getAttributes().getAttribute("next_error_" + mode);
+```
+
+We simply read the error from the attributes of the preceeding activity. If we estimate a utility for "car", we will look up the attribute "next_error_car", if we estimate an utility for "pt", we will look up the attribute "next_error_pt".
+
+### Maximum utility selector
+
+To enable the maximum utility selection, we simply need to change the config file:
+
+```xml
+<param name="selector" value="Maximum" />
+```
+
+### Frozen randomness generator
+
+Finally, we need to generate the error terms. For that, we can add code to the main method of the simulation, after the scenario is loaded (i.e. after `ScenarioUtils.loadScenario(...)`). The code could look somewhat like this:
+
+```java
+// Initialize a random number generator
+Random random = new Random(0);
+List<String> modes = Arrays.asList("car", "pt", "walk");
+
+for (Person person : scenario.getPopulation().getPersons().values()) {
+	for (PlanElement element : person.getSelectedPlan().getPlanElements()) {
+		if (element instanceof Activity) {
+			// Go through all activities of all agents
+			Activity activity = (Activity) element;
+
+			for (String mode : modes) {
+				// Sample an extreme value (Gumbel) error term
+				// (see https://en.wikipedia.org/wiki/Gumbel_distribution)
+				double uniformError = random.nextDouble();
+				double gumbelError = -Math.log(-Math.log(uniformError));
+				
+				activity.getAttributes().putAttribute("next_error_" + mode, gumbelError);
+			}
+		}
+	}
+}
+```
+
+## Conclusion
+
+This short Getting Started guide should give a short overview of the functionality of the Discrete Mode Choice extension. To summarize, there are three important things, that work out of the box:
+
+- A fully functional SubtourModeChoice replacement, which allows for a flexible and individual definition of additional constraints (such as operating areas)
+- An importance sampling configuration that is able to speed up convergence in MATSim (for standard utility functions)
+- A mode-choice-in-the-loop configuration which turn MATSim into an iterative process between network simulation and a discrete mode choice model
+
+Finally, with the example of "frozen randomness" you could get a glimpse of other applications of the extension. We're looking forward to seeing your projects work with DMC.

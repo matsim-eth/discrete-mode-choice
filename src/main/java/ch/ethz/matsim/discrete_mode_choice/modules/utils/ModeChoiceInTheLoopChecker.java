@@ -1,4 +1,4 @@
-package ch.ethz.matsim.discrete_mode_choice.modules.single_plan;
+package ch.ethz.matsim.discrete_mode_choice.modules.utils;
 
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
@@ -9,25 +9,26 @@ import org.matsim.core.replanning.selectors.PlanSelector;
 
 import com.google.inject.Inject;
 
+import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceConfigurator;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
 
-public class SinglePlanChecker implements StartupListener {
+public class ModeChoiceInTheLoopChecker implements StartupListener {
 	private final StrategyConfigGroup strategyConfig;
 	private final PlanSelector<Plan, Person> removalSelector;
 
 	@Inject
-	public SinglePlanChecker(StrategyConfigGroup strategyConfig, PlanSelector<Plan, Person> removalSelector) {
+	public ModeChoiceInTheLoopChecker(StrategyConfigGroup strategyConfig, PlanSelector<Plan, Person> removalSelector) {
 		this.strategyConfig = strategyConfig;
 		this.removalSelector = removalSelector;
 	}
 
 	@Override
 	public void notifyStartup(StartupEvent event) {
-		SinglePlanPreset.check(strategyConfig);
+		DiscreteModeChoiceConfigurator.checkModeChoiceInTheLoop(strategyConfig);
 
 		if (!(removalSelector instanceof NonSelectedPlanSelector)) {
 			throw new IllegalStateException(
-					"Removal strategy should be NonSelectedPlanSelector if single plan mode is enforced.");
+					"Removal strategy should be NonSelectedPlanSelector if mode-choice-in-the-loop is enforced.");
 		}
 	}
 }

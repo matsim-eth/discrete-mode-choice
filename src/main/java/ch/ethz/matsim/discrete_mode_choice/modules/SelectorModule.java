@@ -23,7 +23,7 @@ public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 	public final static String MULTINOMIAL_LOGIT = "MultinomialLogit";
 	public final static String RANDOM = "Random";
 
-	public final static Collection<String> SELECTORS = Arrays.asList(MAXIMUM, MULTINOMIAL_LOGIT, RANDOM);
+	public final static Collection<String> COMPONENTS = Arrays.asList(MAXIMUM, MULTINOMIAL_LOGIT, RANDOM);
 
 	@Override
 	public void installExtension() {
@@ -88,7 +88,8 @@ public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 	public MultinomialLogitSelector.Factory<TripCandidate> provideMultinomialLogitTripSelector(
 			DiscreteModeChoiceConfigGroup dmcConfig) {
 		MultinomialLogitSelectorConfigGroup config = dmcConfig.getMultinomialLogitSelectorConfig();
-		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility());
+		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility(),
+				config.getConsiderMinimumUtility());
 	}
 
 	@Provides
@@ -96,7 +97,8 @@ public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 	public MultinomialLogitSelector.Factory<TourCandidate> provideMultinomialLogitTourSelector(
 			DiscreteModeChoiceConfigGroup dmcConfig) {
 		MultinomialLogitSelectorConfigGroup config = dmcConfig.getMultinomialLogitSelectorConfig();
-		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility());
+		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility(),
+				config.getConsiderMinimumUtility());
 	}
 
 	@Provides
