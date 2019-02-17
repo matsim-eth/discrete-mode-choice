@@ -26,6 +26,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.utils.ScheduleWaitingTimeEstimatorModule;
 
+/**
+ * Internal module that manages all built-in estimators.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String MATSIM_TRIP_SCORING = "MATSimTripScoring";
 	public static final String MATSIM_DAY_SCORING = "MATSimDayScoring";

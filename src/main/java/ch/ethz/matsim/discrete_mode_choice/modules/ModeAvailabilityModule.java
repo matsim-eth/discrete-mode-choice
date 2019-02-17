@@ -13,6 +13,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeAvailabilityConfigGroup;
 
+/**
+ * Internal module that manages all built-in ModeAvailability implementations.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ModeAvailabilityModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String DEFAULT = "Default";
 	public static final String CAR = "Car";

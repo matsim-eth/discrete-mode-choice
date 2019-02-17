@@ -8,6 +8,8 @@ import org.matsim.api.core.v01.population.Person;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
 /**
+ * Creates a ModeChainGenerator.
+ * 
  * @author sebhoerl
  */
 public interface ModeChainGeneratorFactory {

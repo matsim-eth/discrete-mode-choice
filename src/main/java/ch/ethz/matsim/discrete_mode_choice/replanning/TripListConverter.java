@@ -11,9 +11,24 @@ import org.matsim.core.utils.misc.Time;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
+/**
+ * Helper class for converting a MATSim plan into a list of
+ * DiscreteModeChoiceTrip.
+ * 
+ * @author sebhoerl
+ */
 public final class TripListConverter {
 	private final static Logger logger = Logger.getLogger(TripListConverter.class);
 
+	private TripListConverter() {
+
+	}
+
+	/**
+	 * Convert a MATSim plan into a list of DiscreteModeChoiceTrip and extract the
+	 * respective legs. It is expected that the plan is already flattened (i.e.
+	 * there are no interaction activities).
+	 */
 	public static void convert(Plan plan, List<DiscreteModeChoiceTrip> trips, List<Leg> legs) {
 		List<? extends PlanElement> elements = plan.getPlanElements();
 

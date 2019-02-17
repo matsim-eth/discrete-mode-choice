@@ -17,6 +17,12 @@ import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
 
+/**
+ * Utility class that makes it possible to set up various was of using the
+ * Discrete Mode Choice extension with MATSim.
+ * 
+ * @author sebhoerl
+ */
 public final class DiscreteModeChoiceConfigurator {
 	private DiscreteModeChoiceConfigurator() {
 

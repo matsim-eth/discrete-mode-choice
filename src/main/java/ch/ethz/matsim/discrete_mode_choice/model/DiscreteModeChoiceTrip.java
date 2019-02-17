@@ -2,6 +2,13 @@ package ch.ethz.matsim.discrete_mode_choice.model;
 
 import org.matsim.api.core.v01.population.Activity;
 
+/**
+ * This class represents an agent's trip. It contains structural information
+ * such as the origin and destination activity and the mode that has initially
+ * been used to cover the trip.
+ * 
+ * @author sebhoerl
+ */
 public final class DiscreteModeChoiceTrip {
 	private final Activity originActivity;
 	private final Activity destinationActivity;

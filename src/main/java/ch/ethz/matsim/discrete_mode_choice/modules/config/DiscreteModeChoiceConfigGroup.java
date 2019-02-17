@@ -13,14 +13,21 @@ import org.matsim.core.config.ReflectiveConfigGroup;
 import org.matsim.core.utils.collections.Tuple;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
+import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.FallbackBehaviour;
 import ch.ethz.matsim.discrete_mode_choice.modules.ConstraintModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModeAvailabilityModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
 import ch.ethz.matsim.discrete_mode_choice.modules.SelectorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.TourFinderModule;
 
+/**
+ * Main config group for the DiscreteModeChoice extension.
+ * 
+ * @author sebhoerl
+ */
 public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	private boolean performReroute = true;
 	private boolean enforceSinglePlan = false;
@@ -200,6 +207,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		ConfigGroup create(String componentType, String componentName);
 	}
 
+	/**
+	 * Here all components that have their own parameter set should be added.
+	 */
 	private Map<Tuple<String, String>, ComponentSupplier> createComponentSupplierRegistry() {
 		Map<Tuple<String, String>, ComponentSupplier> registry = new HashMap<>();
 
@@ -307,12 +317,20 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();
 
+		String options = Arrays.asList(ModelType.values()).stream().map(String::valueOf)
+				.collect(Collectors.joining(", "));
+		comments.put(MODEL_TYPE, "Main model type: " + options);
+
 		comments.put(PERFORM_REROUTE, "Defines whether the " + DiscreteModeChoiceModule.STRATEGY_NAME
 				+ " strategy should be followed by a rerouting of all trips. If the estimator returns alternatives with routes attached this is not necessary.");
 		comments.put(ENFORCE_SINGLE_PLAN,
 				"Defines whether to run a runtime check that verifies that everything is set up correctl for a 'mode-choice-in-the-loop' setup.");
+
+		options = Arrays.asList(FallbackBehaviour.values()).stream().map(String::valueOf)
+				.collect(Collectors.joining(", "));
 		comments.put(FALLBACK_BEHAVIOUR,
-				"Defines what happens if there is no feasible choice alternative for an agent.");
+				"Defines what happens if there is no feasible choice alternative for an agent: " + options);
+
 		comments.put(MODE_AVAILABILITY, "Defines which ModeAvailability component to use. Built-in choices: "
 				+ String.join(", ", ModeAvailabilityModule.COMPONENTS));
 		comments.put(TOUR_FINDER, "Defines which TourFinder component to use. Built-in choices: "
@@ -320,10 +338,10 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		comments.put(SELECTOR, "Defines which Selector component to use. Built-in choices: "
 				+ String.join(", ", SelectorModule.COMPONENTS));
 		comments.put(TOUR_CONSTRAINTS,
-				"Defines a number of TourSelector components that should be activated. Built-in choices: "
+				"Defines a number of TourConstraint components that should be activated. Built-in choices: "
 						+ String.join(", ", ConstraintModule.TOUR_COMPONENTS));
 		comments.put(TRIP_CONSTRAINTS,
-				"Defines a number of TripSelector components that should be activated. Built-in choices: "
+				"Defines a number of TripConstraint components that should be activated. Built-in choices: "
 						+ String.join(", ", ConstraintModule.TRIP_COMPONENTS));
 		comments.put(TOUR_ESTIMATOR, "Defines which TourEstimator component to use. Built-in choices: "
 				+ String.join(", ", EstimatorModule.TOUR_COMPONENTS));

@@ -2,9 +2,17 @@ package ch.ethz.matsim.discrete_mode_choice.modules.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Config group for DefaultModeAvailability and CarModeAvailability.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ModeAvailabilityConfigGroup extends ComponentConfigGroup {
 	private Collection<String> availableModes = new HashSet<>(Arrays.asList("car", "bike", "pt", "walk"));
 
@@ -31,5 +39,14 @@ public class ModeAvailabilityConfigGroup extends ComponentConfigGroup {
 	@StringGetter(AVAILABLE_MODES)
 	public String getAvailableModesAsString() {
 		return String.join(", ", availableModes);
+	}
+
+	@Override
+	public Map<String, String> getComments() {
+		Map<String, String> comments = new HashMap<>();
+
+		comments.put(AVAILABLE_MODES, "Defines which modes are avialable to the agents.");
+
+		return comments;
 	}
 }

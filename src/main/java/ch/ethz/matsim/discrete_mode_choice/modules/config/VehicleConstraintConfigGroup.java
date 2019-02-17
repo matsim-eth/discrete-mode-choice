@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Config group for VehicleTripConstriant and VehicleTourConstraint.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class VehicleConstraintConfigGroup extends ComponentConfigGroup {
 	private Collection<String> requireStartAtHome = new HashSet<>();
 	private Collection<String> requireEndAtHome = new HashSet<>();
@@ -40,7 +46,11 @@ public class VehicleConstraintConfigGroup extends ComponentConfigGroup {
 				"List of vehicular modes that must be consistent, i.e. a trip can only be performed if the vehicle has been moved there before.");
 		comments.put(REQUIRE_HOME_EXISTS,
 				"Defines whether an agent without a home activity can use a constrained vehicular mode. If it is set to true agents without a home activity cannot use constrained modes. If it is set to false they can use constrained modes at any stage during their plan.");
-		comments.put(HOME_TYPE, "Defines how to determine where the home of an agent is.");
+
+		String options = Arrays.asList(HomeType.values()).stream().map(String::valueOf)
+				.collect(Collectors.joining(", "));
+		comments.put(HOME_TYPE, "Defines how to determine where the home of an agent is: " + options);
+
 		comments.put(HOME_ACTIVITY_TYPE,
 				"If USE_ACTIVITY_TYPE is chosen for homeType, this option defines which activity type to look for.");
 

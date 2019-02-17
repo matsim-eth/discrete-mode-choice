@@ -15,6 +15,14 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultRoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/**
+ * This is an abstract estimator class that makes it easy to rely on MATSim's
+ * TripRouter. Instead of just getting a proposed mode, this class already
+ * routes the trip with the given mode in the background. All that remains is to
+ * analyze the PlanElements to estimate a utility.
+ * 
+ * @author sebhoerl
+ */
 public abstract class AbstractTripRouterEstimator implements TripEstimator {
 	private final TripRouter tripRouter;
 	private final Network network;
@@ -51,11 +59,19 @@ public abstract class AbstractTripRouterEstimator implements TripEstimator {
 		return estimateTripCandidate(person, mode, trip, previousTrips, elements);
 	}
 
+	/**
+	 * Implement this if you just want to calculate a utility, but don't want to
+	 * return a custom TripCandidate object.
+	 */
 	protected double estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips, List<? extends PlanElement> routedTrip) {
 		return 0.0;
 	}
 
+	/**
+	 * Implement this if you want to return a custom TripCandidate object rather
+	 * than just a utility.
+	 */
 	protected TripCandidate estimateTripCandidate(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips, List<? extends PlanElement> routedTrip) {
 		double utility = estimateTrip(person, mode, trip, previousTrips, routedTrip);

@@ -18,6 +18,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactor
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.MultinomialLogitSelectorConfigGroup;
 
+/**
+ * Internal module that manages all built-in selectors.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 	public final static String MAXIMUM = "Maximum";
 	public final static String MULTINOMIAL_LOGIT = "MultinomialLogit";

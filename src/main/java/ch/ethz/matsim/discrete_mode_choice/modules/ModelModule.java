@@ -22,6 +22,13 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
+/**
+ * Internal module that sets up the acutal choice models according to
+ * configuration.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ModelModule extends AbstractModule {
 	@Override
 	public void install() {

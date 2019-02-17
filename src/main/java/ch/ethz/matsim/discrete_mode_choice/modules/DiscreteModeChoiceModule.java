@@ -9,6 +9,12 @@ import ch.ethz.matsim.discrete_mode_choice.modules.utils.ModeChoiceInTheLoopChec
 import ch.ethz.matsim.discrete_mode_choice.replanning.DiscreteModeChoiceStrategyProvider;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
 
+/**
+ * Main module of the Discrete Mode Choice extension. Should be added as an
+ * overriding module before the MATSim controller is started.
+ * 
+ * @author sebhoerl
+ */
 public class DiscreteModeChoiceModule extends AbstractModule {
 	public static final String STRATEGY_NAME = "DiscreteModeChoice";
 

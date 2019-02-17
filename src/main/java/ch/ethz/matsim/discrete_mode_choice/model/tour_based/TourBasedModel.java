@@ -20,6 +20,13 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 
+/**
+ * A choice model that makes decision on a tour basis. The major difference over
+ * the trip-based model is, that it additionally relies on a TourFinder to
+ * determine the tours in an agent's plan.
+ * 
+ * @author sebhoerl
+ */
 public class TourBasedModel implements DiscreteModeChoiceModel {
 	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
 

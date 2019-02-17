@@ -9,6 +9,12 @@ import java.util.stream.Collectors;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.ShapeFileConstraint.Requirement;
 
+/**
+ * Config group for the ShapeFileConstraint.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ShapeFileConstraintConfigGroup extends ComponentConfigGroup {
 	private Requirement requirement = Requirement.BOTH;
 	private String path = null;
@@ -26,7 +32,10 @@ public class ShapeFileConstraintConfigGroup extends ComponentConfigGroup {
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();
 
-		comments.put(REQUIREMENT, "Defines the criterion on when a trip with the constrained mode will be allowed.");
+		String options = Arrays.asList(Requirement.values()).stream().map(String::valueOf)
+				.collect(Collectors.joining(", "));
+		comments.put(REQUIREMENT,
+				"Defines the criterion on when a trip with the constrained mode will be allowed: " + options);
 		comments.put(PATH, "Path to a shape file, which should have the same projection as the network.");
 		comments.put(CONSTRAINED_MODES, "Modes for which the shapes will be considered.");
 

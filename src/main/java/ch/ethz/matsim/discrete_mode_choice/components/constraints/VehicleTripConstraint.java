@@ -15,6 +15,19 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/**
+ * This is a vehicle constraint (see VehicleTourConstraint), but on a trip
+ * level. Here the case is more difficult than on the tour-level and not all of
+ * the dynamic can be enforced. Have a look at the code for the exact
+ * implementation.
+ * 
+ * Attention! This is not tested and may be faulty. Feel free to add some test
+ * cases to see if this actually does what it is supposed to do.
+ * 
+ * TODO: Revise this and check if it makes sense!
+ * 
+ * @author sebhoerl
+ */
 public class VehicleTripConstraint implements TripConstraint {
 	private final static Logger logger = Logger.getLogger(VehicleTripConstraint.class);
 

@@ -7,6 +7,14 @@ import org.matsim.api.core.v01.Id;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
+/**
+ * This HomeFinder implementation searches for a configurable activity type in
+ * an agent's plan. As soon as the activity type is found, the respective
+ * location is return as the "home" location of the agent. Default is activity
+ * type "home".
+ * 
+ * @author sebhoerl
+ */
 public class ActivityTypeHomeFinder implements HomeFinder {
 	private final String activityType;
 

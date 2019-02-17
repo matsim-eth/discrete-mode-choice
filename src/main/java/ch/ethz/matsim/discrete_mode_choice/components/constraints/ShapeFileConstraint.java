@@ -30,6 +30,13 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/**
+ * This constraint decides whether a mode is allowed for a certain trip by
+ * checking whether the origin and/or destination location are within a feature
+ * of a given shape file.
+ * 
+ * @author sebhoerl
+ */
 public class ShapeFileConstraint implements TripConstraint {
 	private final static GeometryFactory geometryFactory = new GeometryFactory();
 

@@ -13,6 +13,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/**
+ * This constraint forbids or allows a certain mode depending on whether a
+ * certain link attribute is available for the origin and/or destination.
+ * 
+ * @author sebhoerl
+ */
 public class LinkAttributeConstraint implements TripConstraint {
 	private final Network network;
 	private final Collection<String> restrictedModes;

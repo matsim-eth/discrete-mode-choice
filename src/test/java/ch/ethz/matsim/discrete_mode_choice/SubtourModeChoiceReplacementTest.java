@@ -224,6 +224,99 @@ public class SubtourModeChoiceReplacementTest {
 
 		Assert.assertEquals(dmcChains, smcChains);
 	}
+	
+	@Test
+	public void testLargerCase() throws NoFeasibleChoiceException {
+		List<String> modes = Arrays.asList("walk", "car", "pt", "bike");
+		List<String> constrainedModes = Arrays.asList("car", "bike");
+		boolean considerCarAvailability = true;
+		int samples = 1000;
+
+		Set<List<String>> dmcChains;
+		Set<List<String>> smcChains;
+		PlanBuilder planBuilder;
+
+		// Test I) Simple plan with one tour
+
+		planBuilder = new PlanBuilder() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "B") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A");
+
+		// Don't allow single legs
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+
+		// Allow single legs
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+
+		// Test II) Two tours
+
+		planBuilder = new PlanBuilder() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "B") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "B") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A");
+
+		// Don't allow single legs
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+
+		// Allow single legs
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+
+		// Test II) Three tours
+		planBuilder = new PlanBuilder() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "B") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "C") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "B") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "C") //
+				.addLeg() //
+				.addActivityWithLinkId("home", "A");
+
+		// Don't allow single legs
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+
+		// Allow single legs
+		samples = (int) 1e6;
+		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
+		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
+
+		Assert.assertEquals(dmcChains, smcChains);
+		
+		if (true) {
+			return;
+		}
+	}
 
 	private Set<List<String>> computeDMC(PlanBuilder planBuilder, List<String> modes, List<String> constrainedModes,
 			boolean considerCarAvailability, boolean allowSingleLegs, int samples) throws NoFeasibleChoiceException {

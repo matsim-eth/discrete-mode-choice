@@ -14,6 +14,19 @@ import ch.ethz.matsim.discrete_mode_choice.model.constraints.AbstractTourConstra
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 
+/**
+ * This constraint filters out plans that cannot be produced by
+ * SubtourModeChoice. It receives a list of constrained modes for which the
+ * content depends on how SubtourModeChoice is used. If singleTripProbability ==
+ * 0.0 (i.e. the old standard setting), all availabe modes should be set as
+ * "constrained modes". This means that every sub-tour in the plan *must* be
+ * covered by one and a single mode. If singleLegProbability was > 0.0, then
+ * only the "chain based" modes should be set as constrained modes. In that case
+ * only those tours cannot be interrupted by other modes.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class SubtourModeConstraint extends AbstractTourConstraint {
 	private final Collection<String> constrainedModes;
 	private final List<Id<? extends BasicLocation>> originLocations;

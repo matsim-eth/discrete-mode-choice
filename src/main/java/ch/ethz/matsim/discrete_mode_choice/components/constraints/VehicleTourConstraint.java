@@ -16,6 +16,33 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 
+/**
+ * This constraint makes sure that trips are continuous in the sense that
+ * vehicles get not dumped somewhere in the network.
+ * 
+ * There are three checks:
+ * <ul>
+ * <li>requireStartAtHome contains all modes for which the vehicle is required
+ * to start at home</li>
+ * <li>requireEndAtHome contains all modes for which the vehicle is required to
+ * end at home</li>
+ * <li>requireContinuity contains all modes for which the vehicle can only be
+ * used there where it has been brought to before</li>
+ * </ul>
+ * 
+ * The option requireExisitngHome defines what happens if no home can be found
+ * for the agent. If it is set to true, people without a home will not be able
+ * to use the vehicular modes, because the constraint will always fail. If it is
+ * set to true, it is not required that vehicles start and end at home *only if*
+ * no home can be found for the agent.
+ * 
+ * Finally, it needs to be decided where "home" is. Currently, there are two
+ * options: Either the location of the first activity is used (as it is for
+ * SubtourModeChoice), or the location of first activity with a certain type
+ * (default is "home") is used.
+ * 
+ * @author sebhoerl
+ */
 public class VehicleTourConstraint implements TourConstraint {
 	final private List<DiscreteModeChoiceTrip> trips;
 	final private Id<? extends BasicLocation> homeLocationId;

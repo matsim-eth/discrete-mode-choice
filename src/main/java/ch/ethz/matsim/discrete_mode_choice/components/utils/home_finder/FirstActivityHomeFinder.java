@@ -8,6 +8,12 @@ import org.matsim.api.core.v01.Id;
 import ch.ethz.matsim.discrete_mode_choice.components.utils.LocationUtils;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
+/**
+ * This implementation of HomeFinder takes the first activity in an agent's plan
+ * and return the location as the "home" location of the agent.
+ * 
+ * @author sebhoerl
+ */
 public class FirstActivityHomeFinder implements HomeFinder {
 	@Override
 	public Id<? extends BasicLocation> getHomeLocationId(List<DiscreteModeChoiceTrip> trips) {

@@ -13,7 +13,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
  * This replanning module creates new instances of the
  * DiscreteModeChoiceAlgorithm.
  * 
- * @sebhoerl
+ * @author sebhoerl
  */
 public class DiscreteModeChoiceReplanningModule extends AbstractMultithreadedModule {
 	public static final String NAME = "DiscreteModeChoice";

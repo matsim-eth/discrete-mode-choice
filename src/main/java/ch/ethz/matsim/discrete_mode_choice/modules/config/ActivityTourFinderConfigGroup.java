@@ -3,6 +3,11 @@ package ch.ethz.matsim.discrete_mode_choice.modules.config;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration for the ActivityTourFinder.
+ * 
+ * @author sebhoerl
+ */
 public class ActivityTourFinderConfigGroup extends ComponentConfigGroup {
 	private String activityType;
 

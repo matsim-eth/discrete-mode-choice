@@ -3,6 +3,12 @@ package ch.ethz.matsim.discrete_mode_choice.modules.config;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Config group for the MultinomialLogitSelector
+ * 
+ * @author sebhoerl
+ *
+ */
 public class MultinomialLogitSelectorConfigGroup extends ComponentConfigGroup {
 	private double minimumUtility = -700.0;
 	private double maximumUtility = 700.0;

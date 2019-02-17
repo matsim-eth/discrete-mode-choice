@@ -9,6 +9,12 @@ import java.util.stream.Collectors;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.LinkAttributeConstraint.Requirement;
 
+/**
+ * Config group for the LinkAttributeConstraint.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class LinkAttributeConstraintConfigGroup extends ComponentConfigGroup {
 	private Requirement requirement = Requirement.BOTH;
 	private String attributeName = null;
@@ -28,10 +34,13 @@ public class LinkAttributeConstraintConfigGroup extends ComponentConfigGroup {
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();
 
-		comments.put(REQUIREMENT, "Defines the criterion on when a trip with the constrained mode will be allowed.");
+		String options = Arrays.asList(Requirement.values()).stream().map(String::valueOf)
+				.collect(Collectors.joining(", "));
+		comments.put(REQUIREMENT,
+				"Defines the criterion on when a trip with the constrained mode will be allowed: " + options);
 		comments.put(ATTRIBUTE_NAME, "Link attribute that will be considered for feasibility of the trip.");
 		comments.put(ATTRIBUTE_VALUE, "Value that the link attributes should equal.");
-		comments.put(CONSTRAINED_MODES, "Modes for which the shapes will be considered.");
+		comments.put(CONSTRAINED_MODES, "Modes for which the constraint will be considered.");
 
 		return comments;
 	}

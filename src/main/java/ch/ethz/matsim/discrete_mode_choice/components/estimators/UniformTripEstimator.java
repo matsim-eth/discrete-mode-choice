@@ -9,10 +9,16 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
+/**
+ * This estimator simply return a zero utility for every trip candidate that it
+ * sees. Useful for random selection setups.
+ * 
+ * @author sebhoerl
+ */
 public class UniformTripEstimator implements TripEstimator {
 	@Override
 	public TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips) {
-		return new DefaultTripCandidate(0.0, mode);
+		return new DefaultTripCandidate(1.0, mode);
 	}
 }

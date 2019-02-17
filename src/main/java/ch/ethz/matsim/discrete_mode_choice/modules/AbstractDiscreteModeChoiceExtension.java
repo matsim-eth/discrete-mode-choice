@@ -16,6 +16,13 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 
+/**
+ * Base class for extensions to Discrete Mode Choice. It provides some helper
+ * methods to easily bind new estimators, constraints, and more.
+ * 
+ * @author sebhoerl
+ *
+ */
 public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule {
 	protected MapBinder<String, TourEstimator> tourEstimatorBinder;
 	protected MapBinder<String, TripEstimator> tripEstimatorBinder;

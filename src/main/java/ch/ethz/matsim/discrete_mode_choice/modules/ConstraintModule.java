@@ -33,6 +33,12 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.ShapeFileConstraintCon
 import ch.ethz.matsim.discrete_mode_choice.modules.config.SubtourModeConstraintConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleConstraintConfigGroup;
 
+/**
+ * Internal module that manages all built-in constraints.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	public final static String FROM_TRIP_BASED = "FromTripBased";
 	public final static String VEHICLE_CONTINUITY = "VehicleContinuity";

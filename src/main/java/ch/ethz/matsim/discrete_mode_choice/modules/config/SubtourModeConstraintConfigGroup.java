@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Config group for the SubtourModeConstraint.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class SubtourModeConstraintConfigGroup extends ComponentConfigGroup {
 	private Collection<String> constrainedModes = new HashSet<>();
 

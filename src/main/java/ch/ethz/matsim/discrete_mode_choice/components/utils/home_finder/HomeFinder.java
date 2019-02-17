@@ -7,6 +7,12 @@ import org.matsim.api.core.v01.Id;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
+/**
+ * This interface is used by the vehicle constraints to find the home location
+ * in an agent's plan.
+ * 
+ * @author sebhoerl
+ */
 public interface HomeFinder {
 	Id<? extends BasicLocation> getHomeLocationId(List<DiscreteModeChoiceTrip> trips);
 }

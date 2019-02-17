@@ -2,6 +2,12 @@ package ch.ethz.matsim.discrete_mode_choice.modules.config;
 
 import org.matsim.core.config.ReflectiveConfigGroup;
 
+/**
+ * Base class for component configuration sections.
+ * 
+ * @author sebhoerl
+ *
+ */
 public abstract class ComponentConfigGroup extends ReflectiveConfigGroup {
 	private final String componentName;
 	private final String componentType;

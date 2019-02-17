@@ -14,6 +14,12 @@ import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.ActivityTourFinderConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
+/**
+ * Internal module that manages all built-in TourFinder implementations.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class TourFinderModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String PLAN_BASED = "PlanBased";
 	public static final String ACTIVITY_BASED = "ActivityBased";

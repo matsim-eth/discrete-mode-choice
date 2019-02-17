@@ -12,6 +12,13 @@ import com.google.inject.Inject;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceConfigurator;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
 
+/**
+ * Internal listener that is used to do some runtime checks when
+ * mode-choice-in-the-loop should be enforced.
+ * 
+ * @author sebhoerl
+ *
+ */
 public class ModeChoiceInTheLoopChecker implements StartupListener {
 	private final StrategyConfigGroup strategyConfig;
 	private final PlanSelector<Plan, Person> removalSelector;
