@@ -20,7 +20,16 @@ For more customized applications and set-ups, have a look at [Customizing the fr
 
 - The repository has there main branches: `latest` contains the latest release version, compatible with a recent MATSim SNAPSHOT, `stable` contains the backport to MATSim 0.10.1 and `development` contains the most recent development version, which does not have a release yet.
 
-To use the Discrete Mode Choice extension with a standard MATSim 0.10.1 setup, add the following to your `pom.xml` dependencies:
+To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
+
+```xml
+    <repository>
+        <id>matsim-eth</id>
+        <url>https://dl.bintray.com/matsim-eth/matsim</url>
+    </repository>
+```
+
+Add the following to your `pom.xml` dependencies to use the extension with a standard MATSim 0.10.1 setup:
 
 ```xml
 <dependency>
