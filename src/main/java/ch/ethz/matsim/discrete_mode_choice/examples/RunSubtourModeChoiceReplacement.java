@@ -27,13 +27,13 @@ public class RunSubtourModeChoiceReplacement {
 		config.controler().setLastIteration(1000);
 		config.controler().setWriteEventsInterval(100);
 		config.controler().setWritePlansInterval(100);
-		
-		cmd.applyConfiguration(config);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		Controler controller = new Controler(scenario);
 
 		DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
+		cmd.applyConfiguration(config);
+		
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
 
 		controller.run();

@@ -30,8 +30,6 @@ public class RunModeChoiceInTheLoop {
 		config.controler().setLastIteration(1000);
 		config.controler().setWriteEventsInterval(100);
 		config.controler().setWritePlansInterval(100);
-
-		cmd.applyConfiguration(config);
 		
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
@@ -41,6 +39,7 @@ public class RunModeChoiceInTheLoop {
 		DiscreteModeChoiceConfigurator.configureAsModeChoiceInTheLoop(config);
 		DiscreteModeChoiceConfigGroup dmcConfig = (DiscreteModeChoiceConfigGroup) config.getModules()
 				.get(DiscreteModeChoiceConfigGroup.GROUP_NAME);
+		cmd.applyConfiguration(config);
 
 		dmcConfig.setTripEstimator("MyEstimatorName");
 		dmcConfig.setTourEstimator(EstimatorModule.CUMULATIVE);
