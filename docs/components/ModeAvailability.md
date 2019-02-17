@@ -2,7 +2,7 @@
 
 The mode availability component defines which mode are available to an agent, even before any trip or tour-baesd [constraints](Constraint.md) are evaluated. The classic example is an agent without a driving license, for which the `car` mode should not even be considered in any case.
 
-The DMC extension contains a number of predefined `ModeAvailability` implementations, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](docs/Customizing.md).
+The DMC extension contains a number of predefined `ModeAvailability` implementations, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](../Customizing.md).
 
 In the following the existing built-in tour finders are described. While some of them have additional configuration options that can be defined in a `parameterset`, some don't. In any case, the mode availability can be chosen in the main config group:
 

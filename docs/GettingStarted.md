@@ -152,7 +152,7 @@ More complex models can, for instance, use the `MaximumUtility` selector, which 
 
 ### 7. BYOC (Bring you own component)
 
-While there is a number of standard implementations for [Mode Availability](components/ModeAvailability.md), [Estimator](components/Estimator.md), [Selector](components/Selector.md), [Constraints](components/Constraint.md) and [TourFinder](components/TourFinder), the DMC framework makes it easy to create one's own components. For further information, please have a look at the respective chapters.
+While there is a number of standard implementations for [Mode Availability](components/ModeAvailability.md), [Estimator](components/Estimator.md), [Selector](components/Selector.md), [Constraints](components/Constraint.md) and [TourFinder](components/TourFinder), the DMC framework makes it easy to create one's own components. For further information, please have a look at [Customizing the framework](Customizing.md) or the respective chapters.
 
 For now, we continue with the Getting Started guide and use the information we just got to construct a bit more interesting models than a random selection.
 

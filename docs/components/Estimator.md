@@ -2,9 +2,9 @@
 
 An `Estimator` component has the purpose to analyze a certain propose mode (in a trip-based model) or a chain of modes (in a tour-based model) and assign a certain utility to it. Later on, this utility can be used to make an educated guess about which alternative should be chosen.
 
-The DMC extension contains a number of predefined `Estimator` implementations, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](docs/Customizing.md).
+The DMC extension contains a number of predefined `Estimator` implementations, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](../Customizing.md).
 
-In the following the existing built-in estimators are described. Some of them exist in a trip-based and tour-based version, some only in one. While some of them have additional configuration options that can be defined in a `parameterset`, some don't. In any case, the estimator can be chosen in the main config group. For a trip-based model, the estimator can be defined as `tripEstimator`, while for a tour-based model it needs to be set in the `tourEstimator` parameter. Depending on which [model](docs/components/Model.md) type is used, the respective field is active:
+In the following the existing built-in estimators are described. Some of them exist in a trip-based and tour-based version, some only in one. While some of them have additional configuration options that can be defined in a `parameterset`, some don't. In any case, the estimator can be chosen in the main config group. For a trip-based model, the estimator can be defined as `tripEstimator`, while for a tour-based model it needs to be set in the `tourEstimator` parameter. Depending on which [model](Model.md) type is used, the respective field is active:
 
 ```xml
 <module name="DiscreteModeChoice">

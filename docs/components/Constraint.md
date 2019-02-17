@@ -2,9 +2,9 @@
 
 A constraint is used to filter out trip or tour alternatives that do not make sense or are forbidden for some reason. The classic example is to forbid the `car` mode at a location where the vehicle has not been moved to. This is not a dynamic constraint, but can already be inferred when the mode chain is constructed since the origin and destination locations of each trip are known in advance.
 
-The DMC extension contains a number of predefined constraints, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](docs/Customizing.md).
+The DMC extension contains a number of predefined constraints, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](../Customizing.md).
 
-In the following the existing built-in constraints are described. While some of them have additional configuration options that can be defined in a `parameterset`, some don't. In any case, tour or trip constraints can be chosen in the main config group. If a trip-based [model](docs/components/Model.md) is used, the `tripConstraints` are considered, if a tour-based [model](docs/components/Model.md) is used, the `tourConstraints` are used. In each case a unlimited number of constraints, divided by commas, can be defined:
+In the following the existing built-in constraints are described. While some of them have additional configuration options that can be defined in a `parameterset`, some don't. In any case, tour or trip constraints can be chosen in the main config group. If a trip-based [model](Model.md) is used, the `tripConstraints` are considered, if a tour-based [model](Model.md) is used, the `tourConstraints` are used. In each case a unlimited number of constraints, divided by commas, can be defined:
 
 ```xml
 <module name="DiscreteModeChoice">
