@@ -1,5 +1,7 @@
 # Discrete Mode Choice for MATSim
 
+[![Build Status](https://travis-ci.org/matsim-eth/av.png)](https://travis-ci.org/matsim-eth/mode_choice)
+
 The Discrete Mode Choice extension for MATSim makes it easy to define fine-grained and custom mode choice behaviour in MATSim simulations. Have a look at the [Getting Started](docs/GettingStarted.md) guide to dive right in or have a look at the existing [Components](docs/Components.md) if you are already familiar with the basic concepts.
 
 The extensions offers three major pathways for improving mode choice in MATSim:
@@ -21,14 +23,28 @@ The Discrete Mode Choice extension has been used in the following publications:
 
 ## Working with the code
 
-## Working with the repository
+- Releases are generally available on [Bintray](https://bintray.com/matsim-eth/matsim/discrete-mode-choice). Un-postfixed version numbers denote releases that are comaptible with the latest stable MATSim release, i.e. 0.10.1. All version postfixed with `-latest` relate to a specific recent weekly SNAPSHOT of MATSim.
 
-[![Build Status](https://travis-ci.org/matsim-eth/av.png)](https://travis-ci.org/matsim-eth/mode_choice)
+- The repository has there main branches: `latest` contains the latest release version, compatible with a recent MATSim SNAPSHOT, `stable` contains the backport to MATSim 0.10.1 and `development` contains the most recent development version, which does not have a release yet.
 
-TODO: Revise this in general.
+To use the Discrete Mode Choice extension with a standard MATSim 0.10.1 setup, add the following to your `pom.xml` dependencies:
 
-- The latest changes are currently in the `1.x.x` branch. The version there is always compatible with a specific weekly SNAPSHOT of MATSim.
-- The branch `1.x.x-0.10.1` contains a back-ported version that is compatible with MATSim `0.10.1`.
+```xml
+<dependency>
+	<groupId>ch.ethz.matsim</groupId>
+	<artifactId>discrete_mode_choice</artifactId>
+	<version>1.0.0</version>
+</dependency>
+```
 
-The code always has a fix version number, however the latest master is not deployed anywhere. For the latest Maven release, have a look at Bintray: TODO
+For the version that is compatible with a SNAPSHOT, choose:
+
+```xml
+<dependency>
+	<groupId>ch.ethz.matsim</groupId>
+	<artifactId>discrete_mode_choice</artifactId>
+	<version>1.0.0-latest</version>
+</dependency>
+```
+
  
