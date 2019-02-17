@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
@@ -71,13 +71,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Two tours
 
@@ -96,13 +96,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Three tours
 		planBuilder = new PlanBuilder() //
@@ -126,14 +126,14 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		samples = 5000;
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 	}
 
 	@Test
@@ -160,13 +160,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Two tours
 
@@ -185,13 +185,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Three tours
 		planBuilder = new PlanBuilder() //
@@ -215,14 +215,14 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		samples = 5000;
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 	}
 
 	@Test
@@ -249,13 +249,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Two tours
 
@@ -274,13 +274,13 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Test II) Three tours
 		planBuilder = new PlanBuilder() //
@@ -304,7 +304,7 @@ public class SubtourModeChoiceReplacementTest {
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, false, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
 		samples = 5000;
@@ -313,7 +313,7 @@ public class SubtourModeChoiceReplacementTest {
 		samples = 20000;
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
-		Assert.assertEquals(dmcChains, smcChains);
+		assertEquals(dmcChains, smcChains);
 	}
 
 	private Set<List<String>> computeDMC(PlanBuilder planBuilder, List<String> modes, List<String> constrainedModes,

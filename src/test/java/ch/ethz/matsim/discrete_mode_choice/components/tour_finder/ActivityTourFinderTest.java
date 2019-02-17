@@ -1,9 +1,10 @@
 package ch.ethz.matsim.discrete_mode_choice.components.tour_finder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.PopulationUtils;
@@ -48,36 +49,36 @@ public class ActivityTourFinderTest {
 
 		trips = createFixture("home", "work", "home");
 		result = finder.findTours(trips);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(2, result.stream().mapToInt(List::size).sum());
+		assertEquals(1, result.size());
+		assertEquals(2, result.stream().mapToInt(List::size).sum());
 
 		trips = createFixture("other", "home", "work", "home");
 		result = finder.findTours(trips);
-		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(3, result.stream().mapToInt(List::size).sum());
-		Assert.assertEquals(1, result.get(0).size());
-		Assert.assertEquals(2, result.get(1).size());
+		assertEquals(2, result.size());
+		assertEquals(3, result.stream().mapToInt(List::size).sum());
+		assertEquals(1, result.get(0).size());
+		assertEquals(2, result.get(1).size());
 
 		trips = createFixture("home", "work", "home", "other");
 		result = finder.findTours(trips);
-		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(3, result.stream().mapToInt(List::size).sum());
-		Assert.assertEquals(2, result.get(0).size());
-		Assert.assertEquals(1, result.get(1).size());
+		assertEquals(2, result.size());
+		assertEquals(3, result.stream().mapToInt(List::size).sum());
+		assertEquals(2, result.get(0).size());
+		assertEquals(1, result.get(1).size());
 
 		trips = createFixture("home", "work", "shop", "home", "other", "home");
 		result = finder.findTours(trips);
-		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(5, result.stream().mapToInt(List::size).sum());
-		Assert.assertEquals(3, result.get(0).size());
-		Assert.assertEquals(2, result.get(1).size());
+		assertEquals(2, result.size());
+		assertEquals(5, result.stream().mapToInt(List::size).sum());
+		assertEquals(3, result.get(0).size());
+		assertEquals(2, result.get(1).size());
 
 		trips = createFixture("home", "work", "home", "home", "work", "home");
 		result = finder.findTours(trips);
-		Assert.assertEquals(3, result.size());
-		Assert.assertEquals(5, result.stream().mapToInt(List::size).sum());
-		Assert.assertEquals(2, result.get(0).size());
-		Assert.assertEquals(1, result.get(1).size());
-		Assert.assertEquals(2, result.get(2).size());
+		assertEquals(3, result.size());
+		assertEquals(5, result.stream().mapToInt(List::size).sum());
+		assertEquals(2, result.get(0).size());
+		assertEquals(1, result.get(1).size());
+		assertEquals(2, result.get(2).size());
 	}
 }

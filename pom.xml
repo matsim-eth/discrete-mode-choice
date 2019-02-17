@@ -4,17 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>0.3.0</version>
-	<description>Compatible with MATSim 0.11.0-SNAPSHOT</description>
+	<version>1.0.0-latest</version>
+	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
+		<matsim.version>0.11.0-SNAPSHOT</matsim.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<skipTests>false</skipTests>
 	</properties>
 
 	<repositories>
-		<!-- Needed for geotools in matsim main -->
 		<repository>
 			<id>osgeo</id>
 			<name>Geotools repository</name>
@@ -23,10 +22,6 @@
 		<repository>
 			<id>matsim</id>
 			<url>http://dl.bintray.com/matsim/matsim</url>
-		</repository>
-		<repository>
-			<id>matsim-eth</id>
-			<url>http://dl.bintray.com/matsim-eth/matsim</url>
 		</repository>
 		<repository>
 			<id>matsim-snapshot</id>
@@ -62,7 +57,7 @@
 			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -73,32 +68,19 @@
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim-examples</artifactId>
-			<version>0.11.0-SNAPSHOT</version>
+			<version>${matsim.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim</artifactId>
-			<version>0.11.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.ethz.matsim</groupId>
-			<artifactId>baseline_scenario</artifactId>
-			<version>0.3.0</version>
+			<version>${matsim.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
 			<version>3.6.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
