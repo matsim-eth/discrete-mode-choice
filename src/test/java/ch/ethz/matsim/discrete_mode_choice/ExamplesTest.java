@@ -1,6 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
@@ -12,7 +12,7 @@ import ch.ethz.matsim.discrete_mode_choice.examples.RunSubtourModeChoiceReplacem
 
 public class ExamplesTest {
 	@Test
-	@Ignore
+	@Disabled
 	public void testExamples() throws ConfigurationException {
 		String[] args = new String[] { "--config:controler.lastIteration", "1" };
 

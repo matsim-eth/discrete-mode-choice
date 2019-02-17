@@ -224,7 +224,7 @@ public class SubtourModeChoiceReplacementTest {
 
 		Assert.assertEquals(dmcChains, smcChains);
 	}
-	
+
 	@Test
 	public void testLargerCase() throws NoFeasibleChoiceException {
 		List<String> modes = Arrays.asList("walk", "car", "pt", "bike");
@@ -307,15 +307,13 @@ public class SubtourModeChoiceReplacementTest {
 		Assert.assertEquals(dmcChains, smcChains);
 
 		// Allow single legs
-		samples = (int) 1e6;
+		samples = 5000;
 		dmcChains = computeDMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
+
+		samples = 20000;
 		smcChains = computeSMC(planBuilder, modes, constrainedModes, considerCarAvailability, true, samples);
 
 		Assert.assertEquals(dmcChains, smcChains);
-		
-		if (true) {
-			return;
-		}
 	}
 
 	private Set<List<String>> computeDMC(PlanBuilder planBuilder, List<String> modes, List<String> constrainedModes,
