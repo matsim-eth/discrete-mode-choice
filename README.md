@@ -12,6 +12,15 @@ To learn more about these applications (and how you can implement "frozen random
 
 For more customized applications and set-ups, have a look at [Customizing the framework](docs/Customizing.md).
 
+## Literature
+
+The Discrete Mode Choice extension has been used in the following publications:
+
+- Hörl, S., M. Balac and K.W. Axhausen (2019) (Pairing discrete mode choice models and agent-based transport simulation with MATSim)[https://www.research-collection.ethz.ch/handle/20.500.11850/303667], presented at the 98th Annual Meeting of the Transportation Research Board, January 2019, Washington D.C.
+- Hörl, S., M. Balac and K.W. Axhausen (2018) (A first look at bridging discrete choice modeling and agent-based microsimulation in MATSim)[https://www.sciencedirect.com/science/article/pii/S1877050918304496?via%3Dihub], *Procedia Computer Science*, **130**, 900-907.
+
+## Working with the code
+
 ## Working with the repository
 
 [![Build Status](https://travis-ci.org/matsim-eth/av.png)](https://travis-ci.org/matsim-eth/mode_choice)
