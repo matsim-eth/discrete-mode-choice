@@ -48,11 +48,12 @@ public class MATSimDayScoringEstimator implements TourEstimator {
 		// Add daily constants for trips
 		Set<String> uniqueModes = new HashSet<>(modes);
 
-		for (String uniqueMode : uniqueModes) {
+		// Backport: Not available in MATSim 0.10.1
+		/* for (String uniqueMode : uniqueModes) {
 			ModeUtilityParameters modeParams = parameters.modeParams.get(uniqueMode);
 			utility += modeParams.dailyUtilityConstant;
 			utility += parameters.marginalUtilityOfMoney + modeParams.dailyMoneyConstant;
-		}
+		}*/
 
 		return new DefaultTourCandidate(utility, candidate.getTripCandidates());
 	}

@@ -48,7 +48,8 @@ public final class DiscreteModeChoiceConfigurator {
 		tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
 		tourConstraints.add(ConstraintModule.SUBTOUR_MODE);
 
-		if (smcConfig.getProbaForRandomSingleTripMode() > 0.0) {
+		// Backport: Not available in MATSim 0.10.1
+		if (false) {
 			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getChainBasedModes()));
 		} else {
 			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getModes()));

@@ -371,10 +371,13 @@ public class SubtourModeChoiceReplacementTest {
 		PermissibleModesCalculator permissibleModesCalculator = new PermissibleModesCalculatorImpl(availableModes,
 				considerCarAvailability);
 		Random rng = new Random(0);
-		SubtourModeChoice.Behavior behavior = SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes;
+		
+		// Backport: Not available in MATSIM 0.10.1
+		//SubtourModeChoice.Behavior behavior = SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes;
 
+		// Backport: Some arguments no avaialble in MATSIM 0.10.1
 		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(stageActivityTypes, mainModeIdentifier,
-				permissibleModesCalculator, availableModes, chainBasedModes, rng, behavior, singleLegProbability);
+				permissibleModesCalculator, availableModes, chainBasedModes, rng);
 
 		Set<List<String>> chains = new HashSet<>();
 		Plan plan = planBuilder.buildPlan();
