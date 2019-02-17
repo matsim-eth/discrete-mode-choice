@@ -1,4 +1,4 @@
-package ch.ethz.matsim.discrete_mode_choice.examples;
+package ch.ethz.matsim.discrete_mode_choice.examples.my_estimator;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import ch.ethz.matsim.discrete_mode_choice.components.estimators.AbstractTripRou
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
-public class MyFrozenRandomnessTripEstimator extends AbstractTripRouterEstimator {
+public class MyTripEstimator extends AbstractTripRouterEstimator {
 	@Inject
-	public MyFrozenRandomnessTripEstimator(TripRouter tripRouter, Network network, ActivityFacilities facilities) {
+	public MyTripEstimator(TripRouter tripRouter, Network network, ActivityFacilities facilities) {
 		super(tripRouter, network, facilities);
 	}
 
@@ -36,7 +36,7 @@ public class MyFrozenRandomnessTripEstimator extends AbstractTripRouterEstimator
 				totalTravelDistance += leg.getRoute().getDistance() * 1e-3;
 			}
 		}
-		
+
 		// II) Compute mode-specific utility
 		double utility = 0;
 
@@ -51,8 +51,6 @@ public class MyFrozenRandomnessTripEstimator extends AbstractTripRouterEstimator
 			utility = -1.0 * totalTravelTime;
 			break;
 		}
-		
-		utility += (Double) trip.getOriginActivity().getAttributes().getAttribute("next_error_" + mode);
 
 		return utility;
 	}

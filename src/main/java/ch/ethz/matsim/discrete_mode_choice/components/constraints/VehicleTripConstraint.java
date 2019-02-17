@@ -3,19 +3,21 @@ package ch.ethz.matsim.discrete_mode_choice.components.constraints;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.BasicLocation;
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 
+import ch.ethz.matsim.discrete_mode_choice.components.utils.LocationUtils;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.HomeFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraint;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
-/*
- * TODO: This should be generalized to Id<? extends BasicLocation>
- */
 public class VehicleTripConstraint implements TripConstraint {
+	private final static Logger logger = Logger.getLogger(VehicleTripConstraint.class);
+
 	private final List<DiscreteModeChoiceTrip> trips;
 
 	private Collection<String> requireStartAtHome;
@@ -23,23 +25,23 @@ public class VehicleTripConstraint implements TripConstraint {
 	private Collection<String> requireEndAtHome;
 	private boolean requireExistingHome;
 
-	private Id<Link> homeLinkId;
+	private Id<? extends BasicLocation> homeLocationId;
 
-	public VehicleTripConstraint(List<DiscreteModeChoiceTrip> trips, Id<Link> homeLinkId,
+	public VehicleTripConstraint(List<DiscreteModeChoiceTrip> trips, Id<? extends BasicLocation> homeLocationId,
 			Collection<String> requireStartAtHome, Collection<String> requireContinuity,
 			Collection<String> requireEndAtHome, boolean requireExistingHome) {
 		this.trips = trips;
-		this.homeLinkId = homeLinkId;
+		this.homeLocationId = homeLocationId;
 		this.requireStartAtHome = requireStartAtHome;
 		this.requireEndAtHome = requireEndAtHome;
 		this.requireContinuity = requireContinuity;
 		this.requireExistingHome = requireExistingHome;
 	}
 
-	private Id<Link> getCurrentLinkId(String mode, List<String> previousModes) {
+	private Id<? extends BasicLocation> getCurrentLocationId(String mode, List<String> previousModes) {
 		for (int i = previousModes.size() - 1; i >= 0; i--) {
 			if (previousModes.get(i).equals(mode)) {
-				return trips.get(i).getDestinationActivity().getLinkId();
+				return LocationUtils.getLocationId(trips.get(i).getDestinationActivity());
 			}
 		}
 
@@ -48,23 +50,23 @@ public class VehicleTripConstraint implements TripConstraint {
 
 	private boolean canReturnHome(List<String> previousModes) {
 		for (int index = previousModes.size(); index < trips.size(); index++) {
-			if (trips.get(index).getDestinationActivity().getLinkId().equals(homeLinkId)) {
+			if (trips.get(index).getDestinationActivity().getLinkId().equals(homeLocationId)) {
 				return true;
 			}
 		}
 
-		if (homeLinkId != null || requireExistingHome) {
+		if (homeLocationId != null || requireExistingHome) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	private boolean willReturn(Id<Link> linkId, List<String> previousModes) {
+	private boolean willReturn(Id<? extends BasicLocation> locationId, List<String> previousModes) {
 		for (int index = previousModes.size(); index < trips.size(); index++) {
 			DiscreteModeChoiceTrip trip = trips.get(index);
 
-			if (trip.getDestinationActivity().getLinkId().equals(linkId)) {
+			if (LocationUtils.getLocationId(trip.getDestinationActivity()).equals(locationId)) {
 				return true;
 			}
 		}
@@ -79,10 +81,10 @@ public class VehicleTripConstraint implements TripConstraint {
 		if (requireStartAtHome.contains(mode)) {
 			boolean isFirst = !previousModes.contains(mode);
 
-			if (isFirst && !trip.getOriginActivity().getLinkId().equals(homeLinkId)) {
+			if (isFirst && !LocationUtils.getLocationId(trip.getOriginActivity()).equals(homeLocationId)) {
 				// The trip is the first of the restricted mode, but we're not home!
 
-				if (homeLinkId != null || requireExistingHome) {
+				if (homeLocationId != null || requireExistingHome) {
 					return false;
 				}
 			}
@@ -91,10 +93,10 @@ public class VehicleTripConstraint implements TripConstraint {
 		// Second, we make sure we are only using a restricted mode at a location where
 		// it has been moved to before.
 		if (requireContinuity.contains(mode)) {
-			Id<Link> currentLinkId = getCurrentLinkId(mode, previousModes);
+			Id<? extends BasicLocation> currentLinkId = getCurrentLocationId(mode, previousModes);
 
 			if (currentLinkId != null) { // We have moved the vehicle already
-				if (currentLinkId.equals(trip.getOriginActivity().getLinkId())) {
+				if (currentLinkId.equals(LocationUtils.getLocationId(trip.getOriginActivity()))) {
 					// But the vehicle is not where we're currently trying to depart
 					return false;
 				}
@@ -120,15 +122,15 @@ public class VehicleTripConstraint implements TripConstraint {
 			}
 
 			String activeMode = null;
-			Id<Link> currentActiveModeLinkId = null;
+			Id<? extends BasicLocation> currentActiveModeLocationId = null;
 
 			for (String restrictedMode : requireEndAtHome) {
-				Id<Link> currentLinkId = getCurrentLinkId(restrictedMode, previousModes);
+				Id<? extends BasicLocation> currentLocationId = getCurrentLocationId(restrictedMode, previousModes);
 
-				if (currentLinkId != null && !currentLinkId.equals(homeLinkId)) {
+				if (currentLocationId != null && !currentLocationId.equals(homeLocationId)) {
 					// Vehicle has been moved and is out of home
 					activeMode = restrictedMode;
-					currentActiveModeLinkId = currentLinkId;
+					currentActiveModeLocationId = currentLocationId;
 					break;
 				}
 			}
@@ -145,7 +147,7 @@ public class VehicleTripConstraint implements TripConstraint {
 					return false;
 				}
 
-				if (!willReturn(currentActiveModeLinkId, previousModes)) {
+				if (!willReturn(currentActiveModeLocationId, previousModes)) {
 					// In case we are able to return to the current location, we can do some walking
 					// or similar in between, becasue we know that we will have a chance later to
 					// pick up the vehicle again. However, if we do not return to the current
@@ -171,34 +173,24 @@ public class VehicleTripConstraint implements TripConstraint {
 		private Collection<String> requireContinuity;
 		private Collection<String> requireEndAtHome;
 		private boolean requireExistingHome;
+		private final HomeFinder homeFinder;
 
 		public Factory(Collection<String> requireStartAtHome, Collection<String> requireContinuity,
-				Collection<String> requireEndAtHome, boolean requireExistingHome) {
+				Collection<String> requireEndAtHome, boolean requireExistingHome, HomeFinder homeFinder) {
 			this.requireStartAtHome = requireStartAtHome;
 			this.requireContinuity = requireContinuity;
 			this.requireEndAtHome = requireEndAtHome;
 			this.requireExistingHome = requireExistingHome;
+			this.homeFinder = homeFinder;
 		}
 
 		@Override
 		public TripConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
 				Collection<String> availableModes) {
-			return new VehicleTripConstraint(trips, getHomeLinkId(trips), requireStartAtHome, requireContinuity,
-					requireEndAtHome, requireExistingHome);
-		}
+			logger.warn("VehicleTripConstraint is not tested. Use at own risk!");
 
-		private Id<Link> getHomeLinkId(List<DiscreteModeChoiceTrip> trips) {
-			for (DiscreteModeChoiceTrip trip : trips) {
-				if (trip.getOriginActivity().getType().equals("home")) {
-					return trip.getOriginActivity().getLinkId();
-				}
-
-				if (trip.getDestinationActivity().getType().equals("home")) {
-					return trip.getDestinationActivity().getLinkId();
-				}
-			}
-
-			return null;
+			return new VehicleTripConstraint(trips, homeFinder.getHomeLocationId(trips), requireStartAtHome,
+					requireContinuity, requireEndAtHome, requireExistingHome);
 		}
 	}
 }

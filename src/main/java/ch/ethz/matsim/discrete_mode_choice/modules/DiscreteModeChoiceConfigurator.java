@@ -1,8 +1,9 @@
 package ch.ethz.matsim.discrete_mode_choice.modules;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.matsim.core.config.Config;
@@ -37,9 +38,19 @@ public final class DiscreteModeChoiceConfigurator {
 			config.addModule(dmcConfig);
 		}
 
+		List<String> tourConstraints = new LinkedList<>();
+		tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
+		tourConstraints.add(ConstraintModule.SUBTOUR_MODE);
+
+		if (smcConfig.getProbaForRandomSingleTripMode() > 0.0) {
+			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getChainBasedModes()));
+		} else {
+			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getModes()));
+		}
+
 		dmcConfig.setModelType(ModelType.Tour);
 		dmcConfig.setSelector(SelectorModule.RANDOM);
-		dmcConfig.setTourConstraints(Collections.singleton(ConstraintModule.VEHICLE_CONTINUITY));
+		dmcConfig.setTourConstraints(tourConstraints);
 		dmcConfig.setTourEstimator(EstimatorModule.UNIFORM);
 		dmcConfig.setTourFinder(TourFinderModule.PLAN_BASED);
 

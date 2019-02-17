@@ -13,6 +13,7 @@ import org.matsim.examples.ExamplesUtils;
 
 import ch.ethz.matsim.baseline_scenario.config.CommandLine;
 import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
+import ch.ethz.matsim.discrete_mode_choice.examples.my_estimator.MyExtension;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceConfigurator;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;

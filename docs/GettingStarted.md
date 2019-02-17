@@ -65,7 +65,7 @@ To set up the model that we just used, the configuration would look like that:
 <module name="DiscreteModeChoice">
    <param name="modelType" value="Tour" />
    <param name="selector" value="Random" />
-   <param name="tourConstraints" value="VehicleContinuity" />
+   <param name="tourConstraints" value="VehicleContinuity,SubtourMode" />
    <param name="tourFinder" value="PlanBased" />
    <param name="tourEstimator" value="Uniform" />
    
@@ -114,9 +114,11 @@ The `ActivityBased` tour finder implementation would then find all `home` activi
 
 ### 3. Apply structural contraints
 
-Now we have a set of possible trip or tour alternatives, but obviously some of them are not realistic. Therefore, in the third step, some of them get filtered out. This is done by [Constraints](components/Constraint.md). In this case, `tourConstraints` is set to `VehicleContinuity`, which is only one constraint, but multiple could be separated by commas. Only if all of the chosen constraints do not filter out a certain option, it survives to the next stage. 
+Now we have a set of possible trip or tour alternatives, but obviously some of them are not realistic. Therefore, in the third step, some of them get filtered out. This is done by [Constraints](components/Constraint.md). In this case, `tourConstraints` is set to `VehicleContinuity` and `SubtourMode` Only if all of the chosen constraints do not filter out a certain option, it survives to the next stage. 
 
-In the present case, the `VehicleContinuity` constraint is chosen. It makes sure that vehicles can only be used where they have been moved to before. For that, the constraint implementation makes use of the structural information of the plan, i.e. where all of the activities take place. The constraint can be configured through a `tourConstraint:VehicleContinuity` parameter set, for instance which modes are constrained (`car` and `bike` by default) and if the first trip by those modes is required to start at home or if the last one is required to end there.
+In the present case, the `VehicleContinuity` constraint is chosen as the first one. It makes sure that vehicles can only be used where they have been moved to before. For that, the constraint implementation makes use of the structural information of the plan, i.e. where all of the activities take place. The constraint can be configured through a `tourConstraint:VehicleContinuity` parameter set, for instance which modes are constrained (`car` and `bike` by default) and if the first trip by those modes is required to start at home or if the last one is required to end there.
+
+The additional `SubtourMode` constraint is added by the `configureAsSubtourModeChoiceReplacement` helper depending on whether the probability to choose a single leg mode in `SubtourModeChoice` is lager than zero. This is a recent addition to the standard `SubtourModeChoice` strategy of MATSim that makes it possible to vary between different non-contrained modes along one unconstrained sub-tour. (More on that in ([Constraints](components/Constraint.md)).
 
 Additional constraints are available by default, e.g. `LinkAttribute`, which only allows to use a certain mode if the origin and/or destination link of the trip has a certain attribute, or `ShapeFile`, which can be configured to only allow trips if they are start and/or end within a certain zone in a shape file. Most of those constraints work on a trip-level, i.e. they don't need information about a whole tour. Adding such a trip-based constraint to the above definition could, for instance, look like this:
 
