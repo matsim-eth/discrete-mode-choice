@@ -54,5 +54,7 @@ For the version that is compatible with a SNAPSHOT, choose:
 The Discrete Mode Choice extension has been used in the following publications:
 
 - Hörl, S., M. Balac and K.W. Axhausen (2019) [Pairing discrete mode choice models and agent-based transport simulation with MATSim](https://www.research-collection.ethz.ch/handle/20.500.11850/303667), presented at the 98th Annual Meeting of the Transportation Research Board, January 2019, Washington D.C.
+- Balac, M., H. Becker, F. Ciari and K.W. Axhausen (2019) [Modeling competing free-floating carsharing operators – A case study for Zurich, Switzerland](https://www.sciencedirect.com/science/article/pii/S0968090X18316656), *Transportation Research: Part C*, **98**, 101-117.
+- Balac, M., A.R. Vetrella, R. Rothfeld and B. Schmid (2018) [Demand estimation for aerial vehicles in urban settings](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/274798/ab1355.pdf), accepted for publication in *IEEE Intelligent Transportation Systems Magazine*.
+- Becker, H., M. Balac and F. Ciari (2018) [Assessing the welfare impacts of MaaS: A case study in Switzerland](https://www.research-collection.ethz.ch/handle/20.500.11850/320799), presented at the 7th Symposium of the European Association for Research in Transportation (hEART 2018), September 2018, Athens, Greece.
 - Hörl, S., M. Balac and K.W. Axhausen (2018) [A first look at bridging discrete choice modeling and agent-based microsimulation in MATSim](https://www.sciencedirect.com/science/article/pii/S1877050918304496?via%3Dihub), *Procedia Computer Science*, **130**, 900-907.
- 
