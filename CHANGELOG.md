@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Fix initial choice fallback for TourModel
 
 **1.0.0**
 
