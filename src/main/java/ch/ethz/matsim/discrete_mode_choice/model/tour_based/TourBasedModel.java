@@ -85,7 +85,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 			if (!selectedCandidate.isPresent()) {
 				switch (fallbackBehaviour) {
 				case INITIAL_CHOICE:
-					List<String> initialModes = trips.stream().map(DiscreteModeChoiceTrip::getInitialMode)
+					List<String> initialModes = tourTrips.stream().map(DiscreteModeChoiceTrip::getInitialMode)
 							.collect(Collectors.toList());
 					TourCandidate fallbackCandidate = estimator.estimateTour(person, initialModes, tourTrips,
 							tourCandidates);
