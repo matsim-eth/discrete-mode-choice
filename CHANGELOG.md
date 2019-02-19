@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Generalize MATSimTripScoringEstimator to all modes in scoring config
 - Fix: Multinomial logit was filtering for < -minimumUtility
 - Fix initial choice fallback for TourModel
 
