@@ -30,7 +30,7 @@ public final class DiscreteModeChoiceConfigurator {
 
 	static public void configureAsSubtourModeChoiceReplacement(Config config) {
 		for (StrategySettings strategy : config.strategy().getStrategySettings()) {
-			if (strategy.getStrategyName().equals(DefaultStrategy.SubtourModeChoice)) {
+			if (strategy.getStrategyName().equals(DefaultStrategy.SubtourModeChoice.toString())) {
 				strategy.setStrategyName(DiscreteModeChoiceModule.STRATEGY_NAME);
 			}
 		}
