@@ -1,5 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice.components.estimators;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.matsim.api.core.v01.TransportMode;
@@ -28,12 +29,15 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	private final ScoringParametersForPerson scoringParametersForPerson;
 	private final PTWaitingTimeEstimator waitingTimeEstimator;
+	private final Collection<String> ptLegModes;
 
 	public MATSimTripScoringEstimator(Network network, ActivityFacilities facilities, TripRouter tripRouter,
-			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson) {
+			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
+			Collection<String> ptModes) {
 		super(tripRouter, network, facilities);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
+		this.ptLegModes = ptModes;
 	}
 
 	@Override
@@ -41,18 +45,16 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			List<TripCandidate> previousTrips, List<? extends PlanElement> elements) {
 		ComputationResult result = null;
 		ScoringParameters parameters = scoringParametersForPerson.getScoringParameters(person);
+		ModeUtilityParameters modeParameters = parameters.modeParams.get(mode);
 
-		switch (mode) {
-		case TransportMode.car:
-		case TransportMode.bike:
-		case TransportMode.walk:
-			result = computeStandardLeg(parameters, elements);
-			break;
-		case TransportMode.pt:
-			result = computePtLeg(parameters, elements, trip.getDepartureTime());
-			break;
-		default:
-			throw new IllegalStateException("Only car, bike, walk, pt supported at the moment.");
+		if (modeParameters == null) {
+			throw new IllegalStateException("Encountered mode for which no scoring parameters are defined: " + mode);
+		}
+
+		if (mode.equals(TransportMode.pt)) {
+			result = computePtTrip(parameters, elements, trip.getDepartureTime());
+		} else {
+			result = computeStandardTrip(parameters, elements);
 		}
 
 		return new MATSimTripCandidate(result.utility, mode, elements, result.travelTime);
@@ -72,8 +74,12 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			double travelDistance) {
 		ModeUtilityParameters modeParams = parameters.modeParams.get(mode);
 
-		if (modeParams == null && mode.contains(TransportMode.walk)) {
-			modeParams = parameters.modeParams.get(TransportMode.walk);
+		if (modeParams == null) {
+			if (mode.contains(TransportMode.walk)) {
+				modeParams = parameters.modeParams.get(TransportMode.walk);
+			} else {
+				throw new IllegalStateException("No scoring parameter exist for: " + mode);
+			}
 		}
 
 		double utility = modeParams.constant;
@@ -83,7 +89,7 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 		return utility;
 	}
 
-	private ComputationResult computeStandardLeg(ScoringParameters parameters, List<? extends PlanElement> elements) {
+	private ComputationResult computeStandardTrip(ScoringParameters parameters, List<? extends PlanElement> elements) {
 		double utility = 0.0;
 		double travelTime = 0.0;
 
@@ -100,9 +106,9 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 		return new ComputationResult(travelTime, utility);
 	}
 
-	private ComputationResult computePtLeg(ScoringParameters parameters, List<? extends PlanElement> elements,
+	private ComputationResult computePtTrip(ScoringParameters parameters, List<? extends PlanElement> elements,
 			double departureTime) {
-		ComputationResult result = computeStandardLeg(parameters, elements);
+		ComputationResult result = computeStandardTrip(parameters, elements);
 
 		int numberOfVehicularLegs = 0;
 		double totalWaitingTime = 0.0;
@@ -113,7 +119,7 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			if (element instanceof Leg) {
 				Leg leg = (Leg) element;
 
-				if (leg.getMode().equals(TransportMode.pt)) {
+				if (ptLegModes.contains(leg.getMode())) {
 					ExperimentalTransitRoute route = (ExperimentalTransitRoute) leg.getRoute();
 					totalWaitingTime += waitingTimeEstimator.estimateWaitingTime(time, route);
 
