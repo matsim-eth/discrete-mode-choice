@@ -24,6 +24,7 @@ import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimat
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.MATSimTripScoringConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.utils.ScheduleWaitingTimeEstimatorModule;
 
 /**
@@ -104,16 +105,15 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	@Singleton
 	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(Network network, ActivityFacilities facilities,
 			TripRouter tripRouter, PTWaitingTimeEstimator waitingTimeEstimator,
-			ScoringParametersForPerson scoringParametersForPerson) {
+			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
+		MATSimTripScoringConfigGroup config = dmcConfig.getMATSimTripScoringConfigGroup();
 		return new MATSimTripScoringEstimator(network, facilities, tripRouter, waitingTimeEstimator,
-				scoringParametersForPerson);
+				scoringParametersForPerson, config.getPtLegModes());
 	}
 
 	@Provides
-	@Singleton
 	public MATSimDayScoringEstimator provideMATSimDayScoringEstimator(MATSimTripScoringEstimator tripEstimator,
 			ScoringParametersForPerson scoringParametersForPerson) {
 		return new MATSimDayScoringEstimator(tripEstimator, scoringParametersForPerson);

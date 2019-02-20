@@ -231,6 +231,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				VehicleConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TOUR_CONSTRAINT, ConstraintModule.SUBTOUR_MODE), //
 				SubtourModeConstraintConfigGroup::new);
+		registry.put(new Tuple<>(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING), //
+				MATSimTripScoringConfigGroup::new);
 
 		return registry;
 	}
@@ -311,6 +313,10 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public SubtourModeConstraintConfigGroup getSubtourConstraintConfig() {
 		return (SubtourModeConstraintConfigGroup) getComponentConfig(TOUR_CONSTRAINT, ConstraintModule.SUBTOUR_MODE);
+	}
+
+	public MATSimTripScoringConfigGroup getMATSimTripScoringConfigGroup() {
+		return (MATSimTripScoringConfigGroup) getComponentConfig(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING);
 	}
 
 	@Override
