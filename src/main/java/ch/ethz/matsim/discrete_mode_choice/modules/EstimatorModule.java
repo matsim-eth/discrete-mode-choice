@@ -105,7 +105,6 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	@Singleton
 	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(Network network, ActivityFacilities facilities,
 			TripRouter tripRouter, PTWaitingTimeEstimator waitingTimeEstimator,
 			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
@@ -115,7 +114,6 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	@Singleton
 	public MATSimDayScoringEstimator provideMATSimDayScoringEstimator(MATSimTripScoringEstimator tripEstimator,
 			ScoringParametersForPerson scoringParametersForPerson) {
 		return new MATSimDayScoringEstimator(tripEstimator, scoringParametersForPerson);
