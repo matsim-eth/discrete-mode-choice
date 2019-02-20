@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Attach sources to maven artifacts
+
 **1.0.1**
 
 - Fix MATSimScoringEstimator parallelization
