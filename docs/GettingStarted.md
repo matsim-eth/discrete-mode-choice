@@ -25,7 +25,7 @@ public class RunRandomSelection {
 
 Running this script will create the `output` directory and perform some iterations for the Sioux Falls scenario. If you look at the output you will see that agents are making mode choices. 
 
-In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replanning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. In that sense, also the whole plan can be one of these sub-tours if it starts and ends at the same spot. Once a sub-tour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
+In the configuration you will see the reason for that: It has the `SubtourModeChoice` strategy enabled, which is commonly used today for mode decisions in MATSim. The way this strategy works is that for each replanning agent a sub-tour of the plan is chosen. A sub tour can be any number of trips that lie between two activities with the same location. Once a sub-tour is chosen, all of the trip modes between the two activities are set to a randomly selected option out of a list of given modes.
 
 The first step of this exercise will be to replicate that behaviour with the DMC extension.
 

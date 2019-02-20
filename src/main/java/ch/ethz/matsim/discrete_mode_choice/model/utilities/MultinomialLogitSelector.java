@@ -58,7 +58,7 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 
 		if (considerMinimumUtility) {
 			filteredCandidates = candidates.stream() //
-					.filter(c -> c.getUtility() > -minimumUtility) //
+					.filter(c -> c.getUtility() > minimumUtility) //
 					.collect(Collectors.toList());
 
 			if (filteredCandidates.size() == 0) {
