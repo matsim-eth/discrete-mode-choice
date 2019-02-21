@@ -62,7 +62,7 @@ public class ShapeFileConstraintConfigGroup extends ComponentConfigGroup {
 		return path;
 	}
 
-	public void setConstrainedModes(Collection<String> contrainedModes) {
+	public void setConstrainedModes(Collection<String> constrainedModes) {
 		this.constrainedModes = new HashSet<>(constrainedModes);
 	}
 

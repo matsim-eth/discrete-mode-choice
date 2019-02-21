@@ -45,6 +45,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	private String tourEstimator = EstimatorModule.UNIFORM;
 	private String tripEstimator = EstimatorModule.UNIFORM;
 
+	private Collection<String> cachedModes = new HashSet<>();
+
 	public static final String GROUP_NAME = "DiscreteModeChoice";
 
 	public static final String PERFORM_REROUTE = "performReroute";
@@ -65,6 +67,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String TOUR_ESTIMATOR = "tourEstimator";
 	public static final String TRIP_ESTIMATOR = "tripEstimator";
+
+	public static final String CACHED_MODES = "cachedModes";
 
 	public DiscreteModeChoiceConfigGroup() {
 		super(GROUP_NAME);
@@ -196,6 +200,24 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	@StringGetter(TRIP_CONSTRAINTS)
 	public String getTripConstraintsAsString() {
 		return String.join(", ", tripConstraints);
+	}
+
+	public void setCachedModes(Collection<String> cachedModes) {
+		this.cachedModes = new HashSet<>(cachedModes);
+	}
+
+	public Collection<String> getCachedModes() {
+		return cachedModes;
+	}
+
+	@StringSetter(CACHED_MODES)
+	public void setCachedModesAsString(String cachedModes) {
+		this.cachedModes = Arrays.asList(cachedModes.split(",")).stream().map(String::trim).collect(Collectors.toSet());
+	}
+
+	@StringGetter(CACHED_MODES)
+	public String getCachedModesAsString() {
+		return String.join(", ", cachedModes);
 	}
 
 	// --- Component configuration ---
@@ -353,6 +375,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				+ String.join(", ", EstimatorModule.TOUR_COMPONENTS));
 		comments.put(TRIP_ESTIMATOR, "Defines which TripEstimator component to use. Built-in choices: "
 				+ String.join(", ", EstimatorModule.TRIP_COMPONENTS));
+
+		comments.put(CACHED_MODES,
+				"Trips tested with the modes listed here will be cached for each combination of trip and agent during one replanning pass.");
 
 		return comments;
 	}

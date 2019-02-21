@@ -126,11 +126,11 @@ Additional constraints are available by default, e.g. `LinkAttribute`, which onl
 <module name="DiscreteModeChoice">
    <!-- ... -->
    <param name="tripConstraints" value="LinkAttribute,ShapeFile" />
-   <param name="tourConstraints" value="VehicleContinuity,Cumulative" />
+   <param name="tourConstraints" value="VehicleContinuity,FromTripBased" />
    <!-- ... -->
 ```
 
-The `Cumulative` tour-based constraint is a special contraint, which looks up all the trip-constraints that are chosen and makes sure that the trip in all of the considered tours fulfill all of them. In case a trip-based base model is used (`modelType == Trip`) no tour constraints are taken into account and the configured `tripConstraints` are applied directly to the trip alternatives.
+The `FromTripBased` tour-based constraint is a special contraint, which looks up all the trip-constraints that are chosen and makes sure that the trip in all of the considered tours fulfill all of them. In case a trip-based base model is used (`modelType == Trip`) no tour constraints are taken into account and the configured `tripConstraints` are applied directly to the trip alternatives.
 
 ### 4. Estimate utilities for all alternatives
 
