@@ -1,6 +1,6 @@
 # Discrete Mode Choice for MATSim
 
-[![Build Status](https://travis-ci.org/matsim-eth/av.png)](https://travis-ci.org/matsim-eth/mode_choice)
+[![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=latest)](https://travis-ci.org/matsim-eth/discrete-mode-choice)
 
 The Discrete Mode Choice extension for MATSim makes it easy to define fine-grained and custom mode choice behaviour in MATSim simulations. Have a look at the [Getting Started](docs/GettingStarted.md) guide to dive right in or have a look at the existing [Components](docs/Components.md) if you are already familiar with the basic concepts.
 
