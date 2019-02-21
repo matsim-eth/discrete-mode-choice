@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Put in caching of trips again (it fell out accidentally during refactoring)
 - Attach sources to maven artifacts
 
 **1.0.1**

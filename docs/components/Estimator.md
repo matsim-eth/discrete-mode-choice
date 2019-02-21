@@ -8,12 +8,16 @@ In the following the existing built-in estimators are described. Some of them ex
 
 ```xml
 <module name="DiscreteModeChoice">
-		<!-- Defines which TourEstimator component to use. Built-in choices: ... -->
-		<param name="tourEstimator" value="Cumulative" />
-		<!-- Defines which TripEstimator component to use. Built-in choices: ... -->
-		<param name="tripEstimator" value="Uniform" />
+	<!-- Defines which TourEstimator component to use. Built-in choices: ... -->
+	<param name="tourEstimator" value="Cumulative" />
+	<!-- Defines which TripEstimator component to use. Built-in choices: ... -->
+	<param name="tripEstimator" value="Uniform" />
+	<!-- Trips tested with the modes listed here will be cached for each combination of trip and agent during one replanning pass. -->
+	<param name="cachedModes" value="car, pt, ..." />
 </module>
 ```
+
+The `cachedModes` parameter defines which trip estimates should be cached. This is especially useful in a tour-based set-up. If estimates are not cached, trips are re-routed for each possible tour. If they are cached, one and the same trip (with the same mode) reuses one estimate in any tour that it is part of.
 
 ## Cumulative
 

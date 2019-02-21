@@ -21,6 +21,7 @@ import ch.ethz.matsim.discrete_mode_choice.components.estimators.UniformTourEsti
 import ch.ethz.matsim.discrete_mode_choice.components.estimators.UniformTripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.components.utils.NullWaitingTimeEstimator;
 import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimator;
+import ch.ethz.matsim.discrete_mode_choice.model.estimation.CachedTripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
@@ -79,7 +80,7 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 		Provider<TripEstimator> provider = components.get(dmcConfig.getTripEstimator());
 
 		if (provider != null) {
-			return provider.get();
+			return new CachedTripEstimator(provider.get(), dmcConfig.getCachedModes());
 		} else {
 			throw new IllegalStateException(
 					String.format("There is no TripEstimator component called '%s',", dmcConfig.getModeAvailability()));
@@ -115,8 +116,9 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 
 	@Provides
 	public MATSimDayScoringEstimator provideMATSimDayScoringEstimator(MATSimTripScoringEstimator tripEstimator,
-			ScoringParametersForPerson scoringParametersForPerson) {
-		return new MATSimDayScoringEstimator(tripEstimator, scoringParametersForPerson);
+			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
+		return new MATSimDayScoringEstimator(new CachedTripEstimator(tripEstimator, dmcConfig.getCachedModes()),
+				scoringParametersForPerson);
 	}
 
 	@Provides
