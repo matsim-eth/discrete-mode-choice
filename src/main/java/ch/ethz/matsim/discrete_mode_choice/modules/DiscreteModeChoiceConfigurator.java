@@ -55,6 +55,8 @@ public final class DiscreteModeChoiceConfigurator {
 			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getModes()));
 		}
 
+		dmcConfig.setCachedModes(Arrays.asList(smcConfig.getModes()));
+
 		dmcConfig.setModelType(ModelType.Tour);
 		dmcConfig.setSelector(SelectorModule.RANDOM);
 		dmcConfig.setTourConstraints(tourConstraints);

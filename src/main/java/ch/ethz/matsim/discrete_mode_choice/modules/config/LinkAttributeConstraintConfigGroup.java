@@ -75,7 +75,7 @@ public class LinkAttributeConstraintConfigGroup extends ComponentConfigGroup {
 		return attributeValue;
 	}
 
-	public void setConstrainedModes(Collection<String> contrainedModes) {
+	public void setConstrainedModes(Collection<String> constrainedModes) {
 		this.constrainedModes = new HashSet<>(constrainedModes);
 	}
 

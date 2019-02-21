@@ -13,6 +13,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.DefaultTourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
+import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 
 /**
  * This tour estimator tries to resemble the MATSim scoring functions as closely
@@ -30,7 +31,7 @@ public class MATSimDayScoringEstimator implements TourEstimator {
 	private final TourEstimator delegate;
 	private final ScoringParametersForPerson scoringParametersForPerson;
 
-	public MATSimDayScoringEstimator(MATSimTripScoringEstimator tripEstimator,
+	public MATSimDayScoringEstimator(TripEstimator tripEstimator,
 			ScoringParametersForPerson scoringParametersForPerson) {
 		this.delegate = new CumulativeTourEstimator(tripEstimator);
 		this.scoringParametersForPerson = scoringParametersForPerson;
