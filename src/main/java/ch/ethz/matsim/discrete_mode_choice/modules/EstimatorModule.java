@@ -116,8 +116,9 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 
 	@Provides
 	public MATSimDayScoringEstimator provideMATSimDayScoringEstimator(MATSimTripScoringEstimator tripEstimator,
-			ScoringParametersForPerson scoringParametersForPerson) {
-		return new MATSimDayScoringEstimator(tripEstimator, scoringParametersForPerson);
+			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
+		return new MATSimDayScoringEstimator(new CachedTripEstimator(tripEstimator, dmcConfig.getCachedModes()),
+				scoringParametersForPerson);
 	}
 
 	@Provides
