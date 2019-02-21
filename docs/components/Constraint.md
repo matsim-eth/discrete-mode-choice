@@ -16,9 +16,9 @@ In the following the existing built-in constraints are described. While some of 
 </module>
 ```
 
-## Cumulative
+## FromTripBased
 
-*Description:* The `Cumulative` tour constraint is a special constraint, because it does not perform any filtering itself. Instead, it will look up the `tripConstraints` from the main DMC configuration and used them on a trip-by-trip basis for each tour that needs to be evaluated. Only if the defined trip constraints pass for all trips in a tour, the tour is considered to be valid.
+*Description:* The `FromTripBased` tour constraint is a special constraint, because it does not perform any filtering itself. Instead, it will look up the `tripConstraints` from the main DMC configuration and used them on a trip-by-trip basis for each tour that needs to be evaluated. Only if the defined trip constraints pass for all trips in a tour, the tour is considered to be valid.
 
 *Level:* Tour
 
