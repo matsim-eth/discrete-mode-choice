@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Fix MNL selection
+
 **1.0.2**
 
 - Fix 'restricted mode' setters for LinkAttributeConstraint and ShapeFileConstraint configuration
