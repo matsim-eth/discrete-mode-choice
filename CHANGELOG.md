@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Make inference of origin/destination facility in AbstractTripRouterEstimator compatible with PlanRouter
 - Fix MNL selection
 
 **1.0.2**

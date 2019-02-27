@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.facilities.ActivityFacilities;
@@ -106,12 +105,12 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(Network network, ActivityFacilities facilities,
+	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(ActivityFacilities facilities,
 			TripRouter tripRouter, PTWaitingTimeEstimator waitingTimeEstimator,
 			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
 		MATSimTripScoringConfigGroup config = dmcConfig.getMATSimTripScoringConfigGroup();
-		return new MATSimTripScoringEstimator(network, facilities, tripRouter, waitingTimeEstimator,
-				scoringParametersForPerson, config.getPtLegModes());
+		return new MATSimTripScoringEstimator(facilities, tripRouter, waitingTimeEstimator, scoringParametersForPerson,
+				config.getPtLegModes());
 	}
 
 	@Provides

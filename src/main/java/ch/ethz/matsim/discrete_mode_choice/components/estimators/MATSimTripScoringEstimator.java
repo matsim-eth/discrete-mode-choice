@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
@@ -31,10 +30,10 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	private final PTWaitingTimeEstimator waitingTimeEstimator;
 	private final Collection<String> ptLegModes;
 
-	public MATSimTripScoringEstimator(Network network, ActivityFacilities facilities, TripRouter tripRouter,
+	public MATSimTripScoringEstimator(ActivityFacilities facilities, TripRouter tripRouter,
 			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
 			Collection<String> ptModes) {
-		super(tripRouter, network, facilities);
+		super(tripRouter, facilities);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 		this.ptLegModes = ptModes;
