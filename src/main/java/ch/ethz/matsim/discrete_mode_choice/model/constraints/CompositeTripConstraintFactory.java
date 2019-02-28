@@ -31,10 +31,10 @@ public class CompositeTripConstraintFactory implements TripConstraintFactory {
 	}
 
 	@Override
-	public TripConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
+	public TripConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> planTrips,
 			Collection<String> availableModes) {
 		List<TripConstraint> constraints = new ArrayList<>(factories.size());
-		factories.forEach(f -> constraints.add(f.createConstraint(person, trips, availableModes)));
+		factories.forEach(f -> constraints.add(f.createConstraint(person, planTrips, availableModes)));
 		return new CompositeTripConstraint(constraints);
 	}
 }

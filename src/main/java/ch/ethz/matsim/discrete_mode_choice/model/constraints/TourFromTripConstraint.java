@@ -17,24 +17,20 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
  * @author sebhoerl
  */
 public class TourFromTripConstraint implements TourConstraint {
-	private final List<DiscreteModeChoiceTrip> trips;
 	private final TripConstraint constraint;
 
-	TourFromTripConstraint(List<DiscreteModeChoiceTrip> trips, TripConstraint constraint) {
+	TourFromTripConstraint(TripConstraint constraint) {
 		this.constraint = constraint;
-		this.trips = trips;
 	}
 
 	@Override
-	public boolean validateBeforeEstimation(List<String> currentTourModes, List<List<String>> previousTourModes) {
+	public boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> currentTourTrips,
+			List<String> currentTourModes, List<List<String>> previousTourModes) {
 		List<String> previousTripModes = new LinkedList<>();
 		previousTourModes.forEach(previousTripModes::addAll);
-		int numberOfPreviousTrips = previousTripModes.size();
 
 		for (int i = 0; i < currentTourModes.size(); i++) {
-			int currentTripIndex = numberOfPreviousTrips + i;
-
-			if (!constraint.validateBeforeEstimation(trips.get(currentTripIndex), currentTourModes.get(i),
+			if (!constraint.validateBeforeEstimation(currentTourTrips.get(i), currentTourModes.get(i),
 					previousTripModes)) {
 				return false;
 			}
@@ -46,17 +42,15 @@ public class TourFromTripConstraint implements TourConstraint {
 	}
 
 	@Override
-	public boolean validateAfterEstimation(TourCandidate currentTourCandidate,
-			List<TourCandidate> previousTourCandidates) {
+	public boolean validateAfterEstimation(List<DiscreteModeChoiceTrip> currentTourTrips,
+			TourCandidate currentTourCandidate, List<TourCandidate> previousTourCandidates) {
 		List<TripCandidate> previousTripCandidates = new LinkedList<>();
 		previousTourCandidates.stream().map(TourCandidate::getTripCandidates).forEach(previousTripCandidates::addAll);
-		int numberOfPreviousCandidates = previousTripCandidates.size();
 
 		for (int i = 0; i < currentTourCandidate.getTripCandidates().size(); i++) {
-			int currentTripIndex = numberOfPreviousCandidates + i;
 			TripCandidate currentTripCandidate = currentTourCandidate.getTripCandidates().get(i);
 
-			if (!constraint.validateAfterEstimation(trips.get(currentTripIndex), currentTripCandidate,
+			if (!constraint.validateAfterEstimation(currentTourTrips.get(i), currentTripCandidate,
 					previousTripCandidates)) {
 				return false;
 			}

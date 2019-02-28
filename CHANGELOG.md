@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Fix buggy vehicle constraints
 - Make inference of origin/destination facility in AbstractTripRouterEstimator compatible with PlanRouter
 - Fix MNL selection
 

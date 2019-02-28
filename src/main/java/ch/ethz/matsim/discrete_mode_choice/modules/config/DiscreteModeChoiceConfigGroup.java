@@ -248,9 +248,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		registry.put(new Tuple<>(TRIP_CONSTRAINT, ConstraintModule.SHAPE_FILE), //
 				ShapeFileConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TRIP_CONSTRAINT, ConstraintModule.VEHICLE_CONTINUITY), //
-				VehicleConstraintConfigGroup::new);
+				VehicleTripConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TOUR_CONSTRAINT, ConstraintModule.VEHICLE_CONTINUITY), //
-				VehicleConstraintConfigGroup::new);
+				VehicleTourConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TOUR_CONSTRAINT, ConstraintModule.SUBTOUR_MODE), //
 				SubtourModeConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING), //
@@ -325,12 +325,14 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		return (ShapeFileConstraintConfigGroup) getComponentConfig(TRIP_CONSTRAINT, ConstraintModule.SHAPE_FILE);
 	}
 
-	public VehicleConstraintConfigGroup getVehicleTripConstraintConfig() {
-		return (VehicleConstraintConfigGroup) getComponentConfig(TRIP_CONSTRAINT, ConstraintModule.VEHICLE_CONTINUITY);
+	public VehicleTripConstraintConfigGroup getVehicleTripConstraintConfig() {
+		return (VehicleTripConstraintConfigGroup) getComponentConfig(TRIP_CONSTRAINT,
+				ConstraintModule.VEHICLE_CONTINUITY);
 	}
 
-	public VehicleConstraintConfigGroup getVehicleTourConstraintConfig() {
-		return (VehicleConstraintConfigGroup) getComponentConfig(TOUR_CONSTRAINT, ConstraintModule.VEHICLE_CONTINUITY);
+	public VehicleTourConstraintConfigGroup getVehicleTourConstraintConfig() {
+		return (VehicleTourConstraintConfigGroup) getComponentConfig(TOUR_CONSTRAINT,
+				ConstraintModule.VEHICLE_CONTINUITY);
 	}
 
 	public SubtourModeConstraintConfigGroup getSubtourConstraintConfig() {
