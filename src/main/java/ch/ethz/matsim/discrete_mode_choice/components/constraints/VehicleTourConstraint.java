@@ -1,9 +1,7 @@
 package ch.ethz.matsim.discrete_mode_choice.components.constraints;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.matsim.api.core.v01.BasicLocation;
 import org.matsim.api.core.v01.Id;
@@ -18,51 +16,31 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactor
 
 /**
  * This constraint makes sure that trips are continuous in the sense that
- * vehicles get not dumped somewhere in the network.
+ * vehicles get not dumped somewhere in the network:
  * 
- * There are three checks:
  * <ul>
- * <li>requireStartAtHome contains all modes for which the vehicle is required
- * to start at home</li>
- * <li>requireEndAtHome contains all modes for which the vehicle is required to
- * end at home</li>
- * <li>requireContinuity contains all modes for which the vehicle can only be
- * used there where it has been brought to before</li>
+ * <li>Vehicles can only be used where they have been moved to before.</li>
+ * <li>Within one tour, vehicles must depart first from the home location.</li>
+ * <li>Within one tour, vehicles must be brought back to the home location.</li>
  * </ul>
- * 
- * The option requireExisitngHome defines what happens if no home can be found
- * for the agent. If it is set to true, people without a home will not be able
- * to use the vehicular modes, because the constraint will always fail. If it is
- * set to true, it is not required that vehicles start and end at home *only if*
- * no home can be found for the agent.
- * 
- * Finally, it needs to be decided where "home" is. Currently, there are two
+ *
+ * For that, it needs to be decided where "home" is. Currently, there are two
  * options: Either the location of the first activity is used (as it is for
  * SubtourModeChoice), or the location of first activity with a certain type
  * (default is "home") is used.
  * 
+ * If a home location cannot be found in the tour, a mode must start and end at
+ * the first and last location in the tour.
+ * 
  * @author sebhoerl
  */
 public class VehicleTourConstraint implements TourConstraint {
-	final private List<DiscreteModeChoiceTrip> trips;
-	final private Id<? extends BasicLocation> homeLocationId;
+	private final Collection<String> restrictedModes;
+	private final Id<? extends BasicLocation> homeLocationId;
 
-	private Collection<String> requireStartAtHome;
-	private Collection<String> requireContinuity;
-	private Collection<String> requireEndAtHome;
-	private boolean requireExistingHome;
-	private Collection<String> testModes;
-
-	public VehicleTourConstraint(List<DiscreteModeChoiceTrip> trips, Id<? extends BasicLocation> homeLocationId,
-			Collection<String> requireStartAtHome, Collection<String> requireContinuity,
-			Collection<String> requireEndAtHome, boolean requireExistingHome, Collection<String> testModes) {
-		this.trips = trips;
+	public VehicleTourConstraint(Collection<String> restrictedModes, Id<? extends BasicLocation> homeLocationId) {
+		this.restrictedModes = restrictedModes;
 		this.homeLocationId = homeLocationId;
-		this.requireStartAtHome = requireStartAtHome;
-		this.requireContinuity = requireContinuity;
-		this.requireEndAtHome = requireEndAtHome;
-		this.requireExistingHome = requireExistingHome;
-		this.testModes = testModes;
 	}
 
 	private int getFirstIndex(String mode, List<String> modes) {
@@ -76,7 +54,7 @@ public class VehicleTourConstraint implements TourConstraint {
 	}
 
 	private int getLastIndex(String mode, List<String> modes) {
-		for (int i = trips.size() - 1; i >= 0; i--) {
+		for (int i = modes.size() - 1; i >= 0; i--) {
 			if (modes.get(i).equals(mode)) {
 				return i;
 			}
@@ -86,41 +64,44 @@ public class VehicleTourConstraint implements TourConstraint {
 	}
 
 	@Override
-	public boolean validateBeforeEstimation(List<String> modes, List<List<String>> previousModes) {
-		for (String testMode : testModes) {
-			if (modes.contains(testMode)) {
-				int firstIndex = getFirstIndex(testMode, modes);
+	public boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> tour, List<String> modes,
+			List<List<String>> previousModes) {
+		for (String restrictedMode : restrictedModes) {
+			if (modes.contains(restrictedMode)) {
+				int firstIndex = getFirstIndex(restrictedMode, modes);
+				int lastIndex = getLastIndex(restrictedMode, modes);
 
-				if (requireStartAtHome.contains(testMode) && !LocationUtils
-						.getLocationId(trips.get(firstIndex).getOriginActivity()).equals(homeLocationId)) {
-					if (homeLocationId != null || requireExistingHome) {
+				if (homeLocationId != null) {
+					Id<? extends BasicLocation> startLocationId = LocationUtils
+							.getLocationId(tour.get(firstIndex).getOriginActivity());
+					Id<? extends BasicLocation> endLocationId = LocationUtils
+							.getLocationId(tour.get(lastIndex).getDestinationActivity());
+
+					if (!startLocationId.equals(homeLocationId)) {
+						return false;
+					}
+
+					if (!endLocationId.equals(homeLocationId)) {
+						return false;
+					}
+				} else {
+					if (firstIndex > 0 || lastIndex < modes.size() - 1) {
 						return false;
 					}
 				}
 
-				int lastIndex = getLastIndex(testMode, modes);
+				Id<? extends BasicLocation> currentLocationId = LocationUtils
+						.getLocationId(tour.get(firstIndex).getDestinationActivity());
 
-				if (requireEndAtHome.contains(testMode) && !LocationUtils
-						.getLocationId(trips.get(lastIndex).getDestinationActivity()).equals(homeLocationId)) {
-					if (homeLocationId != null || requireExistingHome) {
-						return false;
-					}
-				}
+				for (int index = firstIndex + 1; index <= lastIndex; index++) {
+					if (modes.get(index).equals(restrictedMode)) {
+						DiscreteModeChoiceTrip trip = tour.get(index);
 
-				if (requireContinuity.contains(testMode)) {
-					Id<? extends BasicLocation> currentLocationId = LocationUtils
-							.getLocationId(trips.get(firstIndex).getDestinationActivity());
-
-					for (int index = firstIndex + 1; index <= lastIndex; index++) {
-						if (modes.get(index).equals(testMode)) {
-							DiscreteModeChoiceTrip trip = trips.get(index);
-
-							if (!currentLocationId.equals(LocationUtils.getLocationId(trip.getOriginActivity()))) {
-								return false;
-							}
-
-							currentLocationId = LocationUtils.getLocationId(trip.getDestinationActivity());
+						if (!currentLocationId.equals(LocationUtils.getLocationId(trip.getOriginActivity()))) {
+							return false;
 						}
+
+						currentLocationId = LocationUtils.getLocationId(trip.getDestinationActivity());
 					}
 				}
 			}
@@ -130,36 +111,24 @@ public class VehicleTourConstraint implements TourConstraint {
 	}
 
 	@Override
-	public boolean validateAfterEstimation(TourCandidate candidate, List<TourCandidate> previousCandidates) {
+	public boolean validateAfterEstimation(List<DiscreteModeChoiceTrip> tour, TourCandidate candidate,
+			List<TourCandidate> previousCandidates) {
 		return true;
 	}
 
 	public static class Factory implements TourConstraintFactory {
-		private Collection<String> requireStartAtHome;
-		private Collection<String> requireContinuity;
-		private Collection<String> requireEndAtHome;
-		private boolean requireExistingHome;
+		private final Collection<String> restrictedModes;
 		private final HomeFinder homeFinder;
 
-		public Factory(Collection<String> requireStartAtHome, Collection<String> requireContinuity,
-				Collection<String> requireEndAtHome, boolean requireExistingHome, HomeFinder homeFinder) {
-			this.requireStartAtHome = requireStartAtHome;
-			this.requireContinuity = requireContinuity;
-			this.requireEndAtHome = requireEndAtHome;
-			this.requireExistingHome = requireExistingHome;
+		public Factory(Collection<String> restrictedModes, HomeFinder homeFinder) {
+			this.restrictedModes = restrictedModes;
 			this.homeFinder = homeFinder;
 		}
 
 		@Override
-		public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
+		public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> planTrips,
 				Collection<String> availableModes) {
-			Set<String> testModes = new HashSet<>();
-			testModes.addAll(requireStartAtHome);
-			testModes.addAll(requireEndAtHome);
-			testModes.addAll(requireContinuity);
-
-			return new VehicleTourConstraint(trips, homeFinder.getHomeLocationId(trips), requireStartAtHome,
-					requireContinuity, requireEndAtHome, requireExistingHome, testModes);
+			return new VehicleTourConstraint(restrictedModes, homeFinder.getHomeLocationId(planTrips));
 		}
 	}
 }

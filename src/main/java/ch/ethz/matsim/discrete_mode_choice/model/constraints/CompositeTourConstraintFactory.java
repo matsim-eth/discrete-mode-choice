@@ -31,9 +31,9 @@ public class CompositeTourConstraintFactory implements TourConstraintFactory {
 	}
 
 	@Override
-	public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
+	public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> planTrips,
 			Collection<String> availableModes) {
 		return new CompositeTourConstraint(factories.stream()
-				.map(f -> f.createConstraint(person, trips, availableModes)).collect(Collectors.toList()));
+				.map(f -> f.createConstraint(person, planTrips, availableModes)).collect(Collectors.toList()));
 	}
 }

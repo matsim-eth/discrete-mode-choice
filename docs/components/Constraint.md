@@ -96,17 +96,11 @@ No special configuration.
 
 ## VehicleContinuity (Tour)
 
-*Description:* The `VehicleTourConstraint` makes sure that agents have consistent mode chains in their plans. There are three slots that enforce the behaviour:
-
-- `requireContinuity`: These modes can only be used if the respective vehicle has been moved to the new departure location before
-- `requireStartsAtHome`: The first trip on a tour with these modes *must* start at the home location of the agent
-- `requireEndsAtHome`: At the end of the tour, the vehicles of these modes *must* be back at home
-
-Usually, those three fields are the same, but there are cases when this may not be desired (e.g. if people should start their tours at home with their car, but they can pick up a bike anywhere else).
+*Description:* The `VehicleTourConstraint` makes sure that agents have consistent mode chains in their plans. There are three slots that enforce the behaviour. The option `restrictedModes` contains a list of modes that can only be used if the respective vehicle has been moved to the new departure location before. Also it is required that the vehicle can only start at and must be brought back to a specified home location.
 
 The *home location* of an agent is not given per se, so it needs to be inferred. Currently, `homeType` can be set either to `USE_FIRST_ACTIVITY`, which declares the location of the first activity in a tour as the "home location". This makes most sense if a plan-based model is used, where the tour in question is, in fact, the whole plan. Also, this setting resembles the behaviour of `SubtourModeChoice`. Alternatively, `USE_ACTIVITY_TYPE` can be chosen, which will search for the first activity of type `homeActivityType` in the tour and declare the location of that activity type as "home location".
 
-In some cases it may be possible that no "home location" can be found for an agent (e.g. if it is through-traffic entering and exiting the simulation scenario at two points). In that case `requireHomeExists` either enforces the constraint, meaning that those people will never be able to use the constrained modes or revokes the "start at home" and "end at home" constraints for that agent.
+In some cases it may be possible that no "home location" can be found for an agent (e.g. if it is through-traffic entering and exiting the simulation scenario at two points). In that case, the modes needs to start at the first activity in the plan and end at the last one.
 
 *Level:* Tour
 
@@ -118,14 +112,8 @@ In some cases it may be possible that no "home location" can be found for an age
 	<param name="homeActivityType" value="home" />
 	<!-- Defines how to determine where the home of an agent is. -->
 	<param name="homeType" value="USE_FIRST_ACTIVITY" />
-	<!-- List of vehicular modes that must be consistent, i.e. a trip can only be performed if the vehicle has been moved there before. -->
-	<param name="requireContinuity" value="car" />
-	<!-- List of vehicular modes that must end at a home activity. -->
-	<param name="requireEndAtHome" value="car" />
-	<!-- Defines whether an agent without a home activity can use a constrained vehicular mode. If it is set to true agents without a home activity cannot use constrained modes. If it is set to false they can use constrained modes at any stage during their plan. -->
-	<param name="requireHomeExists" value="false" />
-	<!-- List of vehicular modes that must start at a home activity. -->
-	<param name="requireStartAtHome" value="car" />
+	<!-- Defines which modes must fulfill continuity constraints (can only be used where they have been brough to before) -->
+	<param name="restrictedModes" value="car" />
 </parameterset>
 ```
 

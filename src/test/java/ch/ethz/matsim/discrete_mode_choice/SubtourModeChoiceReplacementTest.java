@@ -1,12 +1,13 @@
 package ch.ethz.matsim.discrete_mode_choice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
@@ -326,14 +327,9 @@ public class SubtourModeChoiceReplacementTest {
 		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory();
 		FallbackBehaviour fallbackBehaviour = FallbackBehaviour.EXCEPTION;
 
-		List<String> requireStartAtHome = constrainedModes;
-		List<String> requireContinuity = constrainedModes;
-		List<String> requireEndAtHome = constrainedModes;
-		boolean requireExistingHome = true;
 		HomeFinder homeFinder = new FirstActivityHomeFinder();
-
-		TourConstraintFactory vehicleConstraintFactory = new VehicleTourConstraint.Factory(requireStartAtHome,
-				requireContinuity, requireEndAtHome, requireExistingHome, homeFinder);
+		TourConstraintFactory vehicleConstraintFactory = new VehicleTourConstraint.Factory(constrainedModes,
+				homeFinder);
 
 		TourConstraintFactory subtourModeChoiceConstraintFactory = new SubtourModeConstraint.Factory(
 				allowSingleLegs ? constrainedModes : modes);
