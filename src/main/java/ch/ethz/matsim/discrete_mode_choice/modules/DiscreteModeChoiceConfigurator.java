@@ -45,7 +45,7 @@ public final class DiscreteModeChoiceConfigurator {
 		}
 
 		List<String> tourConstraints = new LinkedList<>();
-		// tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
+		tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
 		tourConstraints.add(ConstraintModule.SUBTOUR_MODE);
 
 		if (smcConfig.getProbaForRandomSingleTripMode() > 0.0) {
