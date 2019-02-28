@@ -40,18 +40,21 @@ public class SubtourModeConstraint extends AbstractTourConstraint {
 	}
 
 	@Override
-	public boolean validateBeforeEstimation(List<String> modes, List<List<String>> previousModes) {
+	public boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> tour, List<String> modes,
+			List<List<String>> previousModes) {
+		int tourLocationOffset = previousModes.stream().mapToInt(Collection::size).sum();
+
 		for (int index = 0; index < modes.size(); index++) {
 			// We loop over all trips
-			Id<? extends BasicLocation> startLocationId = originLocations.get(index);
+			Id<? extends BasicLocation> startLocationId = originLocations.get(index + tourLocationOffset);
 
 			for (int offset = 0; offset + index < modes.size(); offset++) {
 				// We loop over all following destinations
 
-				if (destinationLocations.get(offset + index).equals(startLocationId)) {
+				if (destinationLocations.get(offset + index + tourLocationOffset).equals(startLocationId)) {
 					// We found a destination that has the origin location. Now we need to check
 					// that all modes in between are of the same type.
-					String mode = modes.get(index);
+					String mode = modes.get(index + tourLocationOffset);
 
 					for (int testIndex = index + 1; testIndex <= index + offset; testIndex++) {
 						String testMode = modes.get(testIndex);

@@ -99,7 +99,7 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 		double pointer = random.nextDouble() * totalDensity;
 
 		int selection = (int) cumulativeDensity.stream().filter(f -> f < pointer).count();
-		return Optional.of(candidates.get(selection));
+		return Optional.of(filteredCandidates.get(selection));
 	}
 
 	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {

@@ -24,9 +24,9 @@ public class TourFromTripConstraintFactory implements TourConstraintFactory {
 	}
 
 	@Override
-	public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
+	public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> planTrips,
 			Collection<String> availableModes) {
-		TripConstraint constraint = factory.createConstraint(person, trips, availableModes);
-		return new TourFromTripConstraint(trips, constraint);
+		TripConstraint constraint = factory.createConstraint(person, planTrips, availableModes);
+		return new TourFromTripConstraint(constraint);
 	}
 }

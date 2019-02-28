@@ -13,6 +13,6 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
  * @author sebhoerl
  */
 public interface TourConstraintFactory {
-	TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
+	TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> planTrips,
 			Collection<String> availableModes);
 }

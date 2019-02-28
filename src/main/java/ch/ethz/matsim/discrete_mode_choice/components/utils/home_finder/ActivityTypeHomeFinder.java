@@ -5,6 +5,7 @@ import java.util.List;
 import org.matsim.api.core.v01.BasicLocation;
 import org.matsim.api.core.v01.Id;
 
+import ch.ethz.matsim.discrete_mode_choice.components.utils.LocationUtils;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
 /**
@@ -26,11 +27,11 @@ public class ActivityTypeHomeFinder implements HomeFinder {
 	public Id<? extends BasicLocation> getHomeLocationId(List<DiscreteModeChoiceTrip> trips) {
 		for (DiscreteModeChoiceTrip trip : trips) {
 			if (trip.getOriginActivity().getType().equals(activityType)) {
-				return trip.getOriginActivity().getLinkId();
+				return LocationUtils.getLocationId(trip.getOriginActivity());
 			}
 
 			if (trip.getDestinationActivity().getType().equals(activityType)) {
-				return trip.getDestinationActivity().getLinkId();
+				return LocationUtils.getLocationId(trip.getDestinationActivity());
 			}
 		}
 
