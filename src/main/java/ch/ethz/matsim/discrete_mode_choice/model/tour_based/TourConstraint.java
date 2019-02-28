@@ -2,6 +2,8 @@ package ch.ethz.matsim.discrete_mode_choice.model.tour_based;
 
 import java.util.List;
 
+import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
+
 /**
  * Defines a constraint on the tour level.
  * 
@@ -19,7 +21,8 @@ public interface TourConstraint {
 	 * argument contains a list of modes that have been chosen for earlier tours in
 	 * the plan.
 	 */
-	boolean validateBeforeEstimation(List<String> modes, List<List<String>> previousModes);
+	boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> tour, List<String> modes,
+			List<List<String>> previousModes);
 
 	/**
 	 * This function is called after a tour is estimated. If it returns true, the
@@ -30,5 +33,6 @@ public interface TourConstraint {
 	 * argument contains a list of candidates that have been chosen for earlier
 	 * tours in the plan.
 	 */
-	boolean validateAfterEstimation(TourCandidate candidate, List<TourCandidate> previousCandidates);
+	boolean validateAfterEstimation(List<DiscreteModeChoiceTrip> tour, TourCandidate candidate,
+			List<TourCandidate> previousCandidates);
 }

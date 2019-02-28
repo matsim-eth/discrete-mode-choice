@@ -12,6 +12,7 @@ import org.matsim.core.config.ConfigGroup;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.LinkAttributeConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.ShapeFileConstraint;
@@ -31,7 +32,9 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConf
 import ch.ethz.matsim.discrete_mode_choice.modules.config.LinkAttributeConstraintConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.ShapeFileConstraintConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.SubtourModeConstraintConfigGroup;
-import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleConstraintConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleTourConstraintConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleTourConstraintConfigGroup.HomeType;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleTripConstraintConfigGroup;
 
 /**
  * Internal module that manages all built-in constraints.
@@ -153,10 +156,10 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 		return new ShapeFileConstraint.Factory(network, config.getConstrainedModes(), config.getRequirement(), url);
 	}
 
-	private HomeFinder getHomeFinder(VehicleConstraintConfigGroup config) {
-		switch (config.getHomeType()) {
+	private HomeFinder getHomeFinder(HomeType homeType, String homeActivityType) {
+		switch (homeType) {
 		case USE_ACTIVITY_TYPE:
-			return new ActivityTypeHomeFinder(config.getHomeActivityType());
+			return new ActivityTypeHomeFinder(homeActivityType);
 		case USE_FIRST_ACTIVITY:
 			return new FirstActivityHomeFinder();
 		default:
@@ -166,18 +169,34 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 
 	@Provides
 	@Singleton
-	public VehicleTripConstraint.Factory provideVehicleTripConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
-		VehicleConstraintConfigGroup config = dmcConfig.getVehicleTripConstraintConfig();
-		return new VehicleTripConstraint.Factory(config.getRequireStartAtHome(), config.getRequireContinuity(),
-				config.getRequireEndAtHome(), config.getRequireHomeExists(), getHomeFinder(config));
+	@Named("trip")
+	public HomeFinder provideTripHomeFinder(DiscreteModeChoiceConfigGroup dmcConfig) {
+		VehicleTripConstraintConfigGroup config = dmcConfig.getVehicleTripConstraintConfig();
+		return getHomeFinder(config.getHomeType(), config.getHomeActivityType());
 	}
 
 	@Provides
 	@Singleton
-	public VehicleTourConstraint.Factory provideVehicleTourConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
-		VehicleConstraintConfigGroup config = dmcConfig.getVehicleTourConstraintConfig();
-		return new VehicleTourConstraint.Factory(config.getRequireStartAtHome(), config.getRequireContinuity(),
-				config.getRequireEndAtHome(), config.getRequireHomeExists(), getHomeFinder(config));
+	public VehicleTripConstraint.Factory provideVehicleTripConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
+			@Named("trip") HomeFinder homeFinder) {
+		VehicleTripConstraintConfigGroup config = dmcConfig.getVehicleTripConstraintConfig();
+		return new VehicleTripConstraint.Factory(config.getRestrictedModes(), config.getIsAdvanced(), homeFinder);
+	}
+
+	@Provides
+	@Singleton
+	@Named("tour")
+	public HomeFinder provideTourHomeFinder(DiscreteModeChoiceConfigGroup dmcConfig) {
+		VehicleTourConstraintConfigGroup config = dmcConfig.getVehicleTourConstraintConfig();
+		return getHomeFinder(config.getHomeType(), config.getHomeActivityType());
+	}
+
+	@Provides
+	@Singleton
+	public VehicleTourConstraint.Factory provideVehicleTourConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
+			@Named("tour") HomeFinder homeFinder) {
+		VehicleTourConstraintConfigGroup config = dmcConfig.getVehicleTourConstraintConfig();
+		return new VehicleTourConstraint.Factory(config.getRestrictedModes(), homeFinder);
 	}
 
 	@Provides

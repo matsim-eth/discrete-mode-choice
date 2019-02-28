@@ -45,7 +45,7 @@ public final class DiscreteModeChoiceConfigurator {
 		}
 
 		List<String> tourConstraints = new LinkedList<>();
-		tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
+		// tourConstraints.add(ConstraintModule.VEHICLE_CONTINUITY);
 		tourConstraints.add(ConstraintModule.SUBTOUR_MODE);
 
 		if (smcConfig.getProbaForRandomSingleTripMode() > 0.0) {
@@ -62,9 +62,7 @@ public final class DiscreteModeChoiceConfigurator {
 		dmcConfig.setTourEstimator(EstimatorModule.UNIFORM);
 		dmcConfig.setTourFinder(TourFinderModule.PLAN_BASED);
 
-		dmcConfig.getVehicleTourConstraintConfig().setRequireContinuity(Arrays.asList(smcConfig.getChainBasedModes()));
-		dmcConfig.getVehicleTourConstraintConfig().setRequireStartAtHome(Arrays.asList(smcConfig.getChainBasedModes()));
-		dmcConfig.getVehicleTourConstraintConfig().setRequireEndAtHome(Arrays.asList(smcConfig.getChainBasedModes()));
+		dmcConfig.getVehicleTourConstraintConfig().setRestrictedModes(Arrays.asList(smcConfig.getChainBasedModes()));
 
 		if (smcConfig.considerCarAvailability()) {
 			dmcConfig.setModeAvailability(ModeAvailabilityModule.CAR);

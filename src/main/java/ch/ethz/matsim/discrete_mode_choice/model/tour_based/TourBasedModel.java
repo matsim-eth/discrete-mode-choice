@@ -67,13 +67,13 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 			while (generator.hasNext()) {
 				List<String> tourModes = generator.next();
 
-				if (!constraint.validateBeforeEstimation(tourModes, tourCandidateModes)) {
+				if (!constraint.validateBeforeEstimation(tourTrips, tourModes, tourCandidateModes)) {
 					continue;
 				}
 
 				TourCandidate candidate = estimator.estimateTour(person, tourModes, tourTrips, tourCandidates);
 
-				if (!constraint.validateAfterEstimation(candidate, tourCandidates)) {
+				if (!constraint.validateAfterEstimation(tourTrips, candidate, tourCandidates)) {
 					continue;
 				}
 
