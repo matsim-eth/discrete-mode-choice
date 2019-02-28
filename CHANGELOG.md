@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Fix HomeActivityFinder (was just based on links rather than BasicLocation before)
 - Fix buggy vehicle constraints
 - Make inference of origin/destination facility in AbstractTripRouterEstimator compatible with PlanRouter
 - Fix MNL selection
