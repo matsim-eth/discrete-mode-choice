@@ -49,8 +49,11 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 		List<TripCandidate> tripCandidates = new ArrayList<>(trips.size());
 		List<String> tripCandidateModes = new ArrayList<>(trips.size());
 
+		int tripIndex = 0;
+
 		for (DiscreteModeChoiceTrip trip : trips) {
 			UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
+			tripIndex++;
 
 			for (String mode : modes) {
 				if (!constraint.validateBeforeEstimation(trip, mode, tripCandidateModes)) {
@@ -58,6 +61,11 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 				}
 
 				TripCandidate candidate = estimator.estimateTrip(person, mode, trip, tripCandidates);
+
+				if (!Double.isFinite(candidate.getUtility())) {
+					logger.warn(buildIllegalUtilityMessage(tripIndex, person));
+					continue;
+				}
 
 				if (!constraint.validateAfterEstimation(trip, candidate, tripCandidates)) {
 					continue;
@@ -73,13 +81,13 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 				case INITIAL_CHOICE:
 					TripCandidate fallbackCandidate = estimator.estimateTrip(person, trip.getInitialMode(), trip,
 							tripCandidates);
-					logger.info(buildFallbackMessage(person, "Setting trip back to initial mode."));
+					logger.info(buildFallbackMessage(tripIndex, person, "Setting trip back to initial mode."));
 					selectedCandidate = Optional.ofNullable(fallbackCandidate);
 					break;
 				case IGNORE_AGENT:
-					return handleIgnoreAgent(person, trips);
+					return handleIgnoreAgent(tripIndex, person, trips);
 				case EXCEPTION:
-					throw new NoFeasibleChoiceException(buildFallbackMessage(person, ""));
+					throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
 				}
 			}
 
@@ -90,18 +98,24 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 		return tripCandidates;
 	}
 
-	private List<TripCandidate> handleIgnoreAgent(Person person, List<DiscreteModeChoiceTrip> trips) {
+	private List<TripCandidate> handleIgnoreAgent(int tripIndex, Person person, List<DiscreteModeChoiceTrip> trips) {
 		List<TripCandidate> candidates = new ArrayList<>(trips.size());
 
 		for (DiscreteModeChoiceTrip trip : trips) {
 			candidates.add(estimator.estimateTrip(person, trip.getInitialMode(), trip, candidates));
 		}
 
-		logger.warn(buildFallbackMessage(person, "Setting whole plan back to initial modes."));
+		logger.warn(buildFallbackMessage(tripIndex, person, "Setting whole plan back to initial modes."));
 		return candidates;
 	}
 
-	private String buildFallbackMessage(Person person, String appendix) {
-		return String.format("No feasible mode choice candidate for agent %s. %s", person.getId().toString(), appendix);
+	private String buildFallbackMessage(int tripIndex, Person person, String appendix) {
+		return String.format("No feasible mode choice candidate for trip %d of agent %s. %s", tripIndex,
+				person.getId().toString(), appendix);
+	}
+
+	private String buildIllegalUtilityMessage(int tripIndex, Person person) {
+		return String.format("Received illegal utility for trip %d of agent %s. Continuing with next candidate.",
+				tripIndex, person.getId().toString());
 	}
 }
