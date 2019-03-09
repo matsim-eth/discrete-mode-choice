@@ -52,7 +52,7 @@ public class MATSimDayScoringEstimator implements TourEstimator {
 		for (String uniqueMode : uniqueModes) {
 			ModeUtilityParameters modeParams = parameters.modeParams.get(uniqueMode);
 			utility += modeParams.dailyUtilityConstant;
-			utility += parameters.marginalUtilityOfMoney + modeParams.dailyMoneyConstant;
+			utility += parameters.marginalUtilityOfMoney * modeParams.dailyMoneyConstant;
 		}
 
 		return new DefaultTourCandidate(utility, candidate.getTripCandidates());
