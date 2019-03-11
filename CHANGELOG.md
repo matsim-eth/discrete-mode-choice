@@ -1,5 +1,7 @@
 # CHANGELOG
 
+**1.0.4**
+
 - Fix bug in MATSimDayScoringEstimator
 - Better handling of max_dur in activities
 - Switch to weekly SNAPSHOT instead of continuous SNAPSHOT of MATSim
