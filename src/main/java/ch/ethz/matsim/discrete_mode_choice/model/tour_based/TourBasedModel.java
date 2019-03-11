@@ -60,6 +60,8 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		List<TourCandidate> tourCandidates = new LinkedList<>();
 		List<List<String>> tourCandidateModes = new LinkedList<>();
 
+		int tripIndex = 1;
+
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
 			ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person, tourTrips);
 			UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
@@ -72,6 +74,11 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 				}
 
 				TourCandidate candidate = estimator.estimateTour(person, tourModes, tourTrips, tourCandidates);
+
+				if (!Double.isFinite(candidate.getUtility())) {
+					logger.warn(buildIllegalUtilityMessage(tripIndex, person));
+					continue;
+				}
 
 				if (!constraint.validateAfterEstimation(tourTrips, candidate, tourCandidates)) {
 					continue;
@@ -89,19 +96,21 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 							.collect(Collectors.toList());
 					TourCandidate fallbackCandidate = estimator.estimateTour(person, initialModes, tourTrips,
 							tourCandidates);
-					logger.warn(buildFallbackMessage(person, "Setting tour modes back to initial choice."));
+					logger.warn(buildFallbackMessage(tripIndex, person, "Setting tour modes back to initial choice."));
 					selectedCandidate = Optional.of(fallbackCandidate);
 					break;
 				case IGNORE_AGENT:
-					return handleIgnoreAgent(person, tourTrips);
+					return handleIgnoreAgent(tripIndex, person, tourTrips);
 				case EXCEPTION:
-					throw new NoFeasibleChoiceException(buildFallbackMessage(person, ""));
+					throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
 				}
 			}
 
 			tourCandidates.add(selectedCandidate.get());
 			tourCandidateModes.add(selectedCandidate.get().getTripCandidates().stream().map(c -> c.getMode())
 					.collect(Collectors.toList()));
+
+			tripIndex += tourTrips.size();
 		}
 
 		return createTripCandidates(tourCandidates);
@@ -112,7 +121,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 				.collect(Collectors.toList());
 	}
 
-	private List<TripCandidate> handleIgnoreAgent(Person person, List<DiscreteModeChoiceTrip> trips) {
+	private List<TripCandidate> handleIgnoreAgent(int tripIndex, Person person, List<DiscreteModeChoiceTrip> trips) {
 		List<TourCandidate> tourCandidates = new LinkedList<>();
 
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
@@ -121,11 +130,18 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 			tourCandidates.add(estimator.estimateTour(person, tourModes, tourTrips, tourCandidates));
 		}
 
-		logger.warn(buildFallbackMessage(person, "Setting whole plan back to initial modes."));
+		logger.warn(buildFallbackMessage(tripIndex, person, "Setting whole plan back to initial modes."));
 		return createTripCandidates(tourCandidates);
 	}
 
-	private String buildFallbackMessage(Person person, String appendix) {
-		return String.format("No feasible mode choice candidate for agent %s. %s", person.getId().toString(), appendix);
+	private String buildFallbackMessage(int tripIndex, Person person, String appendix) {
+		return String.format("No feasible mode choice candidate for tour starting at trip %d of agent %s. %s",
+				tripIndex, person.getId().toString(), appendix);
+	}
+
+	private String buildIllegalUtilityMessage(int tripIndex, Person person) {
+		return String.format(
+				"Received illegal utility for for tour starting at trip %d of agent %s. Continuing with next candidate.",
+				tripIndex, person.getId().toString());
 	}
 }

@@ -37,6 +37,8 @@ public abstract class AbstractTripRouterEstimator implements TripEstimator {
 	public final TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips) {
 		// I) Find the correct origin and destination facilities
+
+		// Backport: FacilitiesUtils.toFacility does not exist yet.
 		Facility originFacility = getFacilityForActivity(trip.getOriginActivity());
 		Facility destinationFacility = getFacilityForActivity(trip.getDestinationActivity());
 

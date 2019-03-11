@@ -41,15 +41,22 @@ public final class TripListConverter {
 
 			if (!Time.isUndefinedTime(originActivity.getEndTime())) {
 				time = originActivity.getEndTime();
+			} else if (!Time.isUndefinedTime(originActivity.getMaximumDuration())) {
+				time += originActivity.getMaximumDuration();
 			} else {
 				logger.warn(String.format(
-						"Found origin activity with undefined end time in agent %s. Falling back to previous end time or midnight.",
-						plan.getPerson().getId().toString()));
+						"Found origin activity with invalid end time and maximum duration in agent %s. Falling back to %s.",
+						plan.getPerson().getId().toString(), Time.writeTime(time)));
 			}
 
 			trips.add(new DiscreteModeChoiceTrip(originActivity, destinationActivity, leg.getMode(), time,
 					plan.getPerson().hashCode(), i));
 			legs.add(leg);
+
+			// Either this will be reset by the end time of the next origin activity, or we
+			// make sure that we move forward in time (if all activities are
+			// duration-based).
+			time += leg.getTravelTime();
 		}
 	}
 }
