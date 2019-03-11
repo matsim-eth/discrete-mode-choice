@@ -2,13 +2,11 @@ package ch.ethz.matsim.discrete_mode_choice.components.estimators;
 
 import java.util.List;
 
-import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.core.router.ActivityWrapperFacility;
-import org.matsim.core.router.PlanRouter;
 import org.matsim.core.router.TripRouter;
 import org.matsim.facilities.ActivityFacilities;
+import org.matsim.facilities.FacilitiesUtils;
 import org.matsim.facilities.Facility;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -37,8 +35,9 @@ public abstract class AbstractTripRouterEstimator implements TripEstimator {
 	public final TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips) {
 		// I) Find the correct origin and destination facilities
-		Facility originFacility = getFacilityForActivity(trip.getOriginActivity());
-		Facility destinationFacility = getFacilityForActivity(trip.getDestinationActivity());
+		
+		Facility originFacility = FacilitiesUtils.toFacility(trip.getOriginActivity(), facilities);
+		Facility destinationFacility = FacilitiesUtils.toFacility(trip.getDestinationActivity(), facilities);
 
 		// II) Perform the routing
 		List<? extends PlanElement> elements = tripRouter.calcRoute(mode, originFacility, destinationFacility,
@@ -46,18 +45,6 @@ public abstract class AbstractTripRouterEstimator implements TripEstimator {
 
 		// III) Perform utility estimation
 		return estimateTripCandidate(person, mode, trip, previousTrips, elements);
-	}
-
-	/**
-	 * This converts an activity to a facility. The logic is copied from
-	 * {@link PlanRouter#toFacility}.
-	 */
-	private Facility getFacilityForActivity(Activity activity) {
-		if (activity.getLinkId() == null && activity.getCoord() == null) {
-			return facilities.getFacilities().get(activity.getFacilityId());
-		}
-
-		return new ActivityWrapperFacility(activity);
 	}
 
 	/**

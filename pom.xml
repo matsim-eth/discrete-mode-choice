@@ -8,7 +8,8 @@
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
-		<matsim.version>0.11.0-SNAPSHOT</matsim.version>
+		<matsim.version>0.11.0-2019w10-SNAPSHOT</matsim.version>
+		<geotools.version>20.2</geotools.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
@@ -60,6 +61,22 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-main</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-referencing</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.4.0</version>
@@ -71,12 +88,6 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.4.0</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.matsim</groupId>
-			<artifactId>matsim-examples</artifactId>
-			<version>${matsim.version}</version>
 		</dependency>
 
 		<dependency>
