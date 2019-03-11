@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.0.5 (under development)**
+
+- No commits yet
+
 **1.0.4**
 
 - Fix bug in MATSimDayScoringEstimator
