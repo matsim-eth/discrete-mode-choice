@@ -10,6 +10,7 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.groups.StrategyConfigGroup;
 import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
 import org.matsim.core.config.groups.SubtourModeChoiceConfigGroup;
+import org.matsim.core.replanning.modules.SubtourModeChoice;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule.DefaultSelector;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule.DefaultStrategy;
 
@@ -53,6 +54,10 @@ public final class DiscreteModeChoiceConfigurator {
 		} else {
 			dmcConfig.getSubtourConstraintConfig().setConstrainedModes(Arrays.asList(smcConfig.getModes()));
 		}
+
+		dmcConfig.getSubtourConstraintConfig().setAvailableModes(Arrays.asList(smcConfig.getModes()));
+		dmcConfig.getSubtourConstraintConfig().setKeepUnavailableModes(
+				smcConfig.getBehavior().equals(SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes));
 
 		dmcConfig.setCachedModes(Arrays.asList(smcConfig.getModes()));
 

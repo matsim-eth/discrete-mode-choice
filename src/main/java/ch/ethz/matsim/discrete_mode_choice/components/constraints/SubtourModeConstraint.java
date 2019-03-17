@@ -29,19 +29,39 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactor
  */
 public class SubtourModeConstraint extends AbstractTourConstraint {
 	private final Collection<String> constrainedModes;
+	private final Collection<String> availableModes;
 	private final List<Id<? extends BasicLocation>> originLocations;
 	private final List<Id<? extends BasicLocation>> destinationLocations;
+	private final boolean keepUnavailableModes;
 
-	public SubtourModeConstraint(Collection<String> constrainedModes, List<Id<? extends BasicLocation>> originLocations,
-			List<Id<? extends BasicLocation>> destinationLocations) {
+	public SubtourModeConstraint(Collection<String> constrainedModes, Collection<String> availableModes,
+			List<Id<? extends BasicLocation>> originLocations, List<Id<? extends BasicLocation>> destinationLocations,
+			boolean keepUnavailableModes) {
 		this.constrainedModes = constrainedModes;
 		this.originLocations = originLocations;
 		this.destinationLocations = destinationLocations;
+		this.keepUnavailableModes = keepUnavailableModes;
+		this.availableModes = availableModes;
 	}
 
 	@Override
 	public boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> tour, List<String> modes,
 			List<List<String>> previousModes) {
+		if (keepUnavailableModes) {
+			for (int index = 0; index < modes.size(); index++) {
+				String initialMode = tour.get(index).getInitialMode();
+
+				if (!availableModes.contains(initialMode)) {
+					if (!modes.get(index).equals(initialMode)) {
+						// Here we found a trip with an initial mode that is not in the available modes
+						// for mode choice. Hence, we only allow tours that have this exact mode at this
+						// spot. This means that this mode can never be changed.
+						return false;
+					}
+				}
+			}
+		}
+
 		int tourLocationOffset = previousModes.stream().mapToInt(Collection::size).sum();
 
 		for (int index = 0; index < modes.size(); index++) {
@@ -76,14 +96,19 @@ public class SubtourModeConstraint extends AbstractTourConstraint {
 
 	static public class Factory implements TourConstraintFactory {
 		private final Collection<String> constrainedModes;
+		private final Collection<String> availableModes;
+		private final boolean keepUnavailableModes;
 
-		public Factory(Collection<String> constrainedModes) {
+		public Factory(Collection<String> constrainedModes, Collection<String> availableModes,
+				boolean keepUnavailableModes) {
 			this.constrainedModes = constrainedModes;
+			this.keepUnavailableModes = keepUnavailableModes;
+			this.availableModes = availableModes;
 		}
 
 		@Override
 		public TourConstraint createConstraint(Person person, List<DiscreteModeChoiceTrip> trips,
-				Collection<String> availableModes) {
+				Collection<String> availableModesForPerson) {
 			List<Id<? extends BasicLocation>> originLocations = new ArrayList<>(trips.size());
 			List<Id<? extends BasicLocation>> destinationLocations = new ArrayList<>(trips.size());
 
@@ -92,7 +117,8 @@ public class SubtourModeConstraint extends AbstractTourConstraint {
 				destinationLocations.add(LocationUtils.getLocationId(trips.get(index).getDestinationActivity()));
 			}
 
-			return new SubtourModeConstraint(constrainedModes, originLocations, destinationLocations);
+			return new SubtourModeConstraint(constrainedModes, availableModes, originLocations, destinationLocations,
+					keepUnavailableModes);
 		}
 	}
 }

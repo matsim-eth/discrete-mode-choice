@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.matsim.api.core.v01.population.Person;
 
@@ -38,7 +39,14 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 		this.availableModes = new ArrayList<>(availableModes);
 		this.numberOfModes = availableModes.size();
 		this.numberOfTrips = numberOfTrips;
-		this.maximumAlternatives = ArithmeticUtils.pow(numberOfModes, numberOfTrips);
+
+		try {
+			this.maximumAlternatives = ArithmeticUtils.pow(numberOfModes, numberOfTrips);
+		} catch (MathArithmeticException e) {
+			e.printStackTrace();
+			throw new RuntimeException(
+					"Attempt to create %d^%d choice alternatives, which exceeds the integer value range. Currently, we're not sure if we should switch to long to allow for such large choice sets, because they will lead to unbearable runtimes anyways.");
+		}
 	}
 
 	public int getNumberOfAlternatives() {

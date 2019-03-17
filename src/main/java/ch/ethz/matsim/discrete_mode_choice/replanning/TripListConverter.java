@@ -56,7 +56,9 @@ public final class TripListConverter {
 			// Either this will be reset by the end time of the next origin activity, or we
 			// make sure that we move forward in time (if all activities are
 			// duration-based).
-			time += leg.getTravelTime();
+			if (!Time.isUndefinedTime(leg.getTravelTime())) {
+				time += leg.getTravelTime();
+			}
 		}
 	}
 }

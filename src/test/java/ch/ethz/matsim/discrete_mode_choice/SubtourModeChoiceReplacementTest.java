@@ -332,7 +332,7 @@ public class SubtourModeChoiceReplacementTest {
 				homeFinder);
 
 		TourConstraintFactory subtourModeChoiceConstraintFactory = new SubtourModeConstraint.Factory(
-				allowSingleLegs ? constrainedModes : modes);
+				allowSingleLegs ? constrainedModes : modes, modes, true);
 
 		CompositeTourConstraintFactory constraintFactory = new CompositeTourConstraintFactory();
 		constraintFactory.addFactory(vehicleConstraintFactory);

@@ -44,11 +44,6 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			List<TripCandidate> previousTrips, List<? extends PlanElement> elements) {
 		ComputationResult result = null;
 		ScoringParameters parameters = scoringParametersForPerson.getScoringParameters(person);
-		ModeUtilityParameters modeParameters = parameters.modeParams.get(mode);
-
-		if (modeParameters == null) {
-			throw new IllegalStateException("Encountered mode for which no scoring parameters are defined: " + mode);
-		}
 
 		if (mode.equals(TransportMode.pt)) {
 			result = computePtTrip(parameters, elements, trip.getDepartureTime());

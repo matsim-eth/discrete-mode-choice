@@ -203,6 +203,7 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	@Singleton
 	public SubtourModeConstraint.Factory provideSubtourModeConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
 		SubtourModeConstraintConfigGroup config = dmcConfig.getSubtourConstraintConfig();
-		return new SubtourModeConstraint.Factory(config.getConstrainedModes());
+		return new SubtourModeConstraint.Factory(config.getConstrainedModes(), config.getAvailableModes(),
+				config.getKeepUnavailableModes());
 	}
 }
