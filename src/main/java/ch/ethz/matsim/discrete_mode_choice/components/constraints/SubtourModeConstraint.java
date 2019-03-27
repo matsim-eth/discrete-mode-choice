@@ -51,11 +51,14 @@ public class SubtourModeConstraint extends AbstractTourConstraint {
 			for (int index = 0; index < modes.size(); index++) {
 				String initialMode = tour.get(index).getInitialMode();
 
-				if (!availableModes.contains(initialMode)) {
+				boolean initialIsAvailable = availableModes.contains(initialMode);
+				boolean proposalIsAvailable = availableModes.contains(modes.get(index));
+
+				if (!initialIsAvailable || !proposalIsAvailable) {
 					if (!modes.get(index).equals(initialMode)) {
-						// Here we found a trip with an initial mode that is not in the available modes
-						// for mode choice. Hence, we only allow tours that have this exact mode at this
-						// spot. This means that this mode can never be changed.
+						// Here we found a trip with an initial or new mode that is not in the available
+						// modes for mode choice. Hence, we only allow tours that don't change the mode
+						// at this spot.
 						return false;
 					}
 				}
