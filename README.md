@@ -35,7 +35,7 @@ Add the following to your `pom.xml` dependencies to use the extension with a sta
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 </dependency>
 ```
 
@@ -45,11 +45,11 @@ For the version that is compatible with a SNAPSHOT, choose:
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.4-latest</version>
+	<version>1.0.5-latest</version>
 </dependency>
 ```
 
-The current `latest` branch has version `1.0.5-latest`, which is under development.
+The current `latest` branch has version `1.0.6-latest`, which is under development.
 
 ## Literature
 
