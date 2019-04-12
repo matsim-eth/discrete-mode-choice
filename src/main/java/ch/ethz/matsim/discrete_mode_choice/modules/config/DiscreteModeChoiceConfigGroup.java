@@ -45,6 +45,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	private String tourEstimator = EstimatorModule.UNIFORM;
 	private String tripEstimator = EstimatorModule.UNIFORM;
 
+	private Collection<String> tourFilters = new HashSet<>();
+	private Collection<String> tripFilters = new HashSet<>();
+
 	private Collection<String> cachedModes = new HashSet<>();
 
 	public static final String GROUP_NAME = "DiscreteModeChoice";
@@ -67,6 +70,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String TOUR_ESTIMATOR = "tourEstimator";
 	public static final String TRIP_ESTIMATOR = "tripEstimator";
+
+	public static final String TOUR_FILTERS = "tourFilters";
+	public static final String TRIP_FILTERS = "tripFilters";
 
 	public static final String CACHED_MODES = "cachedModes";
 
@@ -142,6 +148,42 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	@StringGetter(SELECTOR)
 	public String getSelector() {
 		return selector;
+	}
+
+	public void setTourFilters(Collection<String> tourFilters) {
+		this.tourFilters = new HashSet<>(tourFilters);
+	}
+
+	public Collection<String> getTourFilters() {
+		return tourFilters;
+	}
+
+	@StringSetter(TOUR_FILTERS)
+	public void setTourFiltersAsString(String tourFilters) {
+		this.tourFilters = Arrays.asList(tourFilters.split(",")).stream().map(String::trim).collect(Collectors.toSet());
+	}
+
+	@StringGetter(TOUR_FILTERS)
+	public String getTourFiltersAsString() {
+		return String.join(", ", tourFilters);
+	}
+
+	public void setTripFilters(Collection<String> tripFilters) {
+		this.tripFilters = new HashSet<>(tripFilters);
+	}
+
+	public Collection<String> getTripFilters() {
+		return tripFilters;
+	}
+
+	@StringSetter(TRIP_FILTERS)
+	public void setTripFiltersAsString(String tripFilters) {
+		this.tripFilters = Arrays.asList(tripFilters.split(",")).stream().map(String::trim).collect(Collectors.toSet());
+	}
+
+	@StringGetter(TRIP_FILTERS)
+	public String getTripFiltersAsString() {
+		return String.join(", ", tripFilters);
 	}
 
 	@StringSetter(TOUR_ESTIMATOR)

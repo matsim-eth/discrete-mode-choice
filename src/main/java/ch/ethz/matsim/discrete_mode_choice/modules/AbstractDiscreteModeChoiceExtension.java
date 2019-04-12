@@ -11,6 +11,8 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
+import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
+import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TripFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
@@ -36,10 +38,16 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 	protected MapBinder<String, ModeAvailability> modeAvailabilityBinder;
 	protected MapBinder<String, TourFinder> tourFinderBinder;
 
+	protected MapBinder<String, TourFilter> tourFilterBinder;
+	protected MapBinder<String, TripFilter> tripFilterBinder;
+
 	@Override
 	public final void install() {
 		tourEstimatorBinder = MapBinder.newMapBinder(binder(), String.class, TourEstimator.class);
 		tripEstimatorBinder = MapBinder.newMapBinder(binder(), String.class, TripEstimator.class);
+
+		tourFilterBinder = MapBinder.newMapBinder(binder(), String.class, TourFilter.class);
+		tripFilterBinder = MapBinder.newMapBinder(binder(), String.class, TripFilter.class);
 
 		tourConstraintFactoryBinder = MapBinder.newMapBinder(binder(), String.class, TourConstraintFactory.class);
 		tripConstraintFactoryBinder = MapBinder.newMapBinder(binder(), String.class, TripConstraintFactory.class);
@@ -63,6 +71,14 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 	protected final LinkedBindingBuilder<TripEstimator> bindTripEstimator(String name) {
 		return tripEstimatorBinder.addBinding(name);
+	}
+
+	protected final LinkedBindingBuilder<TourFilter> bindTourFilter(String name) {
+		return tourFilterBinder.addBinding(name);
+	}
+
+	protected final LinkedBindingBuilder<TripFilter> bindTripFilter(String name) {
+		return tripFilterBinder.addBinding(name);
 	}
 
 	protected final LinkedBindingBuilder<TourConstraintFactory> bindTourConstraintFactory(String name) {

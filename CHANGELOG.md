@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**1.0.5 (under development)**
+
+- Fix cases where no trip/tour constraints are given
+- Add problem filters (TripFilter, TourFilter)
+
 **1.0.4**
 
 - Fix bug in MATSimDayScoringEstimator

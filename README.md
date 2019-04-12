@@ -18,7 +18,7 @@ For more customized applications and set-ups, have a look at [Customizing the fr
 
 - Releases are generally available on [Bintray](https://bintray.com/matsim-eth/matsim/discrete-mode-choice). Un-postfixed version numbers denote releases that are comaptible with the latest stable MATSim release, i.e. 0.10.1. All version postfixed with `-latest` relate to a specific recent weekly SNAPSHOT of MATSim.
 
-- The repository has two main branches: `latest` contains the latest development version. From time to time a release is deployed to Bintray, which happens with incresing the Maven version number and tagging the first commit with it. The `latest` branch is then based on that number until the next release is done. The `stable` branch contains a backport to MATSim 0.10.1.
+- The repository has two main branches: `latest` contains the latest development version. From time to time a release is deployed to Bintray, after the Maven version number is increased. The last commit with the new release number is tagged. The `latest` branch is then based on the increased number until the next release is done. The `stable` branch contains a backport to MATSim 0.10.1.
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
 
@@ -35,7 +35,7 @@ Add the following to your `pom.xml` dependencies to use the extension with a sta
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 </dependency>
 ```
 
@@ -45,9 +45,11 @@ For the version that is compatible with a SNAPSHOT, choose:
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.3-latest</version>
+	<version>1.0.4-latest</version>
 </dependency>
 ```
+
+The current `latest` branch has version `1.0.5-latest`, which is under development.
 
 ## Literature
 
