@@ -2,7 +2,7 @@
 
 **1.0.5 (under development)**
 
-- No commits yet
+- Add problem filters (TripFilter, TourFilter)
 
 **1.0.4**
 

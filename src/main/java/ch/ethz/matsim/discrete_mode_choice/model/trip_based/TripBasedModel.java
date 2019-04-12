@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.population.Person;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
+import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TripFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
@@ -25,15 +26,17 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 	private final static Logger logger = Logger.getLogger(TripBasedModel.class);
 
 	private final TripEstimator estimator;
+	private final TripFilter tripFilter;
 	private final ModeAvailability modeAvailability;
 	private final TripConstraintFactory constraintFactory;
 	private final UtilitySelectorFactory<TripCandidate> selectorFactory;
 	private final FallbackBehaviour fallbackBehaviour;
 
-	public TripBasedModel(TripEstimator estimator, ModeAvailability modeAvailability,
+	public TripBasedModel(TripEstimator estimator, TripFilter tripFilter, ModeAvailability modeAvailability,
 			TripConstraintFactory constraintFactory, UtilitySelectorFactory<TripCandidate> selectorFactory,
 			FallbackBehaviour fallbackBehaviour) {
 		this.estimator = estimator;
+		this.tripFilter = tripFilter;
 		this.modeAvailability = modeAvailability;
 		this.constraintFactory = constraintFactory;
 		this.selectorFactory = selectorFactory;
@@ -52,50 +55,61 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 		int tripIndex = 0;
 
 		for (DiscreteModeChoiceTrip trip : trips) {
-			UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
-			tripIndex++;
+			TripCandidate finalTripCandidate = null;
 
-			for (String mode : modes) {
-				if (!constraint.validateBeforeEstimation(trip, mode, tripCandidateModes)) {
-					continue;
+			if (tripFilter.filter(person, trip)) {
+				UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
+				tripIndex++;
+
+				for (String mode : modes) {
+					if (!constraint.validateBeforeEstimation(trip, mode, tripCandidateModes)) {
+						continue;
+					}
+
+					TripCandidate candidate = estimator.estimateTrip(person, mode, trip, tripCandidates);
+
+					if (!Double.isFinite(candidate.getUtility())) {
+						logger.warn(buildIllegalUtilityMessage(tripIndex, person));
+						continue;
+					}
+
+					if (!constraint.validateAfterEstimation(trip, candidate, tripCandidates)) {
+						continue;
+					}
+
+					selector.addCandidate(candidate);
 				}
 
-				TripCandidate candidate = estimator.estimateTrip(person, mode, trip, tripCandidates);
+				Optional<TripCandidate> selectedCandidate = selector.select(random);
 
-				if (!Double.isFinite(candidate.getUtility())) {
-					logger.warn(buildIllegalUtilityMessage(tripIndex, person));
-					continue;
+				if (!selectedCandidate.isPresent()) {
+					switch (fallbackBehaviour) {
+					case INITIAL_CHOICE:
+						logger.info(buildFallbackMessage(tripIndex, person, "Setting trip back to initial mode."));
+						selectedCandidate = Optional.of(createFallbackCandidate(person, trip, tripCandidates));
+						break;
+					case IGNORE_AGENT:
+						return handleIgnoreAgent(tripIndex, person, trips);
+					case EXCEPTION:
+						throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
+					}
 				}
 
-				if (!constraint.validateAfterEstimation(trip, candidate, tripCandidates)) {
-					continue;
-				}
-
-				selector.addCandidate(candidate);
+				finalTripCandidate = selectedCandidate.get();
+			} else {
+				finalTripCandidate = createFallbackCandidate(person, trip, tripCandidates);
 			}
 
-			Optional<TripCandidate> selectedCandidate = selector.select(random);
-
-			if (!selectedCandidate.isPresent()) {
-				switch (fallbackBehaviour) {
-				case INITIAL_CHOICE:
-					TripCandidate fallbackCandidate = estimator.estimateTrip(person, trip.getInitialMode(), trip,
-							tripCandidates);
-					logger.info(buildFallbackMessage(tripIndex, person, "Setting trip back to initial mode."));
-					selectedCandidate = Optional.ofNullable(fallbackCandidate);
-					break;
-				case IGNORE_AGENT:
-					return handleIgnoreAgent(tripIndex, person, trips);
-				case EXCEPTION:
-					throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
-				}
-			}
-
-			tripCandidates.add(selectedCandidate.get());
-			tripCandidateModes.add(selectedCandidate.get().getMode());
+			tripCandidates.add(finalTripCandidate);
+			tripCandidateModes.add(finalTripCandidate.getMode());
 		}
 
 		return tripCandidates;
+	}
+
+	private TripCandidate createFallbackCandidate(Person person, DiscreteModeChoiceTrip trip,
+			List<TripCandidate> tripCandidates) {
+		return estimator.estimateTrip(person, trip.getInitialMode(), trip, tripCandidates);
 	}
 
 	private List<TripCandidate> handleIgnoreAgent(int tripIndex, Person person, List<DiscreteModeChoiceTrip> trips) {

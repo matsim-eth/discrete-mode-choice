@@ -31,6 +31,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
 
 	final private TourFinder tourFinder;
+	final private TourFilter tourFilter;
 	final private TourEstimator estimator;
 	final private ModeAvailability modeAvailability;
 	final private TourConstraintFactory constraintFactory;
@@ -39,13 +40,14 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 	final private FallbackBehaviour fallbackBehaviour;
 
 	public TourBasedModel(TourEstimator estimator, ModeAvailability modeAvailability,
-			TourConstraintFactory constraintFactory, TourFinder tourFinder,
+			TourConstraintFactory constraintFactory, TourFinder tourFinder, TourFilter tourFilter,
 			UtilitySelectorFactory<TourCandidate> selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
 			FallbackBehaviour fallbackBehaviour) {
 		this.estimator = estimator;
 		this.modeAvailability = modeAvailability;
 		this.constraintFactory = constraintFactory;
 		this.tourFinder = tourFinder;
+		this.tourFilter = tourFilter;
 		this.selectorFactory = selectorFactory;
 		this.modeChainGeneratorFactory = modeChainGeneratorFactory;
 		this.fallbackBehaviour = fallbackBehaviour;
@@ -63,57 +65,70 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		int tripIndex = 1;
 
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
-			ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person, tourTrips);
-			UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
+			TourCandidate finalTourCandidate = null;
 
-			while (generator.hasNext()) {
-				List<String> tourModes = generator.next();
+			if (tourFilter.filter(person, tourTrips)) {
+				ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person,
+						tourTrips);
+				UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
 
-				if (!constraint.validateBeforeEstimation(tourTrips, tourModes, tourCandidateModes)) {
-					continue;
+				while (generator.hasNext()) {
+					List<String> tourModes = generator.next();
+
+					if (!constraint.validateBeforeEstimation(tourTrips, tourModes, tourCandidateModes)) {
+						continue;
+					}
+
+					TourCandidate candidate = estimator.estimateTour(person, tourModes, tourTrips, tourCandidates);
+
+					if (!Double.isFinite(candidate.getUtility())) {
+						logger.warn(buildIllegalUtilityMessage(tripIndex, person));
+						continue;
+					}
+
+					if (!constraint.validateAfterEstimation(tourTrips, candidate, tourCandidates)) {
+						continue;
+					}
+
+					selector.addCandidate(candidate);
 				}
 
-				TourCandidate candidate = estimator.estimateTour(person, tourModes, tourTrips, tourCandidates);
+				Optional<TourCandidate> selectedCandidate = selector.select(random);
 
-				if (!Double.isFinite(candidate.getUtility())) {
-					logger.warn(buildIllegalUtilityMessage(tripIndex, person));
-					continue;
+				if (!selectedCandidate.isPresent()) {
+					switch (fallbackBehaviour) {
+					case INITIAL_CHOICE:
+						logger.warn(
+								buildFallbackMessage(tripIndex, person, "Setting tour modes back to initial choice."));
+						selectedCandidate = Optional.of(createFallbackCandidate(person, tourTrips, tourCandidates));
+						break;
+					case IGNORE_AGENT:
+						return handleIgnoreAgent(tripIndex, person, tourTrips);
+					case EXCEPTION:
+						throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
+					}
 				}
 
-				if (!constraint.validateAfterEstimation(tourTrips, candidate, tourCandidates)) {
-					continue;
-				}
-
-				selector.addCandidate(candidate);
+				finalTourCandidate = selectedCandidate.get();
+			} else {
+				finalTourCandidate = createFallbackCandidate(person, tourTrips, tourCandidates);
 			}
 
-			Optional<TourCandidate> selectedCandidate = selector.select(random);
-
-			if (!selectedCandidate.isPresent()) {
-				switch (fallbackBehaviour) {
-				case INITIAL_CHOICE:
-					List<String> initialModes = tourTrips.stream().map(DiscreteModeChoiceTrip::getInitialMode)
-							.collect(Collectors.toList());
-					TourCandidate fallbackCandidate = estimator.estimateTour(person, initialModes, tourTrips,
-							tourCandidates);
-					logger.warn(buildFallbackMessage(tripIndex, person, "Setting tour modes back to initial choice."));
-					selectedCandidate = Optional.of(fallbackCandidate);
-					break;
-				case IGNORE_AGENT:
-					return handleIgnoreAgent(tripIndex, person, tourTrips);
-				case EXCEPTION:
-					throw new NoFeasibleChoiceException(buildFallbackMessage(tripIndex, person, ""));
-				}
-			}
-
-			tourCandidates.add(selectedCandidate.get());
-			tourCandidateModes.add(selectedCandidate.get().getTripCandidates().stream().map(c -> c.getMode())
-					.collect(Collectors.toList()));
+			tourCandidates.add(finalTourCandidate);
+			tourCandidateModes.add(
+					finalTourCandidate.getTripCandidates().stream().map(c -> c.getMode()).collect(Collectors.toList()));
 
 			tripIndex += tourTrips.size();
 		}
 
 		return createTripCandidates(tourCandidates);
+	}
+
+	private TourCandidate createFallbackCandidate(Person person, List<DiscreteModeChoiceTrip> tourTrips,
+			List<TourCandidate> tourCandidates) {
+		List<String> initialModes = tourTrips.stream().map(DiscreteModeChoiceTrip::getInitialMode)
+				.collect(Collectors.toList());
+		return estimator.estimateTour(person, initialModes, tourTrips, tourCandidates);
 	}
 
 	private List<TripCandidate> createTripCandidates(List<TourCandidate> tourCandidates) {
