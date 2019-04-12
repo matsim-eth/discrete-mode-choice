@@ -3,6 +3,7 @@ package ch.ethz.matsim.discrete_mode_choice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.Fallbac
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.NoFeasibleChoiceException;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.constraints.CompositeTourConstraintFactory;
+import ch.ethz.matsim.discrete_mode_choice.model.filters.CompositeTourFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.CarModeAvailability;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.DefaultModeAvailability;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
@@ -41,6 +43,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
+import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.RandomSelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
@@ -338,8 +341,10 @@ public class SubtourModeChoiceReplacementTest {
 		constraintFactory.addFactory(vehicleConstraintFactory);
 		constraintFactory.addFactory(subtourModeChoiceConstraintFactory);
 
+		TourFilter tourFilter = new CompositeTourFilter(Collections.emptySet());
+
 		DiscreteModeChoiceModel model = new TourBasedModel(estimator, modeAvailability, constraintFactory, tourFinder,
-				selectorFactory, modeChainGeneratorFactory, fallbackBehaviour);
+				tourFilter, selectorFactory, modeChainGeneratorFactory, fallbackBehaviour);
 
 		Plan plan = planBuilder.buildPlan();
 		List<DiscreteModeChoiceTrip> trips = planBuilder.buildDiscreteModeChoiceTrips();
