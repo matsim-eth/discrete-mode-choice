@@ -98,18 +98,13 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	public TourConstraintFactory provideTourConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
 			Map<String, Provider<TourConstraintFactory>> components) {
 		Collection<String> names = dmcConfig.getTourConstraints();
+		CompositeTourConstraintFactory factory = new CompositeTourConstraintFactory();
 
-		if (names.size() == 0) {
-			return getTourConstraintFactory(names.iterator().next(), components);
-		} else {
-			CompositeTourConstraintFactory factory = new CompositeTourConstraintFactory();
-
-			for (String name : names) {
-				factory.addFactory(getTourConstraintFactory(name, components));
-			}
-
-			return factory;
+		for (String name : names) {
+			factory.addFactory(getTourConstraintFactory(name, components));
 		}
+
+		return factory;
 	}
 
 	@Provides
@@ -117,18 +112,13 @@ public class ConstraintModule extends AbstractDiscreteModeChoiceExtension {
 	public TripConstraintFactory provideTripConstraintFactory(DiscreteModeChoiceConfigGroup dmcConfig,
 			Map<String, Provider<TripConstraintFactory>> components) {
 		Collection<String> names = dmcConfig.getTripConstraints();
+		CompositeTripConstraintFactory factory = new CompositeTripConstraintFactory();
 
-		if (names.size() == 0) {
-			return getTripConstraintFactory(names.iterator().next(), components);
-		} else {
-			CompositeTripConstraintFactory factory = new CompositeTripConstraintFactory();
-
-			for (String name : names) {
-				factory.addFactory(getTripConstraintFactory(name, components));
-			}
-
-			return factory;
+		for (String name : names) {
+			factory.addFactory(getTripConstraintFactory(name, components));
 		}
+
+		return factory;
 	}
 
 	@Provides
