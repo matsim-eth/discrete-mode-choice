@@ -1,6 +1,10 @@
 # CHANGELOG
 
-**1.0.5 (under development)**
+**1.0.6 (under development)**
+
+- No changes yet
+
+**1.0.5**
 
 - Fix cases where no trip/tour constraints are given
 - Add problem filters (TripFilter, TourFilter)
