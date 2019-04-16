@@ -49,7 +49,6 @@ public class RunIT {
 
 	public static Config createConfig(boolean considerCarAvailability) {
 		Config config = ConfigUtils.createConfig();
-		// TODO: consider car availability
 		SubtourModeChoiceConfigGroup smcConfig = config.subtourModeChoice();
 		smcConfig.setConsiderCarAvailability(considerCarAvailability);
 		StrategySettings stratSets = new StrategySettings();
@@ -74,15 +73,11 @@ public class RunIT {
 		params.setTypicalDuration(3600.0);
 		((PlanCalcScoreConfigGroup) config.getModules().get("planCalcScore")).addActivityParams(params);
 	}
-
-	@Test
-	public void testIntegrationRandomSampling() {
-		// create config
-		Config config = createConfig(true);
-		// create scenario
+	
+	public static Scenario createScenario(Config config, String hasLicense, String carOwnership) {
+	
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
-		// create network
 		Network network = scenario.getNetwork();
 		// create nodes
 		Node node1 = createNode(network, Id.createNodeId("1"), CoordUtils.createCoord(0.0, 0.0));
@@ -108,22 +103,28 @@ public class RunIT {
 		PopulationUtils.createAndAddActivityFromCoord(plan, "home", link1.getCoord());
 		person.addPlan(plan);
 		person.setSelectedPlan(plan);
-		person.getAttributes().putAttribute("hasLicense", "yes");
-		person.getAttributes().putAttribute("carAvail", "always");
+		person.getAttributes().putAttribute("hasLicense", hasLicense);
+		person.getAttributes().putAttribute("carAvail", carOwnership);
 		population.addPerson(person);
+		
+		return scenario;
+	}
 
+	@Test
+	public void testIntegrationRandomSampling() {
+		// create config
+		Config config = createConfig(true);
+		// create scenario
+		Scenario scenario = createScenario(config, "yes", "always");
+		
 		Controler controller = new Controler(scenario);
 		controller.getConfig().controler()
 				.setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
 		DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
 		((DiscreteModeChoiceConfigGroup) config.getModules().get("DiscreteModeChoice")).getCarModeAvailabilityConfig()
-				.setAvailableModesAsString("car,walk");
+				.setAvailableModesAsString("car,walk,bike");
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
 		controller.run();
-
-		// test random sampling
-
-		// test importance sampling
 
 	}
 
@@ -132,37 +133,7 @@ public class RunIT {
 		// create config
 		Config config = createConfig(true);
 		// create scenario
-		Scenario scenario = ScenarioUtils.loadScenario(config);
-
-		// create network
-		Network network = scenario.getNetwork();
-		// create nodes
-		Node node1 = createNode(network, Id.createNodeId("1"), CoordUtils.createCoord(0.0, 0.0));
-		Node node2 = createNode(network, Id.createNodeId("2"), CoordUtils.createCoord(0.0, 100.0));
-		Node node3 = createNode(network, Id.createNodeId("3"), CoordUtils.createCoord(0.0, 200.0));
-
-		// create links
-		Link link1 = createLink(network, Id.createLinkId("12"), node1, node2, 100);
-		Link link2 = createLink(network, Id.createLinkId("23"), node2, node3, 100);
-		Link link3 = createLink(network, Id.createLinkId("32"), node3, node2, 100);
-		Link link4 = createLink(network, Id.createLinkId("21"), node2, node1, 100);
-
-		Population population = scenario.getPopulation();
-		Person person = population.getFactory().createPerson(Id.createPersonId("1"));
-		// create plan
-		Plan plan = population.getFactory().createPlan();
-		Activity act1 = PopulationUtils.createAndAddActivityFromCoord(plan, "home", link1.getCoord());
-		act1.setEndTime(8.0 * 3600.0);
-		PopulationUtils.createAndAddLeg(plan, "car");
-		Activity act2 = PopulationUtils.createAndAddActivityFromCoord(plan, "work", link2.getCoord());
-		act2.setEndTime(17.0 * 3600.0);
-		PopulationUtils.createAndAddLeg(plan, "car");
-		PopulationUtils.createAndAddActivityFromCoord(plan, "home", link1.getCoord());
-		person.addPlan(plan);
-		person.setSelectedPlan(plan);
-		person.getAttributes().putAttribute("hasLicense", "no");
-		person.getAttributes().putAttribute("carAvail", "always");
-		population.addPerson(person);
+		Scenario scenario = createScenario(config, "no", "always");
 
 		Controler controller = new Controler(scenario);
 		controller.getConfig().controler()
@@ -180,6 +151,26 @@ public class RunIT {
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
 		controller.run();
 
+	}
+	
+	@Test
+	public void testMNL() {
+		
+		// create config
+		Config config = createConfig(true);
+		// create scenario
+		Scenario scenario = createScenario(config, "yes", "always");
+
+		Controler controller = new Controler(scenario);
+		controller.getConfig().controler()
+				.setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
+		DiscreteModeChoiceConfigurator.configureAsModeChoiceInTheLoop(config, 1.0);
+		((DiscreteModeChoiceConfigGroup) config.getModules().get("DiscreteModeChoice")).getCarModeAvailabilityConfig()
+				.setAvailableModesAsString("car,walk,bike");
+
+		//TODO: check that there are only two strategies
+		controller.addOverridingModule(new DiscreteModeChoiceModule());
+		controller.run();
 	}
 
 	static class AnalysisNoCar implements AfterMobsimListener {
