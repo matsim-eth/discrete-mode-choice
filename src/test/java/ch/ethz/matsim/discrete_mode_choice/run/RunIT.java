@@ -64,6 +64,7 @@ public class RunIT {
 
 		addActivityTypeToScoringParameters(config, "home");
 		addActivityTypeToScoringParameters(config, "work");
+		addActivityTypeToScoringParameters(config, "shop");
 
 		return config;
 	}
@@ -100,7 +101,11 @@ public class RunIT {
 		Activity act2 = PopulationUtils.createAndAddActivityFromCoord(plan, "work", link2.getCoord());
 		act2.setEndTime(17.0 * 3600.0);
 		PopulationUtils.createAndAddLeg(plan, "car");
+		Activity act3 = PopulationUtils.createAndAddActivityFromCoord(plan, "shop", link3.getCoord());
+		act3.setEndTime(19.0 * 3600.0);
+		PopulationUtils.createAndAddLeg(plan, "car");
 		PopulationUtils.createAndAddActivityFromCoord(plan, "home", link1.getCoord());
+		
 		person.addPlan(plan);
 		person.setSelectedPlan(plan);
 		person.getAttributes().putAttribute("hasLicense", hasLicense);
@@ -123,6 +128,13 @@ public class RunIT {
 		DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
 		((DiscreteModeChoiceConfigGroup) config.getModules().get("DiscreteModeChoice")).getCarModeAvailabilityConfig()
 				.setAvailableModesAsString("car,walk,bike");
+		final AnalysisRandomSampling myAnalysis = new AnalysisRandomSampling();
+		controller.addOverridingModule( new AbstractModule(){
+			@Override public void install() {
+				this.bind(AnalysisRandomSampling.class).toInstance( myAnalysis ) ;
+				this.addControlerListenerBinding().toInstance( myAnalysis ) ;
+			}
+		});
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
 		controller.run();
 
@@ -167,10 +179,79 @@ public class RunIT {
 		DiscreteModeChoiceConfigurator.configureAsModeChoiceInTheLoop(config, 1.0);
 		((DiscreteModeChoiceConfigGroup) config.getModules().get("DiscreteModeChoice")).getCarModeAvailabilityConfig()
 				.setAvailableModesAsString("car,walk,bike");
-
-		//TODO: check that there are only two strategies
+		final AnalysisMNL myAnalysis = new AnalysisMNL();
+		controller.addOverridingModule( new AbstractModule(){
+			@Override public void install() {
+				this.bind(AnalysisMNL.class).toInstance( myAnalysis ) ;
+				this.addControlerListenerBinding().toInstance( myAnalysis ) ;
+			}
+		});
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
 		controller.run();
+	}
+	
+	static class AnalysisRandomSampling implements AfterMobsimListener {
+		@Inject
+		private LegHistogram histogram;
+
+		void testOutput(int iteration) {
+
+			for (String legMode : this.histogram.getLegModes()) {
+				int nOfModeLegs = 0;
+				for (int nofDepartures : this.histogram.getDepartures(legMode)) {
+					nOfModeLegs += nofDepartures;
+				}
+				
+				if (iteration == 1) {
+					if ( TransportMode.walk.equals(legMode) ) {
+						Assert.equals(1, nOfModeLegs );
+					}
+					if ( TransportMode.bike.equals(legMode) ) {
+						Assert.equals(2, nOfModeLegs );
+					}
+					if ( TransportMode.car.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.pt.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+				}
+				
+				if (iteration == 2) {
+					if ( TransportMode.walk.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.bike.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.car.equals(legMode) ) {
+						Assert.equals(3, nOfModeLegs );
+					}
+					if ( TransportMode.pt.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+				}
+				
+				if (iteration == 5) {
+					if ( TransportMode.walk.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.bike.equals(legMode) ) {
+						Assert.equals(3, nOfModeLegs );
+					}
+					if ( TransportMode.car.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.pt.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+				}
+			}
+		}
+		@Override
+		public void notifyAfterMobsim(AfterMobsimEvent event) {
+			testOutput(event.getIteration());
+		}
 	}
 
 	static class AnalysisNoCar implements AfterMobsimListener {
@@ -180,10 +261,61 @@ public class RunIT {
 		void testOutput(int iteration) {
 
 			for (String legMode : this.histogram.getLegModes()) {
-
+				int nOfModeLegs = 0;
+				for (int nofDepartures : this.histogram.getDepartures(legMode)) {
+					nOfModeLegs += nofDepartures;
+				}
 				if (iteration != 0) {
 					if (TransportMode.car.equals(legMode)) {
 						Assert.shouldNeverReachHere("There should be no car legs after iteration 0");
+					}
+				}
+				if (iteration == 5) {
+					if ( TransportMode.walk.equals(legMode) ) {
+						Assert.equals(3, nOfModeLegs );
+					}
+					if ( TransportMode.bike.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.car.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.pt.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+				}
+			}
+		}
+		@Override
+		public void notifyAfterMobsim(AfterMobsimEvent event) {
+			testOutput(event.getIteration());
+		}
+	}
+	
+	static class AnalysisMNL implements AfterMobsimListener {
+		@Inject
+		private LegHistogram histogram;
+
+		void testOutput(int iteration) {
+
+			for (String legMode : this.histogram.getLegModes()) {
+				int nOfModeLegs = 0;
+				for (int nofDepartures : this.histogram.getDepartures(legMode)) {
+					nOfModeLegs += nofDepartures;
+				}
+				
+				if (iteration == 5) {
+					if ( TransportMode.bike.equals(legMode) ) {
+						Assert.equals(3, nOfModeLegs );
+					}
+					if ( TransportMode.walk.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.car.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
+					}
+					if ( TransportMode.pt.equals(legMode) ) {
+						Assert.equals(0, nOfModeLegs );
 					}
 				}
 			}
