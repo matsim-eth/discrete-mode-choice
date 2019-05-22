@@ -1,8 +1,13 @@
 # CHANGELOG
 
-**1.0.6 (under development)**
+**12.0.7 (under development)**
 
 - No changes yet
+
+**12.0.6**
+
+- Update to MATSim 12
+- Change version scheme to be in line with MATSim
 
 **1.0.5**
 
