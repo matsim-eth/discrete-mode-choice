@@ -16,9 +16,11 @@ For more customized applications and set-ups, have a look at [Customizing the fr
 
 ## Working with the code
 
-- Releases are generally available on [Bintray](https://bintray.com/matsim-eth/matsim/discrete-mode-choice). Un-postfixed version numbers denote releases that are comaptible with the latest stable MATSim release, i.e. 0.10.1. All version postfixed with `-latest` relate to a specific recent weekly SNAPSHOT of MATSim.
+- Releases are generally available on [Bintray](https://bintray.com/matsim-eth/matsim/discrete-mode-choice). The first part of the version number denotes the MATSim version that a certain release is compatible with, e.g. `11.0.6` would be compatible with MATSim 11.
 
-- The repository has two main branches: `latest` contains the latest development version. From time to time a release is deployed to Bintray, after the Maven version number is increased. The last commit with the new release number is tagged. The `latest` branch is then based on the increased number until the next release is done. The `stable` branch contains a backport to MATSim 0.10.1.
+- The repository has branches for each version of MATSim. Currently, the two branches `latest` (12) and `stable` (11) are maintained, while branches for later version still exist.
+
+- Development is usually done by sending a PR to the `latest` branch. From time to time, a release is made from the `latest` branch and recent changes are backported to the `stable` branch, also resulting in a new Bintray version
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
 
@@ -29,27 +31,27 @@ To use the Discrete Mode Choice extension you first need to add the ETH MATSim B
 </repository>
 ```
 
-Add the following to your `pom.xml` dependencies to use the extension with a standard MATSim 0.10.1 setup:
+Add the following to your `pom.xml` dependencies to use the extension with a standard MATSim 11 setup:
 
 ```xml
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.5</version>
+	<version>11.0.6</version>
 </dependency>
 ```
 
-For the version that is compatible with a SNAPSHOT, choose:
+For the version that is compatible with a MATSim 12 SNAPSHOT, choose:
 
 ```xml
 <dependency>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.5-latest</version>
+	<version>12.0.6</version>
 </dependency>
 ```
 
-The current `latest` branch has version `1.0.6-latest`, which is under development.
+The current `latest` branch has version `12.0.7`, which is under development.
 
 ## Literature
 
