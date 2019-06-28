@@ -8,6 +8,8 @@ import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
+import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGenerator;
+import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
@@ -35,6 +37,8 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 	protected MapBinder<String, ModeAvailability> modeAvailabilityBinder;
 	protected MapBinder<String, TourFinder> tourFinderBinder;
+	
+	protected MapBinder<String,ModeChainGeneratorFactory> modeChainGeneratorBinder;
 
 	@Override
 	public final void install() {
@@ -53,6 +57,8 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 		modeAvailabilityBinder = MapBinder.newMapBinder(binder(), String.class, ModeAvailability.class);
 		tourFinderBinder = MapBinder.newMapBinder(binder(), String.class, TourFinder.class);
+		
+		modeChainGeneratorBinder = MapBinder.newMapBinder(binder(), String.class,ModeChainGeneratorFactory.class);
 
 		installExtension();
 	}
@@ -87,6 +93,10 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 	protected final LinkedBindingBuilder<TourFinder> bindTourFinder(String name) {
 		return tourFinderBinder.addBinding(name);
+	}
+	
+	protected final LinkedBindingBuilder<ModeChainGeneratorFactory> bindModeChainGenerator(String name) {
+		return modeChainGeneratorBinder.addBinding(name);
 	}
 
 	abstract protected void installExtension();

@@ -18,6 +18,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.ConstraintModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModeAvailabilityModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.ModeChainGeneratorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
 import ch.ethz.matsim.discrete_mode_choice.modules.SelectorModule;
@@ -46,6 +47,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	private String tripEstimator = EstimatorModule.UNIFORM;
 
 	private Collection<String> cachedModes = new HashSet<>();
+	
+	private ConfigGroup modeChainGeneratorConfigGroup = null;
+	private String modeChainGenerator = ModeChainGeneratorModule.ALL_COMBINATIONS;
 
 	public static final String GROUP_NAME = "DiscreteModeChoice";
 
@@ -69,6 +73,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	public static final String TRIP_ESTIMATOR = "tripEstimator";
 
 	public static final String CACHED_MODES = "cachedModes";
+	
+	public static final String MODE_CHAIN_GENERATOR = "modeChainGenerator";
 
 	public DiscreteModeChoiceConfigGroup() {
 		super(GROUP_NAME);
@@ -219,6 +225,16 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	public String getCachedModesAsString() {
 		return String.join(", ", cachedModes);
 	}
+	
+	@StringSetter(MODE_CHAIN_GENERATOR)
+	public void setModeChainGeneratorAsString(String modeChainGenerator) {
+		this.modeChainGenerator = modeChainGenerator;
+	}
+
+	@StringGetter(MODE_CHAIN_GENERATOR)
+	public String getModeChainGeneratorAsString() {
+		return this.modeChainGenerator;
+	}
 
 	// --- Component configuration ---
 
@@ -343,6 +359,13 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		return (MATSimTripScoringConfigGroup) getComponentConfig(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING);
 	}
 
+	public void setModeChainGeneratorConfigGroup(ConfigGroup modeChainGeneratorConfigGroup) {
+		this.modeChainGeneratorConfigGroup = modeChainGeneratorConfigGroup;
+	}
+	public ConfigGroup getModeChainGeneratorConfigGroup() {
+		return(this.modeChainGeneratorConfigGroup);
+	}
+	
 	@Override
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();

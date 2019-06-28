@@ -17,6 +17,7 @@ import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule.Default
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeChainFilterRandomThresholdConfigGroup;
 
 /**
  * Utility class that makes it possible to set up various was of using the
@@ -76,6 +77,11 @@ public final class DiscreteModeChoiceConfigurator {
 			dmcConfig.setModeAvailability(ModeAvailabilityModule.DEFAULT);
 			dmcConfig.getDefaultModeAvailabilityConfig().setAvailableModes(Arrays.asList(smcConfig.getModes()));
 		}
+		
+		dmcConfig.setModeChainGeneratorAsString(ModeChainGeneratorModule.FILTER_RANDOM_THRESHOLD);
+		ModeChainFilterRandomThresholdConfigGroup mCFilterRandomThresholdConfig = new ModeChainFilterRandomThresholdConfigGroup();
+		mCFilterRandomThresholdConfig.setMaxChainsThreshold(256);
+		dmcConfig.setModeChainGeneratorConfigGroup(mCFilterRandomThresholdConfig);
 	}
 
 	static public void configureAsImportanceSampler(Config config) {

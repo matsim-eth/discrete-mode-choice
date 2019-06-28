@@ -4,30 +4,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.matsim.api.core.v01.population.Person;
 
+import com.google.inject.Inject;
+
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeChainFilterRandomThresholdConfigGroup;
 
-public class LongChainsModeChainGenerator implements ModeChainGenerator {
-	
+public class FilterRandomThresholdModeChainGenerator implements ModeChainGenerator {
+
 	final private List<String> availableModes;
-
 	final private int numberOfTrips;
 	final private int numberOfModes;
-
 	final private int maximumAlternatives;
-
 	private int index = 0;
 	
-	
-
-	public LongChainsModeChainGenerator(Collection<String> availableModes, int numberOfTrips) {
+	public FilterRandomThresholdModeChainGenerator(Collection<String> availableModes, int numberOfTrips, int maximumAlternatives) {
 		this.availableModes = new ArrayList<>(availableModes);
 		this.numberOfModes = availableModes.size();
 		this.numberOfTrips = numberOfTrips;
-		this.maximumAlternatives = ArithmeticUtils.pow(numberOfModes, numberOfTrips);
+		this.maximumAlternatives = maximumAlternatives;
 		
 	}
 
@@ -60,11 +58,17 @@ public class LongChainsModeChainGenerator implements ModeChainGenerator {
 	}
 
 	static public class Factory implements ModeChainGeneratorFactory {
+		
+		@Inject
+		private DiscreteModeChoiceConfigGroup dmcConfig;
+		
 		@Override
 		public ModeChainGenerator createModeChainGenerator(Collection<String> modes, Person person,
 				List<DiscreteModeChoiceTrip> trips) {
-			return new LongChainsModeChainGenerator(modes, trips.size());
+			
+			return new FilterRandomThresholdModeChainGenerator(modes, trips.size(),((ModeChainFilterRandomThresholdConfigGroup)dmcConfig.getModeChainGeneratorConfigGroup()).getMaxChainsThreshold());
 		}
 	}
 
+	
 }

@@ -37,8 +37,8 @@ public class ModelModule extends AbstractModule {
 		install(new TourFinderModule());
 		install(new SelectorModule());
 		install(new ConstraintModule());
+		install(new ModeChainGeneratorModule());
 
-		bind(ModeChainGeneratorFactory.class).to(DefaultModeChainGenerator.Factory.class);
 	}
 
 	public enum ModelType {
@@ -75,9 +75,5 @@ public class ModelModule extends AbstractModule {
 				dmcConfig.getFallbackBehaviour());
 	}
 
-	@Provides
-	@Singleton
-	public DefaultModeChainGenerator.Factory provideDefaultModeChainGeneratorFactory() {
-		return new DefaultModeChainGenerator.Factory();
-	}
+	
 }
