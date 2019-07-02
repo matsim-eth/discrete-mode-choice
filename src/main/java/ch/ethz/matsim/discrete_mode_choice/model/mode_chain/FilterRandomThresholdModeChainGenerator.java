@@ -5,7 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.math3.util.ArithmeticUtils;
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.core.config.ConfigGroup;
+import org.matsim.core.gbl.MatsimRandom;
 
 import com.google.inject.Inject;
 
@@ -19,54 +22,76 @@ public class FilterRandomThresholdModeChainGenerator implements ModeChainGenerat
 	final private int numberOfTrips;
 	final private int numberOfModes;
 	final private int maximumAlternatives;
+	final private int alternatives;
+	final private boolean thresholdExceeded;
 	private int index = 0;
+	
+	private static Logger log = Logger.getLogger(FilterRandomThresholdModeChainGenerator.class);
 	
 	public FilterRandomThresholdModeChainGenerator(Collection<String> availableModes, int numberOfTrips, int maximumAlternatives) {
 		this.availableModes = new ArrayList<>(availableModes);
 		this.numberOfModes = availableModes.size();
 		this.numberOfTrips = numberOfTrips;
 		this.maximumAlternatives = maximumAlternatives;
-		
+	   
+		int alt = numberOfTrips < 10? ArithmeticUtils.pow(numberOfModes, numberOfTrips): maximumAlternatives+1;
+		this.alternatives = alt  < maximumAlternatives ? alt: maximumAlternatives;
+		this.thresholdExceeded = alt > maximumAlternatives ? true : false;
 	}
 
 	public int getNumberOfAlternatives() {
-		return maximumAlternatives;
+		return alternatives;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return index < maximumAlternatives;
+		return index < alternatives;
 	}
 
 	@Override
 	public List<String> next() {
+		
 		if (!hasNext()) {
 			throw new IllegalStateException();
 		}
 
 		List<String> chain = new ArrayList<>(numberOfTrips);
-		
+		int copy = index;
 
-		for (int k = 0; k < numberOfTrips; k++) {
-			
-			//chain.add(availableModes.get());
+		if(!thresholdExceeded) {
+			for (int k = 0; k < numberOfTrips; k++) {
+				chain.add(availableModes.get(copy % numberOfModes));
+				copy -= copy % numberOfModes;
+				copy /= numberOfModes;
+			}
 		}
-
+		else {
+			for (int k = 0; k < numberOfTrips; k++) {
+				chain.add(availableModes.get(MatsimRandom.getRandom().nextInt(numberOfModes)));
+			}
+		}
 		index++;
-
 		return chain;
 	}
 
 	static public class Factory implements ModeChainGeneratorFactory {
+	   
+		DiscreteModeChoiceConfigGroup modeChainGeneratorConfig;
 		
-		@Inject
-		private DiscreteModeChoiceConfigGroup dmcConfig;
-		
+		public Factory(DiscreteModeChoiceConfigGroup modeChainGeneratorConfig) {
+			this.modeChainGeneratorConfig = modeChainGeneratorConfig;
+		}
+
 		@Override
 		public ModeChainGenerator createModeChainGenerator(Collection<String> modes, Person person,
 				List<DiscreteModeChoiceTrip> trips) {
+			if((modeChainGeneratorConfig.getModeChainGeneratorConfigGroup()) instanceof ModeChainFilterRandomThresholdConfigGroup ) {
+				return new FilterRandomThresholdModeChainGenerator(modes, trips.size(),((ModeChainFilterRandomThresholdConfigGroup)modeChainGeneratorConfig.getModeChainGeneratorConfigGroup()).getMaxChainsThreshold());
+			}
+			else {
+				throw new IllegalStateException("the module ModeChainFilterRandomThreshold not found in Config file. Insert the module in the Config file or change modeChainGenerator in the DiscreteModeChoice module");
+			}
 			
-			return new FilterRandomThresholdModeChainGenerator(modes, trips.size(),((ModeChainFilterRandomThresholdConfigGroup)dmcConfig.getModeChainGeneratorConfigGroup()).getMaxChainsThreshold());
 		}
 	}
 

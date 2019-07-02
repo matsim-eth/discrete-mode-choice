@@ -5,7 +5,7 @@ import org.matsim.core.config.ReflectiveConfigGroup;
 
 public class ModeChainFilterRandomThresholdConfigGroup extends ReflectiveConfigGroup {
 
-	public static final String GROUP_NAME = "ModeChainFilterRandomThresholdConfigGroup";
+	public static final String GROUP_NAME = "ModeChainFilterRandomThreshold";
 	
 	public static final String MAX_CHAINS_THRESHOLD = "maxChainsThreshold";
 	

@@ -236,6 +236,10 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		return this.modeChainGenerator;
 	}
 
+	// --- Modules configuration ---
+	
+	
+	
 	// --- Component configuration ---
 
 	private final Map<Tuple<String, String>, ConfigGroup> componentRegistry = createComponentRegistry(
@@ -271,7 +275,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				SubtourModeConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING), //
 				MATSimTripScoringConfigGroup::new);
-
+		
 		return registry;
 	}
 

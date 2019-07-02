@@ -61,7 +61,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		List<List<String>> tourCandidateModes = new LinkedList<>();
 
 		int tripIndex = 1;
-
+		
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
 			ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person, tourTrips);
 			UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();

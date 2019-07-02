@@ -14,6 +14,7 @@ import org.matsim.core.replanning.modules.SubtourModeChoice;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule.DefaultSelector;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule.DefaultStrategy;
 
+import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
@@ -80,8 +81,12 @@ public final class DiscreteModeChoiceConfigurator {
 		
 		dmcConfig.setModeChainGeneratorAsString(ModeChainGeneratorModule.FILTER_RANDOM_THRESHOLD);
 		ModeChainFilterRandomThresholdConfigGroup mCFilterRandomThresholdConfig = new ModeChainFilterRandomThresholdConfigGroup();
-		mCFilterRandomThresholdConfig.setMaxChainsThreshold(256);
+		mCFilterRandomThresholdConfig.setMaxChainsThreshold(1024);
 		dmcConfig.setModeChainGeneratorConfigGroup(mCFilterRandomThresholdConfig);
+		
+		
+		
+		dmcConfig.setFallbackBehaviour(DiscreteModeChoiceModel.FallbackBehaviour.IGNORE_AGENT);
 	}
 
 	static public void configureAsImportanceSampler(Config config) {

@@ -4,12 +4,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
+import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.QSimConfigGroup;
+import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.controler.Controler;
+import org.matsim.core.mobsim.qsim.components.QSimComponentsConfig;
+import org.matsim.core.mobsim.qsim.components.StandardQSimComponentConfigurator;
 import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
 import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
@@ -18,7 +29,12 @@ import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
+import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.pt.PtConstants;
+
+import com.google.inject.Provides;
+
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.SubtourModeConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.VehicleTourConstraint;
@@ -44,6 +60,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.RandomSelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
+import ch.ethz.matsim.discrete_mode_choice.modules.ConstraintModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceConfigurator;
+import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.SelectorModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.test_utils.PlanBuilder;
 import ch.ethz.matsim.discrete_mode_choice.test_utils.PlanTester;
 
@@ -382,4 +404,6 @@ public class SubtourModeChoiceReplacementTest {
 
 		return chains;
 	}
+
+    
 }

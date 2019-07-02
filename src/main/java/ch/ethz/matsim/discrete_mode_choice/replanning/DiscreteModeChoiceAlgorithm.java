@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
@@ -12,6 +13,7 @@ import org.matsim.core.router.TripRouter;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.NoFeasibleChoiceException;
+import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.FilterRandomThresholdModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.RoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
@@ -25,6 +27,8 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final DiscreteModeChoiceModel modeChoiceModel;
+	
+	private static Logger log = Logger.getLogger(DiscreteModeChoiceAlgorithm.class);
 
 	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel) {
 		this.random = random;
@@ -37,6 +41,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	 * before, hence the code is working diretly on legs.
 	 */
 	public void run(Plan plan) {
+		
 		// I) First build a list of DiscreteModeChoiceTrips
 
 		List<? extends PlanElement> elements = plan.getPlanElements();

@@ -7,8 +7,12 @@ import java.util.List;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.core.config.ConfigGroup;
+
+import com.google.inject.Inject;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
 /**
  * This is the default mode chain generator. It can be used right away or as a
@@ -39,6 +43,7 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 		this.availableModes = new ArrayList<>(availableModes);
 		this.numberOfModes = availableModes.size();
 		this.numberOfTrips = numberOfTrips;
+		
 
 		try {
 			this.maximumAlternatives = ArithmeticUtils.pow(numberOfModes, numberOfTrips);
@@ -79,6 +84,13 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 	}
 
 	static public class Factory implements ModeChainGeneratorFactory {
+		
+        DiscreteModeChoiceConfigGroup modeChainGeneratorConfig;
+		
+		public Factory(DiscreteModeChoiceConfigGroup modeChainGeneratorConfig) {
+			this.modeChainGeneratorConfig = modeChainGeneratorConfig;
+		}
+		
 		@Override
 		public ModeChainGenerator createModeChainGenerator(Collection<String> modes, Person person,
 				List<DiscreteModeChoiceTrip> trips) {
