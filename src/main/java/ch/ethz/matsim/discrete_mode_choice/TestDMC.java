@@ -22,6 +22,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceConfigurato
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.SelectorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeChainFilterRandomThresholdConfigGroup;
 
 public class TestDMC {
 
@@ -29,31 +30,17 @@ public class TestDMC {
 		// TODO Auto-generated method stub
 		System.setProperty("matsim.preferLocalDtds", "true");
 
-		//C:\Users\spenazzi\Projects\MatSim\Data\ZurichScenario\zurich_1pm\zurich_1pm
-		//C:/Users/spenazzi/Projects/MatSim/Data/ZurichScenario/zurich_1pm/zurich_1pm/zurich_config.xml
-		//C:/Users/spenazzi/Projects/MatSim/MatSimLSR/matsim-0.10.1/matsim-0.10.1/examples/berlin/config.xml
-        final Config config = ConfigUtils.loadConfig("C:/Users/spenazzi/Projects/MatSim/Data/ZurichScenario/zurich_1pm/zurich_1pm/zurich_config.xml");
+        final Config config = ConfigUtils.loadConfig("C:/Users/spenazzi/Projects/MatSim/Data/ZurichScenario/zurich_1pm/zurich_1pm/zurich_config.xml",
+        		new DiscreteModeChoiceConfigGroup(),new ModeChainFilterRandomThresholdConfigGroup());
 
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
         // controler
         Controler controler = new Controler(scenario);
-
-        double dMC = 0.2;
-        String selectionMode = "CCC";
-        if (dMC > 0.0) {
-            controler.addOverridingModule(new DiscreteModeChoiceModule());
-            if (SelectorModule.RANDOM.equals(selectionMode)) {
-                DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
-            } else {
-                DiscreteModeChoiceConfigurator.configureAsImportanceSampler(config);
-            }
-            DiscreteModeChoiceConfigGroup dmcConfig = (DiscreteModeChoiceConfigGroup) config.getModules().get(DiscreteModeChoiceConfigGroup.GROUP_NAME);
-            dmcConfig.setTourConstraintsAsString(ConstraintModule.SUBTOUR_MODE);
-        }
+        controler.addOverridingModule(new DiscreteModeChoiceModule());
         
         // make population smaller
-        int nrPeopleToKeep = 0;
+        int nrPeopleToKeep = 100;
         if (nrPeopleToKeep > 0) {
             int interval = scenario.getPopulation().getPersons().size() / nrPeopleToKeep;
             int i = 0;

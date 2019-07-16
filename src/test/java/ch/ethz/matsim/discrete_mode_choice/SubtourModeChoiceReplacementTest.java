@@ -346,7 +346,7 @@ public class SubtourModeChoiceReplacementTest {
 				: new DefaultModeAvailability(modes);
 		TourFinder tourFinder = new PlanTourFinder();
 		UtilitySelectorFactory<TourCandidate> selectorFactory = new RandomSelector.Factory<>();
-		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory();
+		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory(null);
 		FallbackBehaviour fallbackBehaviour = FallbackBehaviour.EXCEPTION;
 
 		HomeFinder homeFinder = new FirstActivityHomeFinder();

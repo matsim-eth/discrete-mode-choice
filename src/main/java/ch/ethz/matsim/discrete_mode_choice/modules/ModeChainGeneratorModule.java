@@ -1,7 +1,11 @@
 package ch.ethz.matsim.discrete_mode_choice.modules;
 
+import java.util.Map;
+
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
@@ -33,22 +37,22 @@ public class ModeChainGeneratorModule extends AbstractDiscreteModeChoiceExtensio
 		bindModeChainGenerator(FILTER_RANDOM_THRESHOLD).to(FilterRandomThresholdModeChainGenerator.Factory.class);
 	}
 	
-	@Provides
+	/*@Provides
 	public FilterRandomThresholdModeChainGenerator.Factory provideFilterRandomThresholdModeChainGeneratorFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
 		return new FilterRandomThresholdModeChainGenerator.Factory(dmcConfig);
 	}
 	@Provides
 	public DefaultModeChainGenerator.Factory provideDefaultModeChainGeneratorFactory(DiscreteModeChoiceConfigGroup dmcConfig) {
 		return new DefaultModeChainGenerator.Factory(dmcConfig);
-	}
+	}*/
 	
 	@Provides
-	public ModeChainGeneratorFactory provideModeChainGenerator(DiscreteModeChoiceConfigGroup dmcConfig) {
+	public ModeChainGeneratorFactory provideModeChainGenerator(Map<String,ModeChainGeneratorFactory> mcf, DiscreteModeChoiceConfigGroup dmcConfig) {
 		switch (dmcConfig.getModeChainGeneratorAsString()) {
 		case ALL_COMBINATIONS:
-			return new DefaultModeChainGenerator.Factory(dmcConfig);
+			 return mcf.get(ALL_COMBINATIONS);
 		case FILTER_RANDOM_THRESHOLD:
-			return new FilterRandomThresholdModeChainGenerator.Factory(dmcConfig);
+			 return mcf.get(FILTER_RANDOM_THRESHOLD);
 		default:
 			throw new IllegalStateException("The param modeChainGenerator in the module DiscreteModeChoice is not allowed.");
 		}

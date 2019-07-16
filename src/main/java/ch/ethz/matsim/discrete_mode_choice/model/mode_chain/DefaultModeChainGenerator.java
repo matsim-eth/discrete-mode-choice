@@ -86,7 +86,7 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 	static public class Factory implements ModeChainGeneratorFactory {
 		
         DiscreteModeChoiceConfigGroup modeChainGeneratorConfig;
-		
+		@Inject 
 		public Factory(DiscreteModeChoiceConfigGroup modeChainGeneratorConfig) {
 			this.modeChainGeneratorConfig = modeChainGeneratorConfig;
 		}
