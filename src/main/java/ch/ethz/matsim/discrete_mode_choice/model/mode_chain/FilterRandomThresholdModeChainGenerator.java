@@ -57,7 +57,6 @@ public class FilterRandomThresholdModeChainGenerator implements ModeChainGenerat
 		int copy = index;
 
 		if(!thresholdExceeded) {
-			System.out.println(maximumAlternatives);
 			for (int k = 0; k < numberOfTrips; k++) {
 				chain.add(availableModes.get(copy % numberOfModes));
 				copy -= copy % numberOfModes;
