@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Fix error messages in EstimatorModule
+
 ** 1.0.7 **
 
 - Switch to GitFlow repository model
