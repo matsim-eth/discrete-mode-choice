@@ -1,11 +1,8 @@
 # CHANGELOG
 
-**12.0.7 (under development)**
+** 1.0.7 **
 
-- No changes yet
-
-**12.0.6**
-
+- Switch to GitFlow repository model
 - Update to MATSim 12
 - Change version scheme to be in line with MATSim
 
