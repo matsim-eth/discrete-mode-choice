@@ -47,6 +47,8 @@ Add the following to your `pom.xml` dependencies to use the extension with versi
 
 This repository makes use of the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) repository model. This means that development is taking place in the `develop` branch, while the current production version can be found in the `master` branch. Note that, contrary to the basic model, we use multiple `master` branches to maintain versions of the code that are compatible with different releases of MATSim. For instance, `master-11` is compatible with MATSim 11. The `master-latest` branch is kept compatible with the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim). Backports are always derived from the `master-latest` branch into the specific backport branches.
 
+For creating the backports, the recommended workflow is as follows: Branch `backport-X` from master, add changes for compatibility, merge back `backport-X` into `master-X`. 
+
 ## Literature
 
 The Discrete Mode Choice extension has been used in the following publications:
