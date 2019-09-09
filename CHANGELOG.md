@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Fix wrong initialization of array size in DiscreteModeChoiceAlgorithm
 - Add IndexUtils to clarify how to calculate trip indices
 - Rename index variables in DiscreteModeChoiceTrip to avoid confusion
 
