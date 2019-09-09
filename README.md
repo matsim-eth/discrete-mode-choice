@@ -1,7 +1,5 @@
 # Discrete Mode Choice for MATSim
 
-[![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=latest)](https://travis-ci.org/matsim-eth/discrete-mode-choice)
-
 The Discrete Mode Choice extension for MATSim makes it easy to define fine-grained and custom mode choice behaviour in MATSim simulations. Have a look at the [Getting Started](docs/GettingStarted.md) guide to dive right in or have a look at the existing [Components](docs/Components.md) if you are already familiar with the basic concepts.
 
 The extensions offers three major pathways for improving mode choice in MATSim:
@@ -14,13 +12,17 @@ To learn more about these applications (and how you can implement "frozen random
 
 For more customized applications and set-ups, have a look at [Customizing the framework](docs/Customizing.md).
 
-## Working with the code
+## Available versions
 
-- Releases are generally available on [Bintray](https://bintray.com/matsim-eth/matsim/discrete-mode-choice). The first part of the version number denotes the MATSim version that a certain release is compatible with, e.g. `11.0.6` would be compatible with MATSim 11.
+The DMC extension is currently kept compatible with the following MATSim versions:
 
-- The repository has branches for each version of MATSim. Currently, the two branches `latest` (12) and `stable` (11) are maintained, while branches for later version still exist.
+|MATSim              |DMC version      |               |
+|--------------------|-----------------|---------------|
+| Weekly SNAPSHOT `12.0-2019w20`            | `1.0.7`           | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| Release `11.0`       | `1.0.7-matsim11`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| Release `0.10.1`     | `1.0.7-matsim10`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 
-- Development is usually done by sending a PR to the `latest` branch. From time to time, a release is made from the `latest` branch and recent changes are backported to the `stable` branch, also resulting in a new Bintray version
+Since we have to react to changes in the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim) "on demand", compatibility may be "out-of-synch" for a short time once incompatible changes happen in the MATSim repository. We recommend using the DMC extension with a stable version of MATSim.
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
 
@@ -31,27 +33,21 @@ To use the Discrete Mode Choice extension you first need to add the ETH MATSim B
 </repository>
 ```
 
-Add the following to your `pom.xml` dependencies to use the extension with a standard MATSim 11 setup:
+Add the following to your `pom.xml` dependencies to use the extension with version `1.0.7` and MATSim 11, for instance:
 
 ```xml
 <dependency>
-	<groupId>ch.ethz.matsim</groupId>
-	<artifactId>discrete_mode_choice</artifactId>
-	<version>11.0.6</version>
+    <groupId>ch.ethz.matsim</groupId>
+    <artifactId>discrete_mode_choice</artifactId>
+    <version>1.0.7-matsim11</version>
 </dependency>
 ```
 
-For the version that is compatible with a MATSim 12 SNAPSHOT, choose:
+## Repository sturcture
 
-```xml
-<dependency>
-	<groupId>ch.ethz.matsim</groupId>
-	<artifactId>discrete_mode_choice</artifactId>
-	<version>12.0.6</version>
-</dependency>
-```
+This repository makes use of the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) repository model. This means that development is taking place in the `develop` branch, while the current production version can be found in the `master` branch. Note that, contrary to the basic model, we use multiple `master` branches to maintain versions of the code that are compatible with different releases of MATSim. For instance, `master-11` is compatible with MATSim 11. The `master-latest` branch is kept compatible with the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim). Backports are always derived from the `master-latest` branch into the specific backport branches.
 
-The current `latest` branch has version `12.0.7`, which is under development.
+For creating the backports, the recommended workflow is as follows: Branch `backport-X` from master, add changes for compatibility, merge back `backport-X` into `master-X`. 
 
 ## Literature
 
