@@ -18,9 +18,9 @@ The DMC extension is currently kept compatible with the following MATSim version
 
 |MATSim              |DMC version      |               |
 |--------------------|-----------------|---------------|
-| `master`            | 1.0.7           | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
-| Release 11.0       | 1.0.7-matsim11  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
-| Release 0.10.1     | 1.0.7-matsim10  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| `master`            | `1.0.7`           | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| Release `11.0`       | `1.0.7-matsim11`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| Release `0.10.1`     | `1.0.7-matsim10`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 
 Since we have to react to changes in the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim) "on demand", compatibility may be "out-of-synch" for a short time once incompatible changes happen in the MATSim repository. We recommend using the DMC extension with a stable version of MATSim.
 
