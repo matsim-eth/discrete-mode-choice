@@ -40,8 +40,8 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 		// I) First build a list of DiscreteModeChoiceTrips
 
 		List<? extends PlanElement> elements = plan.getPlanElements();
-		List<DiscreteModeChoiceTrip> trips = new ArrayList<>((elements.size() - 2) / 2);
-		List<Leg> legs = new ArrayList<>((elements.size() - 2) / 2);
+		List<DiscreteModeChoiceTrip> trips = new ArrayList<>((elements.size() - 2) / 2 + 1);
+		List<Leg> legs = new ArrayList<>((elements.size() - 2) / 2 + 1);
 
 		TripListConverter.convert(plan, trips, legs);
 
