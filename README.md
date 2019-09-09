@@ -37,9 +37,9 @@ Add the following to your `pom.xml` dependencies to use the extension with versi
 
 ```xml
 <dependency>
-	<groupId>ch.ethz.matsim</groupId>
-	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.7-matsim11</version>
+    <groupId>ch.ethz.matsim</groupId>
+    <artifactId>discrete_mode_choice</artifactId>
+    <version>1.0.7-matsim11</version>
 </dependency>
 ```
 
