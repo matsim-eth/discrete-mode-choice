@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Fix wrong initialization of array size in DiscreteModeChoiceAlgorithm
+
 ** 1.0.7 **
 
 - Switch to GitFlow repository model
