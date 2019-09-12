@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Add Sioux Falls as integration test for SubtourModeChoiceReplacement
 - Fix error messages in EstimatorModule
 - Fix wrong initialization of array size in DiscreteModeChoiceAlgorithm
 - Add IndexUtils to clarify how to calculate trip indices

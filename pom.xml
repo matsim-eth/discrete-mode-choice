@@ -9,6 +9,7 @@
 
 	<properties>
 		<matsim.version>12.0-2019w20-SNAPSHOT</matsim.version>
+		<matsim.test-version>12.0-SNAPSHOT</matsim.test-version>
 		<geotools.version>20.2</geotools.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -94,6 +95,18 @@
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim</artifactId>
 			<version>${matsim.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.matsim</groupId>
+			<artifactId>matsim-examples</artifactId>
+			<version>${matsim.test-version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
