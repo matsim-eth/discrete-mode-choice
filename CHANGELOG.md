@@ -6,7 +6,7 @@
 - Add IndexUtils to clarify how to calculate trip indices
 - Rename index variables in DiscreteModeChoiceTrip to avoid confusion
 
-** 1.0.7 **
+**1.0.7**
 
 - Switch to GitFlow repository model
 - Update to MATSim 12
