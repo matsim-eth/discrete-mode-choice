@@ -22,7 +22,7 @@ The DMC extension is currently kept compatible with the following MATSim version
 | Release `11.0`       | `1.0.7-matsim11`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 | Release `0.10.1`     | `1.0.7-matsim10`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 
-Since we have to react to changes in the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim) "on demand", compatibility may be "out-of-synch" for a short time once incompatible changes happen in the MATSim repository. We recommend using the DMC extension with a stable version of MATSim.
+Since we have to react to changes in the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim) "on demand", compatibility may be "out-of-synch" for a short time until we update to the next weekly SNAPSHOT. We recommend using the DMC extension with a stable version of MATSim.
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
 
@@ -45,7 +45,7 @@ Add the following to your `pom.xml` dependencies to use the extension with versi
 
 ## Repository sturcture
 
-This repository makes use of the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) repository model. This means that development is taking place in the `develop` branch, while the current production version can be found in the `master` branch. Note that, contrary to the basic model, we use multiple `master` branches to maintain versions of the code that are compatible with different releases of MATSim. For instance, `master-11` is compatible with MATSim 11. The `master-latest` branch is kept compatible with the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim). Backports are always derived from the `master-latest` branch into the specific backport branches.
+This repository makes use of the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) repository model. This means that development is taking place in the `develop` branch, while the current production version can be found in the `master` branch. Note that, contrary to the basic model, we use multiple `master` branches to maintain versions of the code that are compatible with different releases of MATSim. For instance, `master-11` is compatible with MATSim 11. The `master` branch is kept compatible with the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim). Backports are always derived from the `master` branch into the specific backport branches.
 
 For creating the backports, the recommended workflow is as follows: Branch `backport-X` from master, add changes for compatibility, merge back `backport-X` into `master-X`. 
 
