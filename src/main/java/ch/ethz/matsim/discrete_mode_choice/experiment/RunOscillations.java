@@ -26,37 +26,53 @@ import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy.OverwriteFileSetting;
+import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutilityFactory;
+import org.matsim.core.router.util.LeastCostPathCalculatorFactory;
 import org.matsim.core.scenario.ScenarioUtils;
+
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+
+import ch.ethz.matsim.discrete_mode_choice.experiment.router.BestNLeastCostPathCalculatorFactory;
+import ch.ethz.matsim.discrete_mode_choice.experiment.router.BestNLeastCostPathSelector;
+import ch.ethz.matsim.discrete_mode_choice.experiment.router.MultinomialPathSelector;
+import ch.ethz.matsim.discrete_mode_choice.experiment.router.RandomPathSelector;
+import ch.ethz.matsim.discrete_mode_choice.experiment.travel_time.AdjustedTravelTime;
+import ch.ethz.matsim.discrete_mode_choice.experiment.travel_time.SmoothingTravelTimeModule;
 
 public class RunOscillations {
 	static public void main(String[] args) {
 		Logger.getRootLogger().setLevel(Level.WARN);
 
 		// Set up configuration
-		int numberOfIterations = 40;
+		int numberOfIterations = 100;
 		Config config = setupConfig(numberOfIterations);
-		
+
 		// Add strategies
 		double keepLastSelectedWeight = 0.8;
 		double rerouteWeight = 0.2;
-		
+
+		// Smooth travel time
+		boolean useSmoothingTravelTime = true;
+		double smoothingFactor = 0.3;
+
 		StrategySettings keepLastSelectedStrategy = new StrategySettings();
 		keepLastSelectedStrategy.setStrategyName("KeepLastSelected");
 		keepLastSelectedStrategy.setWeight(keepLastSelectedWeight);
 		config.strategy().addStrategySettings(keepLastSelectedStrategy);
-		
+
 		StrategySettings rerouteStrategy = new StrategySettings();
 		rerouteStrategy.setStrategyName("ReRoute");
 		rerouteStrategy.setWeight(rerouteWeight);
 		config.strategy().addStrategySettings(rerouteStrategy);
 
 		// Set up scenario
-		int numberOfAgents = 50;
+		int numberOfAgents = 500;
 		double departureSigma = 0.0; // Diversify departure times (0 = None)
 
-		double capacityA = 20.0;
-		double capacityB = 20.0;
+		double capacityA = 200.0;
+		double capacityB = 200.0;
 
 		Random random = new Random(0);
 		Scenario scenario = createScenario(numberOfAgents, capacityA, capacityB, departureSigma, config, random);
@@ -72,7 +88,28 @@ public class RunOscillations {
 				addControlerListenerBinding().toInstance(routeListener);
 
 				addTravelDisutilityFactoryBinding("car").toInstance(new OnlyTimeDependentTravelDisutilityFactory());
-				addTravelTimeBinding("car").to(AdjustedTravelTime.class);
+
+				if (useSmoothingTravelTime) {
+					install(new SmoothingTravelTimeModule(smoothingFactor));
+				} else {
+					addTravelTimeBinding("car").to(AdjustedTravelTime.class);
+				}
+			}
+
+			@Provides
+			@Singleton
+			public LeastCostPathCalculatorFactory provideLeastCostPathCalculatorFactory() {
+				int maximumNumberOfAlternatives = 2;
+				double maximumDelay = Double.POSITIVE_INFINITY;
+				LeastCostPathCalculatorFactory delegateFactory = new DijkstraFactory();
+				
+				//BestNLeastCostPathSelector selector = new RandomPathSelector();
+				
+				double beta = 0.0;
+				BestNLeastCostPathSelector selector = new MultinomialPathSelector(beta * 1.0 / 60.0);
+				
+				return new BestNLeastCostPathCalculatorFactory(delegateFactory, selector, maximumDelay,
+						maximumNumberOfAlternatives, 1e6);
 			}
 		});
 
@@ -123,8 +160,8 @@ public class RunOscillations {
 
 		startLink.setCapacity(1000.0);
 		endLink.setCapacity(1000.0);
-		startLink.setFreespeed(1000000.0);
-		endLink.setFreespeed(1000000.0);
+		startLink.setFreespeed(10000.0);
+		endLink.setFreespeed(10000.0);
 
 		linkA.setCapacity(capacityA);
 		linkB.setCapacity(capacityB);

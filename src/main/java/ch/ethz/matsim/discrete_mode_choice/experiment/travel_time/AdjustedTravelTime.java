@@ -1,4 +1,4 @@
-package ch.ethz.matsim.discrete_mode_choice.experiment;
+package ch.ethz.matsim.discrete_mode_choice.experiment.travel_time;
 
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
