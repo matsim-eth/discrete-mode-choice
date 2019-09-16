@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ReflectiveConfigGroup;
 import org.matsim.core.utils.collections.Tuple;
@@ -424,5 +425,16 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				"Trips tested with the modes listed here will be cached for each combination of trip and agent during one replanning pass.");
 
 		return comments;
+	}
+
+	static public DiscreteModeChoiceConfigGroup getOrCreate(Config config) {
+		DiscreteModeChoiceConfigGroup configGroup = (DiscreteModeChoiceConfigGroup) config.getModules().get(GROUP_NAME);
+
+		if (configGroup == null) {
+			configGroup = new DiscreteModeChoiceConfigGroup();
+			config.addModule(configGroup);
+		}
+
+		return configGroup;
 	}
 }
