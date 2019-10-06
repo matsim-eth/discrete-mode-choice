@@ -8,8 +8,8 @@
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
-		<matsim.version>0.11.0-2019w10-SNAPSHOT</matsim.version>
-<!--         <matsim.version>0.11.0-2018w44</matsim.version> -->
+<!-- 		<matsim.version>11.0</matsim.version> -->
+        <matsim.version>0.11.0-2019w10-SNAPSHOT</matsim.version>
 		<geotools.version>20.2</geotools.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -28,6 +28,10 @@
 		<repository>
 			<id>matsim-snapshot</id>
 			<url>http://oss.jfrog.org/libs-snapshot</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -113,6 +117,12 @@
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim-berlin</artifactId>
 			<version>5.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.github.SchweizerischeBundesbahnen</groupId>
+			<artifactId>matsim-sbb-extensions</artifactId>
+			<version>11.2</version>
 		</dependency>
 	</dependencies>
 
