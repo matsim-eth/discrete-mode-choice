@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ReflectiveConfigGroup;
 import org.matsim.core.utils.collections.Tuple;
@@ -309,7 +310,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 			ConfigGroup componentConfig = entry.getValue().create(entry.getKey().getFirst(),
 					entry.getKey().getSecond());
 			registry.put(entry.getKey(), componentConfig);
-			addParameterSet(componentConfig);
+			super.addParameterSet(componentConfig);
 		}
 
 		return registry;
@@ -328,6 +329,13 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		} else {
 			throw new IllegalStateException(String.format(
 					"Wrongly formatted component: %s (shoud be 'componentType:componentName')", parameterSetType));
+		}
+	}
+
+	@Override
+	public void addParameterSet(ConfigGroup set) {
+		if (!componentRegistry.containsValue(set)) {
+			throw new IllegalStateException("Attempt to add unknown parameter set to DiscreteModeChoiceConfigGroup");
 		}
 	}
 
@@ -424,5 +432,16 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				"Trips tested with the modes listed here will be cached for each combination of trip and agent during one replanning pass.");
 
 		return comments;
+	}
+
+	static public DiscreteModeChoiceConfigGroup getOrCreate(Config config) {
+		DiscreteModeChoiceConfigGroup configGroup = (DiscreteModeChoiceConfigGroup) config.getModules().get(GROUP_NAME);
+
+		if (configGroup == null) {
+			configGroup = new DiscreteModeChoiceConfigGroup();
+			config.addModule(configGroup);
+		}
+
+		return configGroup;
 	}
 }
