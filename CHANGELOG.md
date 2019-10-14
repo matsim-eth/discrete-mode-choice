@@ -1,5 +1,9 @@
 # CHANGELOG
 
+- No changes yet
+
+**1.0.8**
+
 - Fix duplicate config parametersets
 - Add getter to DiscreteModeChoiceConfigGroup
 - Add Sioux Falls as integration test for SubtourModeChoiceReplacement
