@@ -18,23 +18,16 @@ public final class DiscreteModeChoiceTrip {
 	private final int hashCode;
 
 	public DiscreteModeChoiceTrip(Activity originActivity, Activity destinationActivity, String initialMode,
-			double departureTime, int personIndex, int tripIndex) {
+			double departureTime, int personHash, int tripHash) {
 		this.originActivity = originActivity;
 		this.destinationActivity = destinationActivity;
 		this.initialMode = initialMode;
 		this.departureTime = departureTime;
 
 		int hashCode = 12;
-		hashCode += 37 * (int) (personIndex ^ (personIndex >>> 32));
-		hashCode += 37 * (int) (tripIndex ^ (tripIndex >>> 32));
+		hashCode += 37 * (int) (personHash ^ (personHash >>> 32));
+		hashCode += 37 * (int) (tripHash ^ (tripHash >>> 32));
 		this.hashCode = hashCode;
-
-	}
-
-	public DiscreteModeChoiceTrip(Activity originActivity, Activity destinationActivity, String initialMode,
-			double departureTime) {
-		this(originActivity, destinationActivity, initialMode, departureTime, initialMode.hashCode(),
-				(int) departureTime);
 	}
 
 	public Activity getOriginActivity() {

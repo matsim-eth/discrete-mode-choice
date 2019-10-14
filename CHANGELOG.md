@@ -1,6 +1,18 @@
 # CHANGELOG
 
-** 1.0.7 **
+- No changes yet
+
+**1.0.8**
+
+- Fix duplicate config parametersets
+- Add getter to DiscreteModeChoiceConfigGroup
+- Add Sioux Falls as integration test for SubtourModeChoiceReplacement
+- Fix error messages in EstimatorModule
+- Fix wrong initialization of array size in DiscreteModeChoiceAlgorithm
+- Add IndexUtils to clarify how to calculate trip indices
+- Rename index variables in DiscreteModeChoiceTrip to avoid confusion
+
+**1.0.7**
 
 - Switch to GitFlow repository model
 - Update to MATSim 12
