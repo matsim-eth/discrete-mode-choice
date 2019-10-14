@@ -310,7 +310,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 			ConfigGroup componentConfig = entry.getValue().create(entry.getKey().getFirst(),
 					entry.getKey().getSecond());
 			registry.put(entry.getKey(), componentConfig);
-			addParameterSet(componentConfig);
+			super.addParameterSet(componentConfig);
 		}
 
 		return registry;
@@ -329,6 +329,13 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		} else {
 			throw new IllegalStateException(String.format(
 					"Wrongly formatted component: %s (shoud be 'componentType:componentName')", parameterSetType));
+		}
+	}
+
+	@Override
+	public void addParameterSet(ConfigGroup set) {
+		if (!componentRegistry.containsValue(set)) {
+			throw new IllegalStateException("Attempt to add unknown parameter set to DiscreteModeChoiceConfigGroup");
 		}
 	}
 
