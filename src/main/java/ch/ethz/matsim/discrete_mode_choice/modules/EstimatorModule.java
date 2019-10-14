@@ -69,7 +69,7 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 			return provider.get();
 		} else {
 			throw new IllegalStateException(
-					String.format("There is no TourEstimator component called '%s',", dmcConfig.getModeAvailability()));
+					String.format("There is no TourEstimator component called '%s',", dmcConfig.getTourEstimator()));
 		}
 	}
 
@@ -82,7 +82,7 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 			return new CachedTripEstimator(provider.get(), dmcConfig.getCachedModes());
 		} else {
 			throw new IllegalStateException(
-					String.format("There is no TripEstimator component called '%s',", dmcConfig.getModeAvailability()));
+					String.format("There is no TripEstimator component called '%s',", dmcConfig.getTripEstimator()));
 		}
 	}
 

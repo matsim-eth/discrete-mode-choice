@@ -8,6 +8,7 @@ import org.matsim.api.core.v01.BasicLocation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 
+import ch.ethz.matsim.discrete_mode_choice.components.utils.IndexUtils;
 import ch.ethz.matsim.discrete_mode_choice.components.utils.LocationUtils;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.constraints.AbstractTourConstraint;
@@ -42,7 +43,7 @@ public class SubtourModeConstraint extends AbstractTourConstraint {
 	@Override
 	public boolean validateBeforeEstimation(List<DiscreteModeChoiceTrip> tour, List<String> modes,
 			List<List<String>> previousModes) {
-		int tourLocationOffset = previousModes.stream().mapToInt(Collection::size).sum();
+		int tourLocationOffset = IndexUtils.getFirstTripIndex(previousModes);
 
 		for (int index = 0; index < modes.size(); index++) {
 			// We loop over all trips
