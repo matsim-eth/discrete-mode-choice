@@ -1,12 +1,14 @@
 package ch.ethz.matsim.discrete_mode_choice.model.tour_based;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Person;
 
@@ -65,10 +67,10 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
 			ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person, tourTrips);
 			UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
-
+			
 			while (generator.hasNext()) {
 				List<String> tourModes = generator.next();
-
+				
 				if (!constraint.validateBeforeEstimation(tourTrips, tourModes, tourCandidateModes)) {
 					continue;
 				}
@@ -79,14 +81,14 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 					logger.warn(buildIllegalUtilityMessage(tripIndex, person));
 					continue;
 				}
-
+				
 				if (!constraint.validateAfterEstimation(tourTrips, candidate, tourCandidates)) {
 					continue;
 				}
-
+				
 				selector.addCandidate(candidate);
 			}
-
+			
 			Optional<TourCandidate> selectedCandidate = selector.select(random);
 
 			if (!selectedCandidate.isPresent()) {
