@@ -1,9 +1,11 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning;
 
+import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.groups.GlobalConfigGroup;
 import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.replanning.modules.AbstractMultithreadedModule;
+import org.matsim.core.router.TripRouter;
 
 import com.google.inject.Provider;
 
@@ -17,18 +19,27 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
  */
 public class DiscreteModeChoiceReplanningModule extends AbstractMultithreadedModule {
 	public static final String NAME = "DiscreteModeChoice";
-	
+
 	final private Provider<DiscreteModeChoiceModel> modelProvider;
+	final private Provider<TripRouter> tripRouterProvider;
+	final private PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceReplanningModule(GlobalConfigGroup globalConfigGroup,
-			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider) {
+			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider, Provider<TripRouter> tripRouterProvider,
+			PopulationFactory populationFactory) {
 		super(globalConfigGroup);
+
 		this.modelProvider = modeChoiceModelProvider;
+		this.tripRouterProvider = tripRouterProvider;
+		this.populationFactory = populationFactory;
 	}
 
 	@Override
 	public PlanAlgorithm getPlanAlgoInstance() {
 		DiscreteModeChoiceModel choiceModel = modelProvider.get();
-		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel);
+		TripRouter tripRouter = tripRouterProvider.get();
+
+		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel,
+				tripRouter.getStageActivityTypes(), tripRouter.getMainModeIdentifier(), populationFactory);
 	}
 }

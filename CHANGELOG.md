@@ -1,6 +1,6 @@
 # CHANGELOG
 
-- No changes yet
+- Make initial plan elements available to mode choice process
 
 **1.0.8**
 

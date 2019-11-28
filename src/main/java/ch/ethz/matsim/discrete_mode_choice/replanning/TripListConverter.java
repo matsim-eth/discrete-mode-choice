@@ -1,12 +1,15 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.core.router.MainModeIdentifier;
+import org.matsim.core.router.StageActivityTypes;
+import org.matsim.core.router.TripStructureUtils;
+import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.misc.Time;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -29,15 +32,17 @@ public final class TripListConverter {
 	 * respective legs. It is expected that the plan is already flattened (i.e.
 	 * there are no interaction activities).
 	 */
-	public static void convert(Plan plan, List<DiscreteModeChoiceTrip> trips, List<Leg> legs) {
-		List<? extends PlanElement> elements = plan.getPlanElements();
+	public static List<DiscreteModeChoiceTrip> convert(Plan plan, StageActivityTypes stageActivityTypes,
+			MainModeIdentifier mainModeIdentifier) {
+		List<Trip> initialTrips = TripStructureUtils.getTrips(plan, stageActivityTypes);
+		List<DiscreteModeChoiceTrip> trips = new ArrayList<>(initialTrips.size());
 
 		double time = 0.0;
+		int index = 0;
 
-		for (int i = 1; i < elements.size() - 1; i += 2) {
-			Activity originActivity = (Activity) elements.get(i - 1);
-			Leg leg = (Leg) elements.get(i);
-			Activity destinationActivity = (Activity) elements.get(i + 1);
+		for (Trip initialTrip : initialTrips) {
+			Activity originActivity = initialTrip.getOriginActivity();
+			Activity destinationActivity = initialTrip.getDestinationActivity();
 
 			if (!Time.isUndefinedTime(originActivity.getEndTime())) {
 				time = originActivity.getEndTime();
@@ -49,14 +54,13 @@ public final class TripListConverter {
 						plan.getPerson().getId().toString(), Time.writeTime(time)));
 			}
 
-			trips.add(new DiscreteModeChoiceTrip(originActivity, destinationActivity, leg.getMode(), time,
-					plan.getPerson().hashCode(), i));
-			legs.add(leg);
+			String initialMode = mainModeIdentifier.identifyMainMode(initialTrip.getTripElements());
 
-			// Either this will be reset by the end time of the next origin activity, or we
-			// make sure that we move forward in time (if all activities are
-			// duration-based).
-			time += leg.getTravelTime();
+			trips.add(new DiscreteModeChoiceTrip(originActivity, destinationActivity, initialMode,
+					initialTrip.getTripElements(), time, plan.getPerson().hashCode(), index));
+			index++;
 		}
+
+		return trips;
 	}
 }
