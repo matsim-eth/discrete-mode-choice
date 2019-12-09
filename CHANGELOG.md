@@ -1,5 +1,6 @@
 # CHANGELOG
 
+- Update MATSim version, fix MainModeIdentifier and remove StageActivityTypes
 - Make initial plan elements available to mode choice process
 
 **1.0.8**

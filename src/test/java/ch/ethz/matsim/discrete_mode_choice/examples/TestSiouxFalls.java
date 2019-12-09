@@ -20,17 +20,17 @@ public class TestSiouxFalls {
 	public void testSiouxFallsWithSubtourModeChoiceReplacement() {
 		URL scenarioURL = ExamplesUtils.getTestScenarioURL("siouxfalls-2014");
 
-		Config config = ConfigUtils.loadConfig(IOUtils.newUrl(scenarioURL, "config_default.xml"));
+		Config config = ConfigUtils.loadConfig(IOUtils.extendUrl(scenarioURL, "config_default.xml"));
 		DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
-		
+
 		config.controler().setOverwriteFileSetting(OverwriteFileSetting.deleteDirectoryIfExists);
 		config.controler().setLastIteration(1);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
-		
+
 		Controler controller = new Controler(scenario);
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
-		
+
 		controller.run();
 	}
 }
