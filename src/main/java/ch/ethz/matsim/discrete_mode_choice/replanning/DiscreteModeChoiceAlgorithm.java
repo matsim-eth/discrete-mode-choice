@@ -10,7 +10,6 @@ import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.router.MainModeIdentifier;
-import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.TripRouter;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
@@ -29,15 +28,13 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final DiscreteModeChoiceModel modeChoiceModel;
 
-	private final StageActivityTypes stageActivityTypes;
 	private final MainModeIdentifier mainModeIdentifier;
 	private final PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel,
-			StageActivityTypes stageActivityTypes, MainModeIdentifier mainModeIdentifier, PopulationFactory populationFactory) {
+			MainModeIdentifier mainModeIdentifier, PopulationFactory populationFactory) {
 		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
-		this.stageActivityTypes = stageActivityTypes;
 		this.mainModeIdentifier = mainModeIdentifier;
 		this.populationFactory = populationFactory;
 	}
@@ -49,7 +46,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	 */
 	public void run(Plan plan) {
 		// I) First build a list of DiscreteModeChoiceTrips
-		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan, stageActivityTypes, mainModeIdentifier);
+		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan, mainModeIdentifier);
 
 		// II) Run mode choice
 
@@ -62,7 +59,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 				TripCandidate candidate = chosenCandidates.get(i);
 
 				List<? extends PlanElement> insertElements;
-				
+
 				if (candidate instanceof RoutedTripCandidate) {
 					RoutedTripCandidate routedCandidate = (RoutedTripCandidate) candidate;
 					insertElements = routedCandidate.getRoutedPlanElements();
@@ -70,7 +67,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 					Leg insertLeg = populationFactory.createLeg(candidate.getMode());
 					insertElements = Collections.singletonList(insertLeg);
 				}
-				
+
 				TripRouter.insertTrip(plan, trip.getOriginActivity(), insertElements, trip.getDestinationActivity());
 			}
 		} catch (NoFeasibleChoiceException e) {

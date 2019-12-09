@@ -17,9 +17,6 @@ import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
 import org.matsim.core.replanning.modules.SubtourModeChoice;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
-import org.matsim.core.router.StageActivityTypes;
-import org.matsim.core.router.StageActivityTypesImpl;
-import org.matsim.pt.PtConstants;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.SubtourModeConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.VehicleTourConstraint;
@@ -367,14 +364,13 @@ public class SubtourModeChoiceReplacementTest {
 		String[] availableModes = modes.toArray(new String[] {});
 		String[] chainBasedModes = constrainedModes.toArray(new String[] {});
 
-		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE);
 		MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
 		PermissibleModesCalculator permissibleModesCalculator = new PermissibleModesCalculatorImpl(availableModes,
 				considerCarAvailability);
 		Random rng = new Random(0);
 		SubtourModeChoice.Behavior behavior = SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes;
 
-		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(stageActivityTypes, mainModeIdentifier,
+		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(mainModeIdentifier,
 				permissibleModesCalculator, availableModes, chainBasedModes, rng, behavior, singleLegProbability);
 
 		Set<List<String>> chains = new HashSet<>();
