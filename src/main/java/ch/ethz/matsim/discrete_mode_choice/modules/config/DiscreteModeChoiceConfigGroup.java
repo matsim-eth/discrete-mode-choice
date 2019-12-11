@@ -18,6 +18,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.Fallbac
 import ch.ethz.matsim.discrete_mode_choice.modules.ConstraintModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.FilterModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModeAvailabilityModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
@@ -74,6 +75,9 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String TOUR_FILTERS = "tourFilters";
 	public static final String TRIP_FILTERS = "tripFilters";
+
+	public static final String TOUR_FILTER = "tourFilter";
+	public static final String TRIP_FILTER = "tripFilter";
 
 	public static final String CACHED_MODES = "cachedModes";
 
@@ -298,6 +302,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				SubtourModeConstraintConfigGroup::new);
 		registry.put(new Tuple<>(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING), //
 				MATSimTripScoringConfigGroup::new);
+		registry.put(new Tuple<>(TOUR_FILTER, FilterModule.TOUR_LENGTH), //
+				TourLengthFilterConfigGroup::new);
 
 		return registry;
 	}
@@ -393,6 +399,10 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		return (MATSimTripScoringConfigGroup) getComponentConfig(TRIP_ESTIMATOR, EstimatorModule.MATSIM_TRIP_SCORING);
 	}
 
+	public TourLengthFilterConfigGroup getTourLengthFilterConfigGroup() {
+		return (TourLengthFilterConfigGroup) getComponentConfig(TOUR_FILTER, FilterModule.TOUR_LENGTH);
+	}
+
 	@Override
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();
@@ -427,7 +437,12 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				+ String.join(", ", EstimatorModule.TOUR_COMPONENTS));
 		comments.put(TRIP_ESTIMATOR, "Defines which TripEstimator component to use. Built-in choices: "
 				+ String.join(", ", EstimatorModule.TRIP_COMPONENTS));
-
+		comments.put(TOUR_FILTERS,
+				"Defines a number of TourFilter components that should be activated. Built-in choices: "
+						+ String.join(", ", FilterModule.TOUR_COMPONENTS));
+		comments.put(TRIP_FILTERS,
+				"Defines a number of TripFilter components that should be activated. Built-in choices: "
+						+ String.join(", ", FilterModule.TRIP_COMPONENTS));
 		comments.put(CACHED_MODES,
 				"Trips tested with the modes listed here will be cached for each combination of trip and agent during one replanning pass.");
 
