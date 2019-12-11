@@ -88,7 +88,7 @@ So adding this to the config file and running the initial script with `DiscreteM
 
 Mainly, a model in the DMC extension consists of a number of components: the [Model](components/Model.md), the [Mode Availability](components/ModeAvailability.md), the [Estimator](components/Estimator.md), the [Selector](components/Selector.md), as well as [Constraints](components/Constraint.md). Tour-based models can additionally be configured with a [TourFinder](components/TourFinder). We will go through these components quickly. 
 
-![eqasim](docs/images/ModeChoiceFlowChart.png "The mode choice process")
+![The mode choice process](images/ModeChoiceFlowChart.png "The mode choice process")
 
 There are two types of base models in DMC: tour-based and trip-based. The replanning of one agent's plan looks as follows:
 
