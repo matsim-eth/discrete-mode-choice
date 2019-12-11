@@ -18,7 +18,6 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
@@ -26,7 +25,6 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TripFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripBasedModel;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
-import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
@@ -69,7 +67,7 @@ public class ModelModule extends AbstractModule {
 	@Provides
 	public TourBasedModel provideTourBasedModel(ModeAvailability modeAvailability, TourFilter tourFilter,
 			TourEstimator tourEstimator, TourConstraintFactory tourConstraintFactory, TourFinder tourFinder,
-			UtilitySelectorFactory<TourCandidate> selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
+			UtilitySelectorFactory selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
 			DiscreteModeChoiceConfigGroup dmcConfig) {
 		return new TourBasedModel(tourEstimator, modeAvailability, tourConstraintFactory, tourFinder, tourFilter,
 				selectorFactory, modeChainGeneratorFactory, dmcConfig.getFallbackBehaviour());
@@ -78,7 +76,7 @@ public class ModelModule extends AbstractModule {
 	@Provides
 	public TripBasedModel provideTripBasedModel(TripEstimator estimator, TripFilter tripFilter,
 			ModeAvailability modeAvailability, TripConstraintFactory constraintFactory,
-			UtilitySelectorFactory<TripCandidate> selectorFactory, DiscreteModeChoiceConfigGroup dmcConfig) {
+			UtilitySelectorFactory selectorFactory, DiscreteModeChoiceConfigGroup dmcConfig) {
 		return new TripBasedModel(estimator, tripFilter, modeAvailability, constraintFactory, selectorFactory,
 				dmcConfig.getFallbackBehaviour());
 	}
