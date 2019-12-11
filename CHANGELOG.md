@@ -1,5 +1,5 @@
 # CHANGELOG
-
+- Allow ReRoute strategy in combination with DCM
 - BC: Remove over-complicated generics for UtilitySelector/Factory
 - Update MATSim version, fix MainModeIdentifier and remove StageActivityTypes
 - Make initial plan elements available to mode choice process
