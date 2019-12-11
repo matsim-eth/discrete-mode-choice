@@ -145,7 +145,7 @@ public final class DiscreteModeChoiceConfigurator {
 
 		activeStrategies.remove(DefaultSelector.KeepLastSelected);
 		activeStrategies.remove(DiscreteModeChoiceModule.STRATEGY_NAME);
-
+        activeStrategies.remove(DefaultStrategy.ReRoute);
 		if (activeStrategies.size() > 0) {
 			throw new IllegalStateException(
 					"All these strategies should be disabled (disableAfter == 0) if mode-choice-in-the-loop is enforced: "
