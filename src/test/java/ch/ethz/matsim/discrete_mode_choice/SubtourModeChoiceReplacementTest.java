@@ -323,7 +323,7 @@ public class SubtourModeChoiceReplacementTest {
 		ModeAvailability modeAvailability = considerCarAvailability ? new CarModeAvailability(modes)
 				: new DefaultModeAvailability(modes);
 		TourFinder tourFinder = new PlanTourFinder();
-		UtilitySelectorFactory<TourCandidate> selectorFactory = new RandomSelector.Factory<>();
+		UtilitySelectorFactory selectorFactory = new RandomSelector.Factory();
 		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory();
 		FallbackBehaviour fallbackBehaviour = FallbackBehaviour.EXCEPTION;
 
