@@ -10,19 +10,15 @@ import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 
 public class NestCalculator {
 	private final Map<Nest, Collection<UtilityCandidate>> candidates = new HashMap<>();
-	private final Map<Nest, Nest> parents = new HashMap<>();
+	private final NestStructure structure;
 
 	private final Map<Nest, Double> expectedUtilityCache = new HashMap<>();
-	private final Nest rootNest;
+	private final Map<Nest, Double> denominatorCache = new HashMap<>();
 
-	public NestCalculator(Nest rootNest, Collection<Nest> nests) {
-		this.rootNest = rootNest;
+	public NestCalculator(NestStructure structure) {
+		this.structure = structure;
 
-		for (Nest nest : nests) {
-			for (Nest child : nest.getChildren()) {
-				parents.put(child, nest);
-			}
-
+		for (Nest nest : structure.getNests()) {
 			candidates.put(nest, new LinkedList<>());
 		}
 	}
@@ -39,21 +35,27 @@ public class NestCalculator {
 	public double calculateProbability(double nominator, Nest nest) {
 		double denominator = 0.0;
 
-		for (UtilityCandidate alternative : candidates.get(nest)) {
-			denominator += Math.exp(alternative.getUtility() / nest.getScaleParameter());
-		}
+		if (denominatorCache.containsKey(nest)) {
+			denominator = denominatorCache.get(nest);
+		} else {
+			for (UtilityCandidate alternative : candidates.get(nest)) {
+				denominator += Math.exp(alternative.getUtility() / nest.getScaleParameter());
+			}
 
-		for (Nest child : nest.getChildren()) {
-			denominator += Math.exp(calculateExpectedUtility(child) / nest.getScaleParameter());
+			for (Nest child : structure.getChildren(nest)) {
+				denominator += Math.exp(calculateExpectedUtility(child) / nest.getScaleParameter());
+			}
+
+			denominatorCache.put(nest, denominator);
 		}
 
 		double probability = nominator / denominator;
 
-		if (nest == rootNest) {
+		if (nest == structure.getRoot()) {
 			return probability;
 		} else {
 			double nestNominator = Math.exp(nest.getScaleParameter() * calculateExpectedUtility(nest));
-			return probability * calculateProbability(nestNominator, parents.get(nest));
+			return probability * calculateProbability(nestNominator, structure.getParent(nest));
 		}
 	}
 
@@ -70,7 +72,7 @@ public class NestCalculator {
 			expectedUtility += Math.exp(candidate.getUtility() / nest.getScaleParameter());
 		}
 
-		for (Nest child : nest.getChildren()) {
+		for (Nest child : structure.getChildren(nest)) {
 			expectedUtility += Math.exp(child.getScaleParameter() * calculateExpectedUtility(child));
 		}
 
