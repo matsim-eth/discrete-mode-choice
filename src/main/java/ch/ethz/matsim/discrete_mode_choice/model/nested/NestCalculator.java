@@ -1,19 +1,19 @@
 package ch.ethz.matsim.discrete_mode_choice.model.nested;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 
 public class NestCalculator {
 	private final Map<Nest, Collection<UtilityCandidate>> candidates = new HashMap<>();
 	private final NestStructure structure;
-
-	private final Map<Nest, Double> expectedUtilityCache = new HashMap<>();
-	private final Map<Nest, Double> denominatorCache = new HashMap<>();
+	
+	private final Logger logger = Logger.getLogger(NestCalculator.class);
 
 	public NestCalculator(NestStructure structure) {
 		this.structure = structure;
@@ -26,59 +26,74 @@ public class NestCalculator {
 	public void addCandidate(NestedUtilityCandidate candidate) {
 		candidates.get(candidate.getNest()).add(candidate);
 	}
-
-	public double calculateProbability(NestedUtilityCandidate candidate) {
-		double nominator = Math.exp(candidate.getUtility() / candidate.getNest().getScaleParameter());
-		return calculateProbability(nominator, candidate.getNest());
+	
+	private double guardExp(double value) {
+		if (value < -300.0) {
+			logger.warn("Utility value <-300.0 was truncated. Check your model configuration!");
+			value = -300.0;
+		} else if (value > 300.0) {
+			logger.warn("Utility value >300.0 was truncated. Check your model configuration!");
+			value = 300.0;
+		}
+		
+		return Math.exp(value);
 	}
 
-	public double calculateProbability(double nominator, Nest nest) {
+	public double calculateDenominator(Nest nest) {
 		double denominator = 0.0;
 
-		if (denominatorCache.containsKey(nest)) {
-			denominator = denominatorCache.get(nest);
-		} else {
-			for (UtilityCandidate alternative : candidates.get(nest)) {
-				denominator += Math.exp(alternative.getUtility() / nest.getScaleParameter());
-			}
-
-			for (Nest child : structure.getChildren(nest)) {
-				denominator += Math.exp(calculateExpectedUtility(child) / nest.getScaleParameter());
-			}
-
-			denominatorCache.put(nest, denominator);
-		}
-
-		double probability = nominator / denominator;
-
-		if (nest == structure.getRoot()) {
-			return probability;
-		} else {
-			double nestNominator = Math.exp(nest.getScaleParameter() * calculateExpectedUtility(nest));
-			return probability * calculateProbability(nestNominator, structure.getParent(nest));
-		}
-	}
-
-	public double calculateExpectedUtility(Nest nest) {
-		if (expectedUtilityCache.containsKey(nest)) {
-			return expectedUtilityCache.get(nest);
-		}
-
-		Collection<UtilityCandidate> nestCandidates = candidates.getOrDefault(nest, Collections.emptySet());
-
-		double expectedUtility = 0.0;
-
-		for (UtilityCandidate candidate : nestCandidates) {
-			expectedUtility += Math.exp(candidate.getUtility() / nest.getScaleParameter());
+		for (UtilityCandidate candidate : candidates.get(nest)) {
+			denominator += guardExp(nest.getScaleParameter() * candidate.getUtility());
 		}
 
 		for (Nest child : structure.getChildren(nest)) {
-			expectedUtility += Math.exp(child.getScaleParameter() * calculateExpectedUtility(child));
+			denominator += guardExp(nest.getScaleParameter() * calculateExpectedUtility(child));
 		}
 
-		expectedUtility = Math.log(expectedUtility);
-		expectedUtilityCache.put(nest, expectedUtility);
+		return denominator;
+	}
 
-		return expectedUtility;
+	public double calculateLogSumTerm(Nest nest) {
+		return Math.log(calculateDenominator(nest));
+	}
+
+	public double calculateExpectedUtility(Nest nest) {
+		return calculateLogSumTerm(nest) / nest.getScaleParameter();
+	}
+
+	/**
+	 * Calculates the probability of choosing the candidate, given that its nest is
+	 * chosen.
+	 */
+	public double calculateConditionalProbability(NestedUtilityCandidate candidate) {
+		double denominator = calculateDenominator(candidate.getNest());
+		return guardExp(candidate.getNest().getScaleParameter() * candidate.getUtility()) / denominator;
+	}
+
+	/**
+	 * Calculates the probability of choosing a nest, given that its parent nest is
+	 * chosen.
+	 */
+	public double calculateConditionalProbability(Nest nest) {
+		Nest parent = structure.getParent(nest);
+		double denominator = calculateDenominator(parent);
+		return guardExp(parent.getScaleParameter() * calculateExpectedUtility(nest)) / denominator;
+	}
+
+	/**
+	 * Calculates the total probability of a candidate (by chaining the conditional
+	 * probabilities of its nests).
+	 */
+	public double calculateProbability(NestedUtilityCandidate candidate) {
+		double probability = calculateConditionalProbability(candidate);
+
+		Nest nest = candidate.getNest();
+
+		while (nest != structure.getRoot()) {
+			probability *= calculateConditionalProbability(nest);
+			nest = structure.getParent(nest);
+		}
+
+		return probability;
 	}
 }
