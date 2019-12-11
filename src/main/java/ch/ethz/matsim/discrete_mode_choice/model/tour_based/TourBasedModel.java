@@ -17,6 +17,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 
@@ -35,13 +36,13 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 	final private TourEstimator estimator;
 	final private ModeAvailability modeAvailability;
 	final private TourConstraintFactory constraintFactory;
-	final private UtilitySelectorFactory<TourCandidate> selectorFactory;
+	final private UtilitySelectorFactory selectorFactory;
 	final private ModeChainGeneratorFactory modeChainGeneratorFactory;
 	final private FallbackBehaviour fallbackBehaviour;
 
 	public TourBasedModel(TourEstimator estimator, ModeAvailability modeAvailability,
 			TourConstraintFactory constraintFactory, TourFinder tourFinder, TourFilter tourFilter,
-			UtilitySelectorFactory<TourCandidate> selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
+			UtilitySelectorFactory selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
 			FallbackBehaviour fallbackBehaviour) {
 		this.estimator = estimator;
 		this.modeAvailability = modeAvailability;
@@ -70,7 +71,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 			if (tourFilter.filter(person, tourTrips)) {
 				ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, person,
 						tourTrips);
-				UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
+				UtilitySelector selector = selectorFactory.createUtilitySelector();
 
 				while (generator.hasNext()) {
 					List<String> tourModes = generator.next();
@@ -93,7 +94,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 					selector.addCandidate(candidate);
 				}
 
-				Optional<TourCandidate> selectedCandidate = selector.select(random);
+				Optional<UtilityCandidate> selectedCandidate = selector.select(random);
 
 				if (!selectedCandidate.isPresent()) {
 					switch (fallbackBehaviour) {
@@ -109,7 +110,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 					}
 				}
 
-				finalTourCandidate = selectedCandidate.get();
+				finalTourCandidate = (TourCandidate) selectedCandidate.get();
 			} else {
 				finalTourCandidate = createFallbackCandidate(person, tourTrips, tourCandidates);
 			}
