@@ -88,13 +88,18 @@ So adding this to the config file and running the initial script with `DiscreteM
 
 Mainly, a model in the DMC extension consists of a number of components: the [Model](components/Model.md), the [Mode Availability](components/ModeAvailability.md), the [Estimator](components/Estimator.md), the [Selector](components/Selector.md), as well as [Constraints](components/Constraint.md). Tour-based models can additionally be configured with a [TourFinder](components/TourFinder). We will go through these components quickly. 
 
+![eqasim](docs/images/ModeChoiceFlowChart.png "The mode choice process")
+
 There are two types of base models in DMC: tour-based and trip-based. The replanning of one agent's plan looks as follows:
 
-### 1. Obtain all modes that the agent can use
-This part is covered by the [Mode Availability](components/ModeAvailability.md). Multiple implementations of this stage exist. By setting `modeAvailability` in the configuration above to `Car` we choose the implementation called `Car`. Another implementation would be `Default`, which simply assigns all possible modes to each agent. However, `Car` restricts the use of the "car" mode for agents who have the attribute `carAvailability` set to `never` or who don't have a driver's license (`hasLicense` is set to `false`). But how does this "mode availability component" know which modes are there in the first place? The `Car` (as well as `Default`) implementation needs additional configuration, which in the example above is given in `<parameterset type="modeAvailability:Car">`. There, we define a list of `availableModes`.  
+### 1. Find all trips/tours 
+The first step is to find all the relevant choice situations for an agent. In a trip-based model, each trip is a separate choice situation. In a tour-based model the situation is more complicated. Here, the agent is supposed to choose between different *tours*. One tour is by definition a chain of trips. Each trip is defined by an origin and a destination activity for which the desired departure time, locations in the network, etc. are known. After all choice situations are identified an initial selection is taking place. By using [Filter](components/Filters.md) components we can now define whether each choice situation should even be considered for mode choice. At this stage we may exclude tours which are too long (to save run time) or exclude trips and tour which enter or exit a certain analysis region.
 
-### 2. Construct all possible choices for the agent
-Next step in the replanning is to take the set of modes that are available to the agent and construct all possible alternatives for the choice situations. In a trip-based model, each trip is a separate choice situation. At each stage during an agent's plan any of the available modes can be chosen at this stage. In a tour-based model the situation is more complicated. Here, the agent is supposed to choose between different *tours*. One tour is by definition a chain of trips, i.e. for the case of mode choice a chain of modes. So if there is a tour consisting of three trips and the two modes `pt` and `walk` are available, the full set of choice alternatives is:
+### 2. Obtain all modes that the agent can use
+This next step is covered by the [Mode Availability](components/ModeAvailability.md) component. Multiple implementations of this stage exist. By setting `modeAvailability` in the configuration above to `Car` we choose the implementation called `Car`. Another implementation would be `Default`, which simply assigns all possible modes to each agent. However, `Car` restricts the use of the "car" mode for agents who have the attribute `carAvailability` set to `never` or who don't have a driver's license (`hasLicense` is set to `false`). But how does this "mode availability component" know which modes are there in the first place? The `Car` (as well as `Default`) implementation needs additional configuration, which in the example above is given in `<parameterset type="modeAvailability:Car">`. There, we define a list of `availableModes`.  
+
+### 3. Construct all possible choices for the agent
+Next step in the replanning is to take the set of modes that are available to the agent and construct all possible alternatives for the choice situations. At each stage during an agent's plan any of the available modes can be chosen at this stage. In a tour-based model the situation is more complicated. Here, the agent is supposed to choose between different *tours*. One tour is by definition a chain of trips, i.e. for the case of mode choice a chain of modes. So if there is a tour consisting of three trips and the two modes `pt` and `walk` are available, the full set of choice alternatives is:
 
 ```
 { [walk, walk, walk], [walk, walk, pt], [walk, pt, walk], [walk, pt, pt], [pt, walk, walk], ... }
@@ -112,7 +117,7 @@ As an alternative we could have chosen the `ActivityBased` tour finder. It would
 
 The `ActivityBased` tour finder implementation would then find all `home` activities in an agent's plan and define tours as those trip chains that lie between two `home` activities. This is the recommended configuration.
 
-### 3. Apply structural contraints
+### 4. Apply structural contraints
 
 Now we have a set of possible trip or tour alternatives, but obviously some of them are not realistic. Therefore, in the third step, some of them get filtered out. This is done by [Constraints](components/Constraint.md). In this case, `tourConstraints` is set to `VehicleContinuity` and `SubtourMode` Only if all of the chosen constraints do not filter out a certain option, it survives to the next stage. 
 
@@ -132,7 +137,7 @@ Additional constraints are available by default, e.g. `LinkAttribute`, which onl
 
 The `FromTripBased` tour-based constraint is a special contraint, which looks up all the trip-constraints that are chosen and makes sure that the trip in all of the considered tours fulfill all of them. In case a trip-based base model is used (`modelType == Trip`) no tour constraints are taken into account and the configured `tripConstraints` are applied directly to the trip alternatives.
 
-### 4. Estimate utilities for all alternatives
+### 5. Estimate utilities for all alternatives
 
 In the fourth step, an [Estimator](components/Estimator.md) implementation is used to assign a utility value to each of the alternatives. In a tour-based model whatever is configured as the `tourEstimator` is used, while trip-based models refer to the `tripEstimator` option. 
 
@@ -140,17 +145,17 @@ The example above chooses the tour estimator `Uniform`. This estimator simply as
 
 Again, often one would like to create a tour-based model, but in terms of utility the alternatives are merely independent. In that case the tour *estimator* `Cumulative` can be used, which will estimate every trip independently with whatever is defined as the `tripEstimator` and sum up the trip utilities.
 
-### 5. Apply choice constraints
+### 6. Apply choice constraints
 
 In the fifth step, the constraints come back into play again. Each constraint defines one filter *before* estimation (as discussed above) and one *after* estimation. At this point additional information, mainly from the routing, is available. Based on this information further alternatives can be filtered out at this stage. In this case, the `VehicleContunuity` constraint does not perform any checks after estimation.
 
-### 6. Select one alternative
+### 7. Select one alternative
 
 The last step in the process is choice selection. For that purpose, multiple impementations of [Selectors](components/Selector.md) exist. These take into account all remaining choice alternatives and their utilities and return one out of them. In this case, the `Random` selector has been chosen, which does what the name says: It simply returns one random alternative from the given set. 
 
 More complex models can, for instance, use the `MaximumUtility` selector, which always returns the choice alternative with the highest utility. Another alternative is the `MultinomialLogit` selector, which derives a utility-based probability distribution over all alternatives and samples one of them.
 
-### 7. BYOC (Bring you own component)
+### 8. BYOC (Bring you own component)
 
 While there is a number of standard implementations for [Mode Availability](components/ModeAvailability.md), [Estimator](components/Estimator.md), [Selector](components/Selector.md), [Constraints](components/Constraint.md) and [TourFinder](components/TourFinder), the DMC framework makes it easy to create one's own components. For further information, please have a look at [Customizing the framework](Customizing.md) or the respective chapters.
 
