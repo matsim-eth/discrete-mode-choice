@@ -22,7 +22,9 @@ The DMC extension is currently kept compatible with the following MATSim version
 | Release `11.0`       | `1.0.8-matsim11`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 | Release `0.10.1`     | `1.0.8-matsim10`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 
-Since we have to react to changes in the `master` branch of the [MATSim main repository](https://github.com/matsim-org/matsim) "on demand", compatibility may be "out-of-synch" for a short time until we update to the next weekly SNAPSHOT. We recommend using the DMC extension with a stable version of MATSim.
+Alternatively, you can clone this repository and use the current development
+version from the `develop` branch. Currently, it is `1.0.9-dev`. However, we
+recommend using the DMC extension with a stable version of MATSim.
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:
 

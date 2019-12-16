@@ -1,5 +1,7 @@
 # CHANGELOG
 
+**1.0.9-dev**
+
 - Allow ReRoute strategy in combination with DCM
 - Add TourLengthFilter and document filters
 - BC: Remove over-complicated generics for UtilitySelector/Factory
