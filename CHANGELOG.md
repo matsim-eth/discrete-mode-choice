@@ -1,6 +1,10 @@
 # CHANGELOG
 
+**1.0.9-dev**
+
 - Add Nested Logit infrastructure
+- Allow ReRoute strategy in combination with DCM
+- Add TourLengthFilter and document filters
 - BC: Remove over-complicated generics for UtilitySelector/Factory
 - Update MATSim version, fix MainModeIdentifier and remove StageActivityTypes
 - Make initial plan elements available to mode choice process
