@@ -1,6 +1,8 @@
 # CHANGELOG
 
-**1.0.9-dev**
+**1.0.10-dev**
+
+**1.0.9**
 
 - Allow ReRoute strategy in combination with DCM
 - Add TourLengthFilter and document filters
