@@ -9,7 +9,6 @@ import org.matsim.core.replanning.PlanStrategy;
 import org.matsim.core.replanning.PlanStrategyImpl;
 import org.matsim.core.replanning.modules.ReRoute;
 import org.matsim.core.replanning.selectors.RandomPlanSelector;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.TripRouter;
 import org.matsim.facilities.ActivityFacilities;
 
@@ -39,26 +38,24 @@ public class DiscreteModeChoiceStrategyProvider implements Provider<PlanStrategy
 	private final Provider<DiscreteModeChoiceModel> modeChoiceModelProvider;
 	private final DiscreteModeChoiceConfigGroup dmcConfig;
 	private final PopulationFactory populationFactory;
-	private final MainModeIdentifier mainModeIdentifier;
 
 	@Inject
 	DiscreteModeChoiceStrategyProvider(GlobalConfigGroup globalConfigGroup, ActivityFacilities activityFacilities,
 			Provider<TripRouter> tripRouterProvider, Provider<DiscreteModeChoiceModel> modeChoiceModelProvider,
-			DiscreteModeChoiceConfigGroup dmcConfig, Population population, MainModeIdentifier mainModeIdentifier) {
+			DiscreteModeChoiceConfigGroup dmcConfig, Population population) {
 		this.globalConfigGroup = globalConfigGroup;
 		this.activityFacilities = activityFacilities;
 		this.tripRouterProvider = tripRouterProvider;
 		this.modeChoiceModelProvider = modeChoiceModelProvider;
 		this.dmcConfig = dmcConfig;
 		this.populationFactory = population.getFactory();
-		this.mainModeIdentifier = mainModeIdentifier;
 	}
 
 	@Override
 	public PlanStrategy get() {
 		PlanStrategyImpl.Builder builder = new PlanStrategyImpl.Builder(new RandomPlanSelector<>());
-		builder.addStrategyModule(new DiscreteModeChoiceReplanningModule(globalConfigGroup, modeChoiceModelProvider,
-				tripRouterProvider, populationFactory, mainModeIdentifier));
+		builder.addStrategyModule(
+				new DiscreteModeChoiceReplanningModule(globalConfigGroup, modeChoiceModelProvider, populationFactory));
 
 		if (dmcConfig.getPerformReroute()) {
 			builder.addStrategyModule(new ReRoute(activityFacilities, tripRouterProvider, globalConfigGroup));

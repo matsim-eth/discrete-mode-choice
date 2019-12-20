@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.misc.Time;
@@ -31,7 +30,7 @@ public final class TripListConverter {
 	 * respective legs. It is expected that the plan is already flattened (i.e.
 	 * there are no interaction activities).
 	 */
-	public static List<DiscreteModeChoiceTrip> convert(Plan plan, MainModeIdentifier mainModeIdentifier) {
+	public static List<DiscreteModeChoiceTrip> convert(Plan plan) {
 		List<Trip> initialTrips = TripStructureUtils.getTrips(plan);
 		List<DiscreteModeChoiceTrip> trips = new ArrayList<>(initialTrips.size());
 
@@ -52,7 +51,7 @@ public final class TripListConverter {
 						plan.getPerson().getId().toString(), Time.writeTime(time)));
 			}
 
-			String initialMode = mainModeIdentifier.identifyMainMode(initialTrip.getTripElements());
+			String initialMode = TripStructureUtils.getRoutingMode(initialTrip.getLegsOnly().get(0));
 
 			trips.add(new DiscreteModeChoiceTrip(originActivity, destinationActivity, initialMode,
 					initialTrip.getTripElements(), time, plan.getPerson().hashCode(), index));

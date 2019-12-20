@@ -15,7 +15,6 @@ import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
 import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
 import org.matsim.core.replanning.modules.SubtourModeChoice;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.SubtourModeConstraint;
@@ -37,7 +36,6 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
@@ -364,13 +362,12 @@ public class SubtourModeChoiceReplacementTest {
 		String[] availableModes = modes.toArray(new String[] {});
 		String[] chainBasedModes = constrainedModes.toArray(new String[] {});
 
-		MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
 		PermissibleModesCalculator permissibleModesCalculator = new PermissibleModesCalculatorImpl(availableModes,
 				considerCarAvailability);
 		Random rng = new Random(0);
 		SubtourModeChoice.Behavior behavior = SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes;
 
-		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(mainModeIdentifier,
+		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(new MainModeIdentifierImpl(),
 				permissibleModesCalculator, availableModes, chainBasedModes, rng, behavior, singleLegProbability);
 
 		Set<List<String>> chains = new HashSet<>();
