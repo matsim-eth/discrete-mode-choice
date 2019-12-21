@@ -14,7 +14,6 @@ import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.router.MainModeIdentifierImpl;
 import org.matsim.facilities.ActivityFacility;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -93,6 +92,6 @@ public class PlanBuilder {
 	}
 
 	public List<DiscreteModeChoiceTrip> buildDiscreteModeChoiceTrips() {
-		return TripListConverter.convert(plan, new MainModeIdentifierImpl());
+		return TripListConverter.convert(plan);
 	}
 }
