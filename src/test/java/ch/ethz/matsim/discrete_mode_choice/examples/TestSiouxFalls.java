@@ -32,6 +32,10 @@ public class TestSiouxFalls {
 
 		config.controler().setOverwriteFileSetting(OverwriteFileSetting.deleteDirectoryIfExists);
 		config.controler().setLastIteration(1);
+		config.controler().setWriteEventsInterval(1);
+		
+		config.qsim().setFlowCapFactor(10000.0);
+		config.qsim().setStorageCapFactor(10000.0);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
@@ -47,10 +51,10 @@ public class TestSiouxFalls {
 		});
 
 		controller.run();
-		
-		assertEquals(2753, listener.counts.get("pt"));
-		assertEquals(16160, listener.counts.get("car"));
-		assertEquals(27739, listener.counts.get("walk") + listener.counts.get("transit_walk"));
+
+		assertEquals(42502, listener.counts.get("pt"));
+		assertEquals(132094, listener.counts.get("car"));
+		assertEquals(79098, listener.counts.get("walk"));
 	}
 
 	static class ModeListener implements PersonArrivalEventHandler {
