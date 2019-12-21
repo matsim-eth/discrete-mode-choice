@@ -50,7 +50,7 @@ public class TestSiouxFalls {
 
 		assertEquals(2753, listener.counts.get("pt"));
 		assertEquals(16160, listener.counts.get("car"));
-		assertEquals(27739, listener.counts.get("walk"));
+		assertEquals(27739, listener.counts.get("walk") + listener.counts.get("transit_walk"));
 	}
 
 	static class ModeListener implements PersonArrivalEventHandler {
