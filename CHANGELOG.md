@@ -1,6 +1,10 @@
 # CHANGELOG
 
-**1.0.9-dev**
+**1.0.10-dev**
+
+- No changes yet
+
+**1.0.9**
 
 - Make PlanBuilder consistent with SubtourModeChoice
 - Improve ModeAvailability documentation
