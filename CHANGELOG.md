@@ -2,6 +2,7 @@
 
 **1.0.9-dev**
 
+- Fix behaviour of DMC with maximum duration activities
 - Add filters to DiscreteModeChoiceModule
 - Use "routing mode" instead of MainModeIdentifier
 - Allow ReRoute strategy in combination with DCM
