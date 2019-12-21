@@ -2,6 +2,7 @@
 
 **1.0.9-dev**
 
+- Add filters to DiscreteModeChoiceModule
 - Allow ReRoute strategy in combination with DCM
 - Add TourLengthFilter and document filters
 - BC: Remove over-complicated generics for UtilitySelector/Factory

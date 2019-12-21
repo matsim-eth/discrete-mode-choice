@@ -43,6 +43,7 @@ public class ModelModule extends AbstractModule {
 		install(new TourFinderModule());
 		install(new SelectorModule());
 		install(new ConstraintModule());
+		install(new FilterModule());
 
 		bind(ModeChainGeneratorFactory.class).to(DefaultModeChainGenerator.Factory.class);
 	}
