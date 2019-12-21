@@ -18,7 +18,7 @@ The DMC extension is currently kept compatible with the following MATSim version
 
 |MATSim              |DMC version      |               |
 |--------------------|-----------------|---------------|
-| Weekly SNAPSHOT `12.0-2019w49`            | `1.0.8`           | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
+| Weekly SNAPSHOT `12.0-2019w20`            | `1.0.8`           | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 | Release `11.0`       | `1.0.8-matsim11`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-11)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 | Release `0.10.1`     | `1.0.8-matsim10`  | [![Build Status](https://travis-ci.org/matsim-eth/discrete-mode-choice.svg?branch=master-10)](https://travis-ci.org/matsim-eth/discrete-mode-choice) |
 
