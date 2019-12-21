@@ -1,11 +1,18 @@
 package ch.ethz.matsim.discrete_mode_choice.examples;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.events.PersonArrivalEvent;
+import org.matsim.api.core.v01.events.handler.PersonArrivalEventHandler;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy.OverwriteFileSetting;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -22,15 +29,47 @@ public class TestSiouxFalls {
 
 		Config config = ConfigUtils.loadConfig(IOUtils.newUrl(scenarioURL, "config_default.xml"));
 		DiscreteModeChoiceConfigurator.configureAsSubtourModeChoiceReplacement(config);
-		
+
 		config.controler().setOverwriteFileSetting(OverwriteFileSetting.deleteDirectoryIfExists);
 		config.controler().setLastIteration(1);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
-		
+
 		Controler controller = new Controler(scenario);
 		controller.addOverridingModule(new DiscreteModeChoiceModule());
-		
+
+		ModeListener listener = new ModeListener();
+		controller.addOverridingModule(new AbstractModule() {
+			@Override
+			public void install() {
+				addEventHandlerBinding().toInstance(listener);
+			}
+		});
+
 		controller.run();
+
+		assertEquals(2753, listener.counts.get("pt"));
+		assertEquals(16160, listener.counts.get("car"));
+		assertEquals(27739, listener.counts.get("walk"));
+	}
+
+	static class ModeListener implements PersonArrivalEventHandler {
+		private final Map<String, Integer> counts = new HashMap<>();
+
+		@Override
+		public void reset(int iteration) {
+			counts.clear();
+		}
+
+		@Override
+		public void handleEvent(PersonArrivalEvent event) {
+			String mode = event.getLegMode();
+
+			if (!counts.containsKey(mode)) {
+				counts.put(mode, 0);
+			}
+
+			counts.put(mode, counts.get(mode) + 1);
+		}
 	}
 }

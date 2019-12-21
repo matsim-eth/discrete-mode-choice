@@ -15,11 +15,8 @@ import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
 import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
 import org.matsim.core.replanning.modules.SubtourModeChoice;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
-import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
-import org.matsim.pt.PtConstants;
 
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.SubtourModeConstraint;
 import ch.ethz.matsim.discrete_mode_choice.components.constraints.VehicleTourConstraint;
@@ -40,7 +37,6 @@ import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailabil
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
@@ -326,7 +322,7 @@ public class SubtourModeChoiceReplacementTest {
 		ModeAvailability modeAvailability = considerCarAvailability ? new CarModeAvailability(modes)
 				: new DefaultModeAvailability(modes);
 		TourFinder tourFinder = new PlanTourFinder();
-		UtilitySelectorFactory<TourCandidate> selectorFactory = new RandomSelector.Factory<>();
+		UtilitySelectorFactory selectorFactory = new RandomSelector.Factory();
 		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory();
 		FallbackBehaviour fallbackBehaviour = FallbackBehaviour.EXCEPTION;
 
@@ -367,15 +363,14 @@ public class SubtourModeChoiceReplacementTest {
 		String[] availableModes = modes.toArray(new String[] {});
 		String[] chainBasedModes = constrainedModes.toArray(new String[] {});
 
-		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE);
-		MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
 		PermissibleModesCalculator permissibleModesCalculator = new PermissibleModesCalculatorImpl(availableModes,
 				considerCarAvailability);
 		Random rng = new Random(0);
 		SubtourModeChoice.Behavior behavior = SubtourModeChoice.Behavior.fromSpecifiedModesToSpecifiedModes;
 
-		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(stageActivityTypes, mainModeIdentifier,
-				permissibleModesCalculator, availableModes, chainBasedModes, rng, behavior, singleLegProbability);
+		ChooseRandomLegModeForSubtour smc = new ChooseRandomLegModeForSubtour(new StageActivityTypesImpl(),
+				new MainModeIdentifierImpl(), permissibleModesCalculator, availableModes, chainBasedModes, rng,
+				behavior, singleLegProbability);
 
 		Set<List<String>> chains = new HashSet<>();
 		Plan plan = planBuilder.buildPlan();

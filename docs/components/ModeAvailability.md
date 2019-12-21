@@ -30,7 +30,7 @@ In the following the existing built-in tour finders are described. While some of
 
 *Description:* The `Car` `ModeAvailability` extends the `Default` version in that it considers who is allowed to use a car, based on agent attributes. Replicating the behaviour of `SubtourModeChoice` the "car" mode is not allowed in any of these cases:
 
-- The `hasLicense` attribute of an agent is `no` or `false`
+- The `hasLicense` attribute of an agent is `no`
 - The `carAvail` attribute of an agent is `never`
 
 *Configuration:*
