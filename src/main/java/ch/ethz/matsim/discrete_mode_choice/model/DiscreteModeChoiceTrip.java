@@ -1,6 +1,9 @@
 package ch.ethz.matsim.discrete_mode_choice.model;
 
+import java.util.List;
+
 import org.matsim.api.core.v01.population.Activity;
+import org.matsim.api.core.v01.population.PlanElement;
 
 /**
  * This class represents an agent's trip. It contains structural information
@@ -14,15 +17,17 @@ public final class DiscreteModeChoiceTrip {
 	private final Activity destinationActivity;
 	private final String initialMode;
 	private final double departureTime;
+	private final List<? extends PlanElement> initialElements;
 
 	private final int hashCode;
 
 	public DiscreteModeChoiceTrip(Activity originActivity, Activity destinationActivity, String initialMode,
-			double departureTime, int personHash, int tripHash) {
+			List<? extends PlanElement> initialElements, double departureTime, int personHash, int tripHash) {
 		this.originActivity = originActivity;
 		this.destinationActivity = destinationActivity;
 		this.initialMode = initialMode;
 		this.departureTime = departureTime;
+		this.initialElements = initialElements;
 
 		int hashCode = 12;
 		hashCode += 37 * (int) (personHash ^ (personHash >>> 32));
@@ -44,6 +49,10 @@ public final class DiscreteModeChoiceTrip {
 
 	public String getInitialMode() {
 		return initialMode;
+	}
+
+	public List<? extends PlanElement> getInitialElements() {
+		return initialElements;
 	}
 
 	@Override

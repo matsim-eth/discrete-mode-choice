@@ -1,6 +1,7 @@
 package ch.ethz.matsim.discrete_mode_choice.modules.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigReader;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.ConfigWriter;
 
@@ -72,5 +74,22 @@ public class ConfigTest {
 
 		assertEquals(1, numberOfMultinomialLogit);
 		assertEquals(1, numberOfVehicleContinuity);
+	}
+	
+	@Test
+	public void testSetTripConstraints() {
+		DiscreteModeChoiceConfigGroup dmcConfig1 = new DiscreteModeChoiceConfigGroup();
+		dmcConfig1.setTripConstraints(Arrays.asList("A", "B", "C"));
+		
+		Config config1 = ConfigUtils.createConfig(dmcConfig1);
+		new ConfigWriter(config1).write("test_config.xml");
+		
+		DiscreteModeChoiceConfigGroup dmcConfig2 = new DiscreteModeChoiceConfigGroup();
+		Config config2 = ConfigUtils.createConfig(dmcConfig2);
+		new ConfigReader(config2).readFile("test_config.xml");
+		
+		assertTrue(dmcConfig2.getTripConstraints().contains("A"));
+		assertTrue(dmcConfig2.getTripConstraints().contains("B"));
+		assertTrue(dmcConfig2.getTripConstraints().contains("C"));
 	}
 }

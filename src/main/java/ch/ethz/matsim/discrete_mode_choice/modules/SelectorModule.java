@@ -7,10 +7,7 @@ import java.util.Map;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
-import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.MaximumSelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.MultinomialLogitSelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.RandomSelector;
@@ -33,28 +30,15 @@ public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 
 	@Override
 	public void installExtension() {
-		bindTripSelectorFactory(MAXIMUM).to(new TypeLiteral<MaximumSelector.Factory<TripCandidate>>() {
-		});
-		bindTourSelectorFactory(MAXIMUM).to(new TypeLiteral<MaximumSelector.Factory<TourCandidate>>() {
-		});
-
-		bindTripSelectorFactory(MULTINOMIAL_LOGIT)
-				.to(new TypeLiteral<MultinomialLogitSelector.Factory<TripCandidate>>() {
-				});
-		bindTourSelectorFactory(MULTINOMIAL_LOGIT)
-				.to(new TypeLiteral<MultinomialLogitSelector.Factory<TourCandidate>>() {
-				});
-
-		bindTripSelectorFactory(RANDOM).to(new TypeLiteral<RandomSelector.Factory<TripCandidate>>() {
-		});
-		bindTourSelectorFactory(RANDOM).to(new TypeLiteral<RandomSelector.Factory<TourCandidate>>() {
-		});
+		bindSelectorFactory(MAXIMUM).to(MaximumSelector.Factory.class);
+		bindSelectorFactory(MULTINOMIAL_LOGIT).to(MultinomialLogitSelector.Factory.class);
+		bindSelectorFactory(RANDOM).to(RandomSelector.Factory.class);
 	}
 
 	@Provides
-	public UtilitySelectorFactory<TourCandidate> provideTourSelectorFactory(DiscreteModeChoiceConfigGroup dmcConfig,
-			Map<String, Provider<UtilitySelectorFactory<TourCandidate>>> components) {
-		Provider<UtilitySelectorFactory<TourCandidate>> provider = components.get(dmcConfig.getSelector());
+	public UtilitySelectorFactory provideTourSelectorFactory(DiscreteModeChoiceConfigGroup dmcConfig,
+			Map<String, Provider<UtilitySelectorFactory>> components) {
+		Provider<UtilitySelectorFactory> provider = components.get(dmcConfig.getSelector());
 
 		if (provider != null) {
 			return provider.get();
@@ -65,57 +49,23 @@ public class SelectorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	public UtilitySelectorFactory<TripCandidate> provideTripSelectorFactory(DiscreteModeChoiceConfigGroup dmcConfig,
-			Map<String, Provider<UtilitySelectorFactory<TripCandidate>>> components) {
-		Provider<UtilitySelectorFactory<TripCandidate>> provider = components.get(dmcConfig.getSelector());
-
-		if (provider != null) {
-			return provider.get();
-		} else {
-			throw new IllegalStateException(String
-					.format("There is no UtilitySelector component for trips called '%s',", dmcConfig.getSelector()));
-		}
+	@Singleton
+	public MaximumSelector.Factory provideMaximumTripSelector() {
+		return new MaximumSelector.Factory();
 	}
 
 	@Provides
 	@Singleton
-	public MaximumSelector.Factory<TripCandidate> provideMaximumTripSelector() {
-		return new MaximumSelector.Factory<>();
-	}
-
-	@Provides
-	@Singleton
-	public MaximumSelector.Factory<TourCandidate> provideMaximumTourSelector() {
-		return new MaximumSelector.Factory<>();
-	}
-
-	@Provides
-	@Singleton
-	public MultinomialLogitSelector.Factory<TripCandidate> provideMultinomialLogitTripSelector(
+	public MultinomialLogitSelector.Factory provideMultinomialLogitTripSelector(
 			DiscreteModeChoiceConfigGroup dmcConfig) {
 		MultinomialLogitSelectorConfigGroup config = dmcConfig.getMultinomialLogitSelectorConfig();
-		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility(),
+		return new MultinomialLogitSelector.Factory(config.getMinimumUtility(), config.getMaximumUtility(),
 				config.getConsiderMinimumUtility());
 	}
 
 	@Provides
 	@Singleton
-	public MultinomialLogitSelector.Factory<TourCandidate> provideMultinomialLogitTourSelector(
-			DiscreteModeChoiceConfigGroup dmcConfig) {
-		MultinomialLogitSelectorConfigGroup config = dmcConfig.getMultinomialLogitSelectorConfig();
-		return new MultinomialLogitSelector.Factory<>(config.getMinimumUtility(), config.getMaximumUtility(),
-				config.getConsiderMinimumUtility());
-	}
-
-	@Provides
-	@Singleton
-	public RandomSelector.Factory<TripCandidate> provideRandomTripSelector() {
-		return new RandomSelector.Factory<>();
-	}
-
-	@Provides
-	@Singleton
-	public RandomSelector.Factory<TourCandidate> provideRandomTourSelector() {
-		return new RandomSelector.Factory<>();
+	public RandomSelector.Factory provideRandomTripSelector() {
+		return new RandomSelector.Factory();
 	}
 }

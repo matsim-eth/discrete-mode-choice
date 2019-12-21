@@ -1,6 +1,5 @@
 package ch.ethz.matsim.discrete_mode_choice.test_utils;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.matsim.api.core.v01.Id;
@@ -14,7 +13,12 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.router.MainModeIdentifier;
+import org.matsim.core.router.MainModeIdentifierImpl;
+import org.matsim.core.router.StageActivityTypes;
+import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.facilities.ActivityFacility;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -22,6 +26,9 @@ import ch.ethz.matsim.discrete_mode_choice.replanning.TripListConverter;
 
 public class PlanBuilder {
 	private final PopulationFactory factory;
+	private final MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
+	private final StageActivityTypes stageActivityTypes = new StageActivityTypesImpl();
+
 	private final Person person;
 	private final Plan plan;
 	private double currentTime = 0.0;
@@ -38,13 +45,13 @@ public class PlanBuilder {
 		person.addPlan(plan);
 	}
 
-	public PlanBuilder setHasLicense(boolean hasLicense) {
-		person.getAttributes().putAttribute("hasLicense", String.valueOf(hasLicense));
+	public PlanBuilder setLicense(String value) {
+		PersonUtils.setLicence(person, value);
 		return this;
 	}
 
 	public PlanBuilder setCarAvailability(String value) {
-		person.getAttributes().putAttribute("carAvail", value);
+		PersonUtils.setCarAvail(person, value);
 		return this;
 	}
 
@@ -93,10 +100,6 @@ public class PlanBuilder {
 	}
 
 	public List<DiscreteModeChoiceTrip> buildDiscreteModeChoiceTrips() {
-		List<DiscreteModeChoiceTrip> trips = new LinkedList<>();
-		List<Leg> legs = new LinkedList<>();
-
-		TripListConverter.convert(plan, trips, legs);
-		return trips;
+		return TripListConverter.convert(plan, mainModeIdentifier, stageActivityTypes);
 	}
 }
