@@ -2,20 +2,17 @@ package ch.ethz.matsim.discrete_mode_choice.modules;
 
 import org.matsim.core.controler.AbstractModule;
 
-import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TripFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
-import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 
 /**
@@ -32,8 +29,7 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 	protected MapBinder<String, TourConstraintFactory> tourConstraintFactoryBinder;
 	protected MapBinder<String, TripConstraintFactory> tripConstraintFactoryBinder;
 
-	protected MapBinder<String, UtilitySelectorFactory<TourCandidate>> tourSelectorFactory;
-	protected MapBinder<String, UtilitySelectorFactory<TripCandidate>> tripSelectorFactory;
+	protected MapBinder<String, UtilitySelectorFactory> selectorFactory;
 
 	protected MapBinder<String, ModeAvailability> modeAvailabilityBinder;
 	protected MapBinder<String, TourFinder> tourFinderBinder;
@@ -52,12 +48,7 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 		tourConstraintFactoryBinder = MapBinder.newMapBinder(binder(), String.class, TourConstraintFactory.class);
 		tripConstraintFactoryBinder = MapBinder.newMapBinder(binder(), String.class, TripConstraintFactory.class);
 
-		tourSelectorFactory = MapBinder.newMapBinder(binder(), new TypeLiteral<String>() {
-		}, new TypeLiteral<UtilitySelectorFactory<TourCandidate>>() {
-		});
-		tripSelectorFactory = MapBinder.newMapBinder(binder(), new TypeLiteral<String>() {
-		}, new TypeLiteral<UtilitySelectorFactory<TripCandidate>>() {
-		});
+		selectorFactory = MapBinder.newMapBinder(binder(), String.class, UtilitySelectorFactory.class);
 
 		modeAvailabilityBinder = MapBinder.newMapBinder(binder(), String.class, ModeAvailability.class);
 		tourFinderBinder = MapBinder.newMapBinder(binder(), String.class, TourFinder.class);
@@ -89,12 +80,8 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 		return tripConstraintFactoryBinder.addBinding(name);
 	}
 
-	protected final LinkedBindingBuilder<UtilitySelectorFactory<TourCandidate>> bindTourSelectorFactory(String name) {
-		return tourSelectorFactory.addBinding(name);
-	}
-
-	protected final LinkedBindingBuilder<UtilitySelectorFactory<TripCandidate>> bindTripSelectorFactory(String name) {
-		return tripSelectorFactory.addBinding(name);
+	protected final LinkedBindingBuilder<UtilitySelectorFactory> bindSelectorFactory(String name) {
+		return selectorFactory.addBinding(name);
 	}
 
 	protected final LinkedBindingBuilder<ModeAvailability> bindModeAvailability(String name) {

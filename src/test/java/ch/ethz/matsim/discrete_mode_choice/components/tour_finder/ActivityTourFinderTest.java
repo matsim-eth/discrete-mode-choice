@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
@@ -16,6 +17,8 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 
 public class ActivityTourFinderTest {
 	private List<DiscreteModeChoiceTrip> createFixture(String... activityTypes) {
+		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl();
+
 		Plan plan = PopulationUtils.createPlan();
 		boolean isFirst = true;
 
@@ -28,13 +31,13 @@ public class ActivityTourFinderTest {
 			isFirst = false;
 		}
 
-		List<Trip> trips = TripStructureUtils.getTrips(plan, new StageActivityTypesImpl());
+		List<Trip> trips = TripStructureUtils.getTrips(plan, stageActivityTypes);
 		List<DiscreteModeChoiceTrip> modeChoiceTrips = new LinkedList<>();
 
 		for (Trip trip : trips) {
 			String initialMode = trip.getLegsOnly().get(0).getMode();
 			modeChoiceTrips.add(new DiscreteModeChoiceTrip(trip.getOriginActivity(), trip.getDestinationActivity(),
-					initialMode, 0.0, 0, 0));
+					initialMode, trip.getTripElements(), 0.0, 0, 0));
 		}
 
 		return modeChoiceTrips;
