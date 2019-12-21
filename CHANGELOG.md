@@ -2,6 +2,8 @@
 
 **1.0.9-dev**
 
+- Make PlanBuilder consistent with SubtourModeChoice
+- Improve ModeAvailability documentation
 - Fix behaviour of DMC with maximum duration activities
 - Add filters to DiscreteModeChoiceModule
 - Use "routing mode" instead of MainModeIdentifier

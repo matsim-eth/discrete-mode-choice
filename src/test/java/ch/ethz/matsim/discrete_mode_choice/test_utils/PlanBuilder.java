@@ -13,6 +13,7 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.facilities.ActivityFacility;
 
@@ -37,13 +38,13 @@ public class PlanBuilder {
 		person.addPlan(plan);
 	}
 
-	public PlanBuilder setHasLicense(boolean hasLicense) {
-		person.getAttributes().putAttribute("hasLicense", String.valueOf(hasLicense));
+	public PlanBuilder setLicense(String value) {
+		PersonUtils.setLicence(person, value);
 		return this;
 	}
 
 	public PlanBuilder setCarAvailability(String value) {
-		person.getAttributes().putAttribute("carAvail", value);
+		PersonUtils.setCarAvail(person, value);
 		return this;
 	}
 
