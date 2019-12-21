@@ -10,11 +10,11 @@ import java.util.Random;
  * 
  * @author sebhoerl
  */
-public class MaximumSelector<T extends UtilityCandidate> implements UtilitySelector<T> {
-	private T bestCandidate = null;
+public class MaximumSelector implements UtilitySelector {
+	private UtilityCandidate bestCandidate = null;
 
 	@Override
-	public void addCandidate(T candidate) {
+	public void addCandidate(UtilityCandidate candidate) {
 		if (bestCandidate == null) {
 			bestCandidate = candidate;
 		} else if (candidate.getUtility() > bestCandidate.getUtility()) {
@@ -23,7 +23,7 @@ public class MaximumSelector<T extends UtilityCandidate> implements UtilitySelec
 	}
 
 	@Override
-	public Optional<T> select(Random random) {
+	public Optional<UtilityCandidate> select(Random random) {
 		if (bestCandidate == null) {
 			return Optional.empty();
 		}
@@ -31,10 +31,10 @@ public class MaximumSelector<T extends UtilityCandidate> implements UtilitySelec
 		return Optional.of(bestCandidate);
 	}
 
-	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {
+	public static class Factory implements UtilitySelectorFactory {
 		@Override
-		public UtilitySelector<TF> createUtilitySelector() {
-			return new MaximumSelector<>();
+		public UtilitySelector createUtilitySelector() {
+			return new MaximumSelector();
 		}
 	}
 }

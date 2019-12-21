@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.8</version>
+	<version>1.0.9-dev</version>
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
-		<matsim.version>12.0-2019w20-SNAPSHOT</matsim.version>
-		<matsim.test-version>12.0-SNAPSHOT</matsim.test-version>
+		<matsim.version>12.0-2019w49-SNAPSHOT</matsim.version>
+		<matsim.test-version>12.0-2019w49-SNAPSHOT</matsim.test-version>
 		<geotools.version>20.2</geotools.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -79,15 +79,8 @@
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.4.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.4.0</version>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.5.2</version>
 			<scope>test</scope>
 		</dependency>
 
