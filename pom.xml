@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.8-matsim10</version>
+	<version>1.0.9-matsim10</version>
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
@@ -79,15 +79,8 @@
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.4.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.4.0</version>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.5.2</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -11,16 +11,16 @@ import java.util.Random;
  * 
  * @author sebhoerl
  */
-public class RandomSelector<T extends UtilityCandidate> implements UtilitySelector<T> {
-	private final List<T> candidates = new LinkedList<>();
+public class RandomSelector implements UtilitySelector {
+	private final List<UtilityCandidate> candidates = new LinkedList<>();
 
 	@Override
-	public void addCandidate(T candidate) {
+	public void addCandidate(UtilityCandidate candidate) {
 		candidates.add(candidate);
 	}
 
 	@Override
-	public Optional<T> select(Random random) {
+	public Optional<UtilityCandidate> select(Random random) {
 		if (candidates.size() == 0) {
 			return Optional.empty();
 		}
@@ -28,10 +28,10 @@ public class RandomSelector<T extends UtilityCandidate> implements UtilitySelect
 		return Optional.of(candidates.get(random.nextInt(candidates.size())));
 	}
 
-	static public class Factory<T extends UtilityCandidate> implements UtilitySelectorFactory<T> {
+	static public class Factory implements UtilitySelectorFactory {
 		@Override
-		public UtilitySelector<T> createUtilitySelector() {
-			return new RandomSelector<>();
+		public UtilitySelector createUtilitySelector() {
+			return new RandomSelector();
 		}
 	}
 }

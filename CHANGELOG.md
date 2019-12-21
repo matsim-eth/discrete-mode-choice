@@ -1,6 +1,17 @@
 # CHANGELOG
 
-- No changes yet
+**1.0.9**
+
+- Make PlanBuilder consistent with SubtourModeChoice
+- Improve ModeAvailability documentation
+- Fix behaviour of DMC with maximum duration activities
+- Add filters to DiscreteModeChoiceModule
+- Use "routing mode" instead of MainModeIdentifier
+- Allow ReRoute strategy in combination with DCM
+- Add TourLengthFilter and document filters
+- BC: Remove over-complicated generics for UtilitySelector/Factory
+- Update MATSim version, fix MainModeIdentifier and remove StageActivityTypes
+- Make initial plan elements available to mode choice process
 
 **1.0.8**
 

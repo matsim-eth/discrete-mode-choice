@@ -10,15 +10,15 @@ import java.util.Random;
  * 
  * @author sebhoerl
  */
-public interface UtilitySelector<T extends UtilityCandidate> {
+public interface UtilitySelector {
 	/**
 	 * Add another candidate to the choice set
 	 */
-	void addCandidate(T candidate);
+	void addCandidate(UtilityCandidate candidate);
 
 	/**
 	 * Select one candidate from the choice set (or indicate that none can be
 	 * chosen).
 	 */
-	Optional<T> select(Random random);
+	Optional<UtilityCandidate> select(Random random);
 }
