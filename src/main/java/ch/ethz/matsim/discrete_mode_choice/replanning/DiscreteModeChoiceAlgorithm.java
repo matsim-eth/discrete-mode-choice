@@ -9,7 +9,6 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.TripRouter;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
@@ -28,14 +27,12 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final DiscreteModeChoiceModel modeChoiceModel;
 
-	private final MainModeIdentifier mainModeIdentifier;
 	private final PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel,
-			MainModeIdentifier mainModeIdentifier, PopulationFactory populationFactory) {
+			PopulationFactory populationFactory) {
 		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
-		this.mainModeIdentifier = mainModeIdentifier;
 		this.populationFactory = populationFactory;
 	}
 
@@ -46,7 +43,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	 */
 	public void run(Plan plan) {
 		// I) First build a list of DiscreteModeChoiceTrips
-		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan, mainModeIdentifier);
+		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan);
 
 		// II) Run mode choice
 
