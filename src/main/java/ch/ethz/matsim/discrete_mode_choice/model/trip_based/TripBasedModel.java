@@ -13,6 +13,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TripFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 
@@ -29,11 +30,11 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 	private final TripFilter tripFilter;
 	private final ModeAvailability modeAvailability;
 	private final TripConstraintFactory constraintFactory;
-	private final UtilitySelectorFactory<TripCandidate> selectorFactory;
+	private final UtilitySelectorFactory selectorFactory;
 	private final FallbackBehaviour fallbackBehaviour;
 
 	public TripBasedModel(TripEstimator estimator, TripFilter tripFilter, ModeAvailability modeAvailability,
-			TripConstraintFactory constraintFactory, UtilitySelectorFactory<TripCandidate> selectorFactory,
+			TripConstraintFactory constraintFactory, UtilitySelectorFactory selectorFactory,
 			FallbackBehaviour fallbackBehaviour) {
 		this.estimator = estimator;
 		this.tripFilter = tripFilter;
@@ -58,7 +59,7 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 			TripCandidate finalTripCandidate = null;
 
 			if (tripFilter.filter(person, trip)) {
-				UtilitySelector<TripCandidate> selector = selectorFactory.createUtilitySelector();
+				UtilitySelector selector = selectorFactory.createUtilitySelector();
 				tripIndex++;
 
 				for (String mode : modes) {
@@ -80,7 +81,7 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 					selector.addCandidate(candidate);
 				}
 
-				Optional<TripCandidate> selectedCandidate = selector.select(random);
+				Optional<UtilityCandidate> selectedCandidate = selector.select(random);
 
 				if (!selectedCandidate.isPresent()) {
 					switch (fallbackBehaviour) {
@@ -95,7 +96,7 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 					}
 				}
 
-				finalTripCandidate = selectedCandidate.get();
+				finalTripCandidate = (TripCandidate) selectedCandidate.get();
 			} else {
 				finalTripCandidate = createFallbackCandidate(person, trip, tripCandidates);
 			}

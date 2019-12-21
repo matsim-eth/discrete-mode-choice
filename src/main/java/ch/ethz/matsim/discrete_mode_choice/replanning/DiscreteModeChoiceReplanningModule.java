@@ -1,5 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning;
 
+import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.groups.GlobalConfigGroup;
 import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
@@ -17,18 +18,21 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
  */
 public class DiscreteModeChoiceReplanningModule extends AbstractMultithreadedModule {
 	public static final String NAME = "DiscreteModeChoice";
-	
+
 	final private Provider<DiscreteModeChoiceModel> modelProvider;
+	final private PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceReplanningModule(GlobalConfigGroup globalConfigGroup,
-			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider) {
+			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider, PopulationFactory populationFactory) {
 		super(globalConfigGroup);
+
 		this.modelProvider = modeChoiceModelProvider;
+		this.populationFactory = populationFactory;
 	}
 
 	@Override
 	public PlanAlgorithm getPlanAlgoInstance() {
 		DiscreteModeChoiceModel choiceModel = modelProvider.get();
-		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel);
+		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel, populationFactory);
 	}
 }

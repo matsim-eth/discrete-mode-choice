@@ -22,10 +22,10 @@ import org.apache.log4j.Logger;
  * 
  * @author sebhoerl
  */
-public class MultinomialLogitSelector<T extends UtilityCandidate> implements UtilitySelector<T> {
+public class MultinomialLogitSelector implements UtilitySelector {
 	private final static Logger logger = Logger.getLogger(MultinomialLogitSelector.class);
 
-	final private List<T> candidates = new LinkedList<>();
+	final private List<UtilityCandidate> candidates = new LinkedList<>();
 
 	private final double maximumUtility;
 	private final double minimumUtility;
@@ -42,19 +42,19 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 	}
 
 	@Override
-	public void addCandidate(T candidate) {
+	public void addCandidate(UtilityCandidate candidate) {
 		candidates.add(candidate);
 	}
 
 	@Override
-	public Optional<T> select(Random random) {
+	public Optional<UtilityCandidate> select(Random random) {
 		// I) If not candidates are available, give back nothing
 		if (candidates.size() == 0) {
 			return Optional.empty();
 		}
 
 		// II) Filter candidates that have a very low utility
-		List<T> filteredCandidates = candidates;
+		List<UtilityCandidate> filteredCandidates = candidates;
 
 		if (considerMinimumUtility) {
 			filteredCandidates = candidates.stream() //
@@ -72,7 +72,7 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 		// III) Create a probability distribution over candidates
 		List<Double> density = new ArrayList<>(filteredCandidates.size());
 
-		for (T candidate : filteredCandidates) {
+		for (UtilityCandidate candidate : filteredCandidates) {
 			double utility = candidate.getUtility();
 
 			// Warn if there is a utility that is exceeding the feasible range
@@ -102,7 +102,7 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 		return Optional.of(filteredCandidates.get(selection));
 	}
 
-	public static class Factory<TF extends UtilityCandidate> implements UtilitySelectorFactory<TF> {
+	public static class Factory implements UtilitySelectorFactory {
 		private final double minimumUtility;
 		private final double maximumUtility;
 		private final boolean considerMinimumUtility;
@@ -114,8 +114,8 @@ public class MultinomialLogitSelector<T extends UtilityCandidate> implements Uti
 		}
 
 		@Override
-		public UtilitySelector<TF> createUtilitySelector() {
-			return new MultinomialLogitSelector<>(maximumUtility, minimumUtility, considerMinimumUtility);
+		public UtilitySelector createUtilitySelector() {
+			return new MultinomialLogitSelector(maximumUtility, minimumUtility, considerMinimumUtility);
 		}
 	}
 }

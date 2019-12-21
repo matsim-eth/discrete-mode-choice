@@ -15,7 +15,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
  * agent does not have a driving license or does not have car availability. The
  * way it is implemented is consistent with the constriant in SubtourModeChoice.
  * 
- * Car is not available if Person.hasLicense gives false or if
+ * Car is not available if Person.getLicense gives "no" or if
  * PersonUtils.getCarAvail returns "never".
  * 
  * @author sebhoerl

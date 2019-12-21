@@ -1,12 +1,13 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
 import org.matsim.core.router.TripRouter;
 
@@ -26,9 +27,13 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final DiscreteModeChoiceModel modeChoiceModel;
 
-	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel) {
+	private final PopulationFactory populationFactory;
+
+	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel,
+			PopulationFactory populationFactory) {
 		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
+		this.populationFactory = populationFactory;
 	}
 
 	@Override
@@ -38,12 +43,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	 */
 	public void run(Plan plan) {
 		// I) First build a list of DiscreteModeChoiceTrips
-
-		List<? extends PlanElement> elements = plan.getPlanElements();
-		List<DiscreteModeChoiceTrip> trips = new ArrayList<>((elements.size() - 2) / 2 + 1);
-		List<Leg> legs = new ArrayList<>((elements.size() - 2) / 2 + 1);
-
-		TripListConverter.convert(plan, trips, legs);
+		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan);
 
 		// II) Run mode choice
 
@@ -52,24 +52,20 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 			List<TripCandidate> chosenCandidates = modeChoiceModel.chooseModes(plan.getPerson(), trips, random);
 
 			for (int i = 0; i < trips.size(); i++) {
+				DiscreteModeChoiceTrip trip = trips.get(i);
 				TripCandidate candidate = chosenCandidates.get(i);
 
-				// Set new mode of the leg
-				Leg targetLeg = legs.get(i);
-				targetLeg.setMode(candidate.getMode());
+				List<? extends PlanElement> insertElements;
 
-				// But alternatively put the whole routed plan segment if routing has been
-				// performed in the choice
 				if (candidate instanceof RoutedTripCandidate) {
-					DiscreteModeChoiceTrip trip = trips.get(i);
 					RoutedTripCandidate routedCandidate = (RoutedTripCandidate) candidate;
-					List<? extends PlanElement> routedElements = routedCandidate.getRoutedPlanElements();
-
-					TripRouter.insertTrip(plan, trip.getOriginActivity(), routedElements,
-							trip.getDestinationActivity());
+					insertElements = routedCandidate.getRoutedPlanElements();
 				} else {
-					targetLeg.setRoute(null);
+					Leg insertLeg = populationFactory.createLeg(candidate.getMode());
+					insertElements = Collections.singletonList(insertLeg);
 				}
+
+				TripRouter.insertTrip(plan, trip.getOriginActivity(), insertElements, trip.getDestinationActivity());
 			}
 		} catch (NoFeasibleChoiceException e) {
 			throw new IllegalStateException(e);
