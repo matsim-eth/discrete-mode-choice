@@ -2,6 +2,7 @@
 
 **1.0.9-dev**
 
+- Add filters to DiscreteModeChoiceModule
 - Use "routing mode" instead of MainModeIdentifier
 - Allow ReRoute strategy in combination with DCM
 - Add TourLengthFilter and document filters
