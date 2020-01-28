@@ -37,10 +37,13 @@ public class TestDMC {
 
         // controler
         Controler controler = new Controler(scenario);
+        
+        System.out.println(config.controler().getOutputDirectory());
+        
         controler.addOverridingModule(new DiscreteModeChoiceModule());
         
         // make population smaller
-        int nrPeopleToKeep = 100;
+       /*int nrPeopleToKeep = 100;
         if (nrPeopleToKeep > 0) {
             int interval = scenario.getPopulation().getPersons().size() / nrPeopleToKeep;
             int i = 0;
@@ -53,7 +56,9 @@ public class TestDMC {
                 }
             }
             toRemove.forEach(id -> scenario.getPopulation().removePerson(id));
-        }
+        }*/
+        
+        System.setProperty("scenario","sbb");
         
         controler.run();
     }

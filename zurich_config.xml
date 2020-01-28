@@ -1230,7 +1230,7 @@
 		<!-- the available options are MultinomialLogit and Random. Using MultinomialLogit a mode chain is selected by using MNL and the utility functions.  -->
 	    <param name="selector" value="MultinomialLogit" />
 		<!-- every leg in a tour can be constrained to take into consideration the mode used in the previous leg -->
-		<param name="tourConstraints" value="VehicleContinuity,SubtourMode" />
+		<param name="tourConstraints" value="VehicleContinuity" />
 		<param name="tourFinder" value="PlanBased" />
 		<!-- select the parameters for the utility function of the mode chains for evaluated in a tour. MATSimDayScoring uses the parameters in the config file -->
 		<param name="tourEstimator" value="MATSimDayScoring" />
