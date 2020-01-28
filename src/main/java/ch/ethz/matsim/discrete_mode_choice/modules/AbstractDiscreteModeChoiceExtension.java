@@ -8,7 +8,6 @@ import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;

@@ -2,15 +2,12 @@ package ch.ethz.matsim.discrete_mode_choice.components.estimators;
 
 import java.util.List;
 
-import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.router.TripRouter;
 import org.matsim.facilities.ActivityFacilities;
 import org.matsim.facilities.FacilitiesUtils;
 import org.matsim.facilities.Facility;
-//import org.matsim.core.router.ActivityWrapperFacility;
-import org.matsim.core.router.PlanRouter;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;

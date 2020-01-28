@@ -13,7 +13,6 @@ import org.matsim.core.router.TripRouter;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel.NoFeasibleChoiceException;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.FilterRandomThresholdModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.RoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;

@@ -2,28 +2,12 @@ package ch.ethz.matsim.discrete_mode_choice.modules;
 
 import java.util.Map;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Provides;
-import com.google.inject.multibindings.MapBinder;
 
-import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
-import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.DefaultModeAvailability;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
+import com.google.inject.Provides;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.FilterRandomThresholdModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
-import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
-import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripBasedModel;
-import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
-import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeAvailabilityConfigGroup;
-import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeChainFilterRandomThresholdConfigGroup;
 
 
 public class ModeChainGeneratorModule extends AbstractDiscreteModeChoiceExtension{

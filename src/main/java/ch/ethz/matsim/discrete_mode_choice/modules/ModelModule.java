@@ -4,12 +4,11 @@ import org.matsim.core.controler.AbstractModule;
 
 import com.google.inject.Provider;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
+
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceModel;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
-import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.DefaultModeChainGenerator;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_chain.ModeChainGeneratorFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourBasedModel;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
