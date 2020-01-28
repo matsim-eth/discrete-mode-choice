@@ -30,7 +30,7 @@ public class TestDMC {
 		// TODO Auto-generated method stub
 		System.setProperty("matsim.preferLocalDtds", "true");
 
-        final Config config = ConfigUtils.loadConfig("C:/Users/spenazzi/Projects/MatSim/Data/ZurichScenario/zurich_1pm/zurich_1pm/zurich_config.xml",
+        final Config config = ConfigUtils.loadConfig("/home/stefanopenazzi/projects/sbb/dmc/input_data/zurich_1pm/zurich_config.xml",
         		new DiscreteModeChoiceConfigGroup(),new ModeChainFilterRandomThresholdConfigGroup());
 
         Scenario scenario = ScenarioUtils.loadScenario(config);

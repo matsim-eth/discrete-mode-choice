@@ -6,3 +6,4 @@ output_001
 .classpath
 output_*
 test_config.xml
+/bin/
