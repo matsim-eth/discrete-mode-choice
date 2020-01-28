@@ -8,8 +8,8 @@
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
-		<matsim.version>0.11.0-2019w10-SNAPSHOT</matsim.version>
-<!--         <matsim.version>0.11.0-2018w44</matsim.version> -->
+		<!-- <matsim.version>0.11.0-2019w10-SNAPSHOT</matsim.version> -->
+        <matsim.version>12.0-2019w45-SNAPSHOT</matsim.version>
 		<geotools.version>20.2</geotools.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>

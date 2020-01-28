@@ -1,0 +1,32 @@
+pattern	0+	5+	10+	15+	20+	25+	30+	35+	40+	45+	50+	55+	60+
+accomp_children---cbShop	1	0	0	0	0	0	0	0	0	0	0	0	0
+accomp_children---home	0	1	0	0	1	0	0	0	0	0	0	0	0
+accomp_children---work	0	0	0	0	0	0	0	0	0	0	0	0	2
+cbShop---cbShop	3	0	0	1	1	0	0	0	0	0	0	0	0
+cbShop---educ_other	0	0	1	0	0	0	0	0	0	0	0	0	0
+cbShop---home	5	3	1	1	2	0	0	1	0	0	0	0	3
+cbShop---leisure	1	0	0	0	0	0	0	0	0	0	0	0	1
+educ_other---cbShop	0	0	0	0	1	0	0	0	0	0	0	0	1
+educ_other---educ_other	1	0	0	0	0	0	0	0	0	0	0	0	0
+educ_other---home	1	0	1	3	4	0	0	0	0	0	0	0	0
+educ_other---leisure	0	0	1	0	0	0	0	0	0	0	0	0	0
+educ_other---pt interaction	1	0	0	0	0	0	0	0	0	0	0	0	0
+home---accomp_children	1	1	0	0	1	0	0	0	0	0	0	0	3
+home---cbShop	3	3	1	1	3	0	0	1	1	0	1	0	3
+home---educ_other	0	0	1	4	4	0	0	1	2	0	0	0	0
+home---leisure	6	8	3	0	0	2	1	0	0	0	0	0	7
+home---pt interaction	5	8	6	0	2	0	0	0	0	0	0	1	0
+home---work	4	0	0	0	0	0	0	1	0	0	0	0	14
+leisure---cbShop	0	0	0	0	0	0	0	0	0	0	0	0	1
+leisure---home	4	8	3	0	0	1	1	0	0	0	0	0	8
+leisure---leisure	5	0	0	0	0	0	0	0	0	0	0	0	1
+leisure---pt interaction	4	0	0	0	1	0	0	0	0	0	0	0	0
+leisure---work	2	0	0	0	0	0	0	0	0	0	0	0	2
+work---accomp_children	0	0	1	0	0	0	0	0	0	0	0	0	0
+work---cbShop	0	1	0	0	0	0	0	0	0	0	0	0	1
+work---home	3	0	0	0	0	0	0	1	0	0	0	0	4
+work---leisure	2	0	0	0	0	0	0	0	1	0	0	0	0
+work---pt interaction	0	0	0	0	1	0	0	0	0	0	0	0	0
+work---work	0	0	0	0	0	0	0	0	0	0	0	0	1
+
+average trip duration: 6725.133004926109 seconds = 01:52:05

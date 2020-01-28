@@ -27,7 +27,7 @@ public class BenchmarkSiouxFalls {
 				.requireOptions("output-path", "use-case", "use-time-mutator") //
 				.build();
 
-		URL configURL = IOUtils.newUrl(ExamplesUtils.getTestScenarioURL("siouxfalls-2014"), "config_default.xml");
+		URL configURL = IOUtils.extendUrl(ExamplesUtils.getTestScenarioURL("siouxfalls-2014"), "config_default.xml");
 
 		Config config = ConfigUtils.loadConfig(configURL);
 		config.controler().setOverwriteFileSetting(OverwriteFileSetting.deleteDirectoryIfExists);
