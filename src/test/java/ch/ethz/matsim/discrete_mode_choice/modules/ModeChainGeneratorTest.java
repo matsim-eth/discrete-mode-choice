@@ -11,18 +11,30 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
 
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.ModeChainFilterRandomThresholdConfigGroup;
+
 class ModeChainGeneratorTest {
 
 	@Test
 	void testModeChainGenerator() {
-		Config config = ConfigUtils.loadConfig("C:\\Users\\spenazzi\\Projects\\sbb\\SBB\\input\\CNB\\config\\config.xml");
-		Scenario scenario = ScenarioUtils.createScenario(config);
-		ScenarioUtils.loadScenario(scenario);
-		Controler controler = new Controler(scenario);
-		DiscreteModeChoiceConfigurator.configureAsImportanceSampler(config);
-		
-		int nrPeopleToKeep = 20;
-		if (nrPeopleToKeep > 0) {
+		System.setProperty("matsim.preferLocalDtds", "true");
+
+        final Config config = ConfigUtils.loadConfig("/home/stefanopenazzi/projects/sbb/dmc/input_data/zurich_1pm/zurich_config.xml",
+        		new DiscreteModeChoiceConfigGroup(),new ModeChainFilterRandomThresholdConfigGroup());
+
+        Scenario scenario = ScenarioUtils.loadScenario(config);
+
+        // controler
+        Controler controler = new Controler(scenario);
+        
+        System.out.println(config.controler().getOutputDirectory());
+        
+        controler.addOverridingModule(new DiscreteModeChoiceModule());
+        
+        // make population smaller
+       int nrPeopleToKeep = 100;
+        if (nrPeopleToKeep > 0) {
             int interval = scenario.getPopulation().getPersons().size() / nrPeopleToKeep;
             int i = 0;
             LinkedList<Id<Person>> toRemove = new LinkedList<>();
@@ -35,6 +47,9 @@ class ModeChainGeneratorTest {
             }
             toRemove.forEach(id -> scenario.getPopulation().removePerson(id));
         }
-		controler.run();
+        
+        System.setProperty("scenario","sbb");
+        
+        controler.run();
 	}
 }
