@@ -2,7 +2,7 @@
 
 **1.0.10-dev**
 
-- No changes yet
+- Add Apollo reader
 
 **1.0.9**
 
