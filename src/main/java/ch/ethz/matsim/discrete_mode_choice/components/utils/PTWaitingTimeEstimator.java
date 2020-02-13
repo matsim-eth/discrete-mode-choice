@@ -11,5 +11,5 @@ import org.matsim.pt.routes.ExperimentalTransitRoute;
  * @author sebhoerl
  */
 public interface PTWaitingTimeEstimator {
-	double estimateWaitingTime(double agentDepartureTime, ExperimentalTransitRoute route);
+	double estimateWaitingTime(double departureTime, ExperimentalTransitRoute route);
 }
