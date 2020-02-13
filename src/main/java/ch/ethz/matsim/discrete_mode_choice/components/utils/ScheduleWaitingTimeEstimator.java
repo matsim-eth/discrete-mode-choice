@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.population.Leg;
+import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.pt.routes.ExperimentalTransitRoute;
@@ -50,6 +52,23 @@ public class ScheduleWaitingTimeEstimator implements PTWaitingTimeEstimator {
 		return new Tuple<>(transitLine.getId(), transitRoute.getId());
 	}
 
+	public double estimateWaitingTime(List<? extends PlanElement> elements) {
+		double totalWaitingTime = 0.0;
+
+		for (PlanElement element : elements) {
+			if (element instanceof Leg) {
+				Leg leg = (Leg) element;
+
+				if (leg.getMode().equals("pt")) {
+					ExperimentalTransitRoute route = (ExperimentalTransitRoute) leg.getRoute();
+					totalWaitingTime += estimateWaitingTime(leg.getDepartureTime(), route);
+				}
+			}
+		}
+
+		return totalWaitingTime;
+	}
+
 	@Override
 	public double estimateWaitingTime(double agentDepartureTime, ExperimentalTransitRoute route) {
 		TransitLine transitLine = transitSchedule.getTransitLines().get(route.getLineId());
@@ -81,7 +100,7 @@ public class ScheduleWaitingTimeEstimator implements PTWaitingTimeEstimator {
 		if (Double.isFinite(minimalWaitingTime)) {
 			return minimalWaitingTime;
 		} else {
-			logger.warn(String.format(
+			logger.error(String.format(
 					"Unable to find waiting time for departure on Line %s, Route %s, at Stop %s, after %s. Falling back to 0s.",
 					transitLine.getId(), transitRoute.getId(), route.getAccessStopId(),
 					Time.writeTime(agentDepartureTime)));

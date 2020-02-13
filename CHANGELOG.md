@@ -2,6 +2,7 @@
 
 **1.0.10-dev**
 
+- Improve/add tests for ScheduleWaitingTimeEstimator
 - Add Apollo reader
 
 **1.0.9**
