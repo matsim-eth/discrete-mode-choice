@@ -1,8 +1,0 @@
-target
-output
-output_001
-.project
-.settings
-.classpath
-output_*
-test_config.xml
