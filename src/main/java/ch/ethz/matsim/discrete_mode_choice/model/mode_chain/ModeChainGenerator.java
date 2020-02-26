@@ -11,5 +11,5 @@ import java.util.List;
  * @author sebhoerl
  */
 public interface ModeChainGenerator extends Iterator<List<String>> {
-	int getNumberOfAlternatives();
+	long getNumberOfAlternatives();
 }
