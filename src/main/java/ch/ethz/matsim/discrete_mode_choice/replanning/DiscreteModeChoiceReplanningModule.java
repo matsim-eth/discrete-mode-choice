@@ -20,19 +20,26 @@ public class DiscreteModeChoiceReplanningModule extends AbstractMultithreadedMod
 	public static final String NAME = "DiscreteModeChoice";
 
 	final private Provider<DiscreteModeChoiceModel> modelProvider;
+	final private Provider<TripListConverter> converterProvider;
+
 	final private PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceReplanningModule(GlobalConfigGroup globalConfigGroup,
-			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider, PopulationFactory populationFactory) {
+			Provider<DiscreteModeChoiceModel> modeChoiceModelProvider, Provider<TripListConverter> converterProvider,
+			PopulationFactory populationFactory) {
 		super(globalConfigGroup);
 
 		this.modelProvider = modeChoiceModelProvider;
+		this.converterProvider = converterProvider;
 		this.populationFactory = populationFactory;
 	}
 
 	@Override
 	public PlanAlgorithm getPlanAlgoInstance() {
 		DiscreteModeChoiceModel choiceModel = modelProvider.get();
-		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel, populationFactory);
+		TripListConverter converter = converterProvider.get();
+
+		return new DiscreteModeChoiceAlgorithm(MatsimRandom.getLocalInstance(), choiceModel, populationFactory,
+				converter);
 	}
 }
