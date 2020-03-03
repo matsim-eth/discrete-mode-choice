@@ -36,17 +36,20 @@ public class DiscreteModeChoiceStrategyProvider implements Provider<PlanStrategy
 	private final Provider<TripRouter> tripRouterProvider;
 	private final ActivityFacilities activityFacilities;
 	private final Provider<DiscreteModeChoiceModel> modeChoiceModelProvider;
+	private final Provider<TripListConverter> tripListConverterProvider;
 	private final DiscreteModeChoiceConfigGroup dmcConfig;
 	private final PopulationFactory populationFactory;
 
 	@Inject
 	DiscreteModeChoiceStrategyProvider(GlobalConfigGroup globalConfigGroup, ActivityFacilities activityFacilities,
 			Provider<TripRouter> tripRouterProvider, Provider<DiscreteModeChoiceModel> modeChoiceModelProvider,
-			DiscreteModeChoiceConfigGroup dmcConfig, Population population) {
+			DiscreteModeChoiceConfigGroup dmcConfig, Population population,
+			Provider<TripListConverter> tripListConverterProvider) {
 		this.globalConfigGroup = globalConfigGroup;
 		this.activityFacilities = activityFacilities;
 		this.tripRouterProvider = tripRouterProvider;
 		this.modeChoiceModelProvider = modeChoiceModelProvider;
+		this.tripListConverterProvider = tripListConverterProvider;
 		this.dmcConfig = dmcConfig;
 		this.populationFactory = population.getFactory();
 	}
@@ -54,8 +57,8 @@ public class DiscreteModeChoiceStrategyProvider implements Provider<PlanStrategy
 	@Override
 	public PlanStrategy get() {
 		PlanStrategyImpl.Builder builder = new PlanStrategyImpl.Builder(new RandomPlanSelector<>());
-		builder.addStrategyModule(
-				new DiscreteModeChoiceReplanningModule(globalConfigGroup, modeChoiceModelProvider, populationFactory));
+		builder.addStrategyModule(new DiscreteModeChoiceReplanningModule(globalConfigGroup, modeChoiceModelProvider,
+				tripListConverterProvider, populationFactory));
 
 		if (dmcConfig.getPerformReroute()) {
 			builder.addStrategyModule(new ReRoute(activityFacilities, tripRouterProvider, globalConfigGroup));

@@ -2,6 +2,8 @@
 
 **1.0.10-dev**
 
+- Add `accumulateDelays` option to sum up delays in TripListConverter (default `false`)
+- Fix bug in TripListConverter when estimating trip durations for maximum duration activities
 - Improve/add tests for ScheduleWaitingTimeEstimator
 - Add Apollo reader
 

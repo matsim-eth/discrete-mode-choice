@@ -23,11 +23,21 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 public final class TripListConverter {
 	private final static Logger logger = Logger.getLogger(TripListConverter.class);
 
-	private TripListConverter() {
+	private boolean isAccumulatingDelays = false;
 
+	public TripListConverter(boolean isAccumulatingDelays) {
+		this.isAccumulatingDelays = isAccumulatingDelays;
 	}
 
-	private static double getTripDuration(Trip trip, double startTime) {
+	private double updateTime(double t1, double t2) {
+		if (isAccumulatingDelays) {
+			return Math.max(t1, t2);
+		} else {
+			return t2;
+		}
+	}
+
+	private double getTripDuration(Trip trip, double startTime) {
 		double time = startTime;
 
 		for (PlanElement element : trip.getTripElements()) {
@@ -35,26 +45,32 @@ public final class TripListConverter {
 				Activity activity = (Activity) element;
 
 				if (!Time.isUndefinedTime(activity.getEndTime())) {
-					time = activity.getEndTime();
+					time = updateTime(time, activity.getEndTime());
 				} else if (!Time.isUndefinedTime(activity.getMaximumDuration())) {
 					time += activity.getMaximumDuration();
 				} else {
-					return Time.getUndefinedTime();
+					time = Time.getUndefinedTime();
 				}
 			} else {
 				Leg leg = (Leg) element;
 
 				if (!Time.isUndefinedTime(leg.getDepartureTime())) {
-					time = leg.getDepartureTime();
-				} else if (!Time.isUndefinedTime(leg.getTravelTime())) {
+					time = updateTime(time, leg.getDepartureTime());
+				}
+
+				if (!Time.isUndefinedTime(leg.getTravelTime())) {
 					time += leg.getTravelTime();
 				} else {
-					return Time.getUndefinedTime();
+					time = Time.getUndefinedTime();
 				}
 			}
 		}
 
-		return Math.max(0.0, time - startTime);
+		if (Time.isUndefinedTime(time)) {
+			return Time.getUndefinedTime();
+		} else {
+			return Math.max(0.0, time - startTime);
+		}
 	}
 
 	private static int warningCount = 0;
@@ -64,7 +80,7 @@ public final class TripListConverter {
 	 * respective legs. It is expected that the plan is already flattened (i.e.
 	 * there are no interaction activities).
 	 */
-	public static List<DiscreteModeChoiceTrip> convert(Plan plan) {
+	public List<DiscreteModeChoiceTrip> convert(Plan plan) {
 		List<Trip> initialTrips = TripStructureUtils.getTrips(plan);
 		List<DiscreteModeChoiceTrip> trips = new ArrayList<>(initialTrips.size());
 
@@ -81,7 +97,7 @@ public final class TripListConverter {
 			String routingMode = TripStructureUtils.getRoutingMode(firstLeg);
 
 			if (!Time.isUndefinedTime(originActivity.getEndTime())) {
-				time = originActivity.getEndTime();
+				time = updateTime(time, originActivity.getEndTime());
 			} else if (!Time.isUndefinedTime(firstLeg.getDepartureTime())) {
 				time = firstLeg.getDepartureTime();
 			} else if (!Time.isUndefinedTime(originActivity.getMaximumDuration())
@@ -101,6 +117,7 @@ public final class TripListConverter {
 			index++;
 
 			tripDuration = getTripDuration(initialTrip, time);
+			System.err.println("TRIP DURATION " + tripDuration);
 		}
 
 		return trips;

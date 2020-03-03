@@ -93,6 +93,6 @@ public class PlanBuilder {
 	}
 
 	public List<DiscreteModeChoiceTrip> buildDiscreteModeChoiceTrips() {
-		return TripListConverter.convert(plan);
+		return new TripListConverter(false).convert(plan);
 	}
 }

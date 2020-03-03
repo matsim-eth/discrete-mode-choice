@@ -27,6 +27,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripConstraintFactor
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+import ch.ethz.matsim.discrete_mode_choice.replanning.TripListConverter;
 
 /**
  * Internal module that sets up the acutal choice models according to
@@ -120,5 +121,10 @@ public class ModelModule extends AbstractModule {
 		}
 
 		return new CompositeTourFilter(filters);
+	}
+
+	@Provides
+	public TripListConverter provideTripListConverter(DiscreteModeChoiceConfigGroup config) {
+		return new TripListConverter(config.getAccumulateDelays());
 	}
 }
