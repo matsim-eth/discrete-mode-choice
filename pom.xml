@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ethz.matsim</groupId>
 	<artifactId>discrete_mode_choice</artifactId>
-	<version>1.0.10-vsp-dev</version>
+	<version>1.0.10-dev</version>
 	<description>Discrete Mode Choice for MATSim</description>
 
 	<properties>
