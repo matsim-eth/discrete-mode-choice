@@ -46,7 +46,7 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = TripListConverter.convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(4234.0, result.get(1).getDepartureTime());
@@ -81,7 +81,7 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = TripListConverter.convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(1400.0, result.get(1).getDepartureTime());
@@ -116,7 +116,7 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = TripListConverter.convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(1234.0 + 500.0 + 50.0, result.get(1).getDepartureTime());
@@ -150,9 +150,54 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = TripListConverter.convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(1234.0, result.get(1).getDepartureTime());
+	}
+	
+
+	@Test
+	public void testReconstructTravelTime() {
+		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
+
+		Person person = populationFactory.createPerson(Id.createPersonId("p"));
+		Plan plan = populationFactory.createPlan();
+		plan.setPerson(person);
+
+		Activity activity;
+		Leg leg;
+
+		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
+		activity.setEndTime(1000.0);
+		plan.addActivity(activity);
+
+		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(20.0);
+		plan.addLeg(leg);
+
+		activity = PopulationUtils.createActivityFromCoord("generic interaction", new Coord(0.0, 0.0));
+		activity.setMaximumDuration(500.0);
+		plan.addActivity(activity);
+
+		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(5.0);
+		plan.addLeg(leg);
+
+		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
+		activity.setMaximumDuration(5000.0);
+		plan.addActivity(activity);
+		
+		leg = PopulationUtils.createLeg("generic");
+		plan.addLeg(leg);
+		
+		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
+		plan.addActivity(activity);
+
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
+
+		assertEquals(2, result.size());
+		assertEquals(1000.0, result.get(0).getDepartureTime());
+		assertEquals(6525.0, result.get(1).getDepartureTime());
 	}
 }

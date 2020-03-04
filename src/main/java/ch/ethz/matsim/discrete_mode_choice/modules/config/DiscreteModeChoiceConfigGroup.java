@@ -33,6 +33,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.TourFinderModule;
 public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	private boolean performReroute = true;
 	private boolean enforceSinglePlan = false;
+	private boolean accumulateDelays = false;
 
 	private ModelModule.ModelType modelType = ModelModule.ModelType.Tour;
 	private DiscreteModeChoiceModel.FallbackBehaviour fallbackBehaviour = DiscreteModeChoiceModel.FallbackBehaviour.EXCEPTION;
@@ -56,6 +57,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String PERFORM_REROUTE = "performReroute";
 	public static final String ENFORCE_SINGLE_PLAN = "enforceSinglePlan";
+	public static final String ACCUMULATE_DELAYS = "accumulateDelays";
 	public static final String FALLBACK_BEHAVIOUR = "fallbackBehaviour";
 
 	public static final String MODEL_TYPE = "modelType";
@@ -103,6 +105,16 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	@StringGetter(ENFORCE_SINGLE_PLAN)
 	public boolean getEnforceSinglePlan() {
 		return enforceSinglePlan;
+	}
+
+	@StringSetter(ACCUMULATE_DELAYS)
+	public void setAccumulateDelays(boolean accumulateDelays) {
+		this.accumulateDelays = accumulateDelays;
+	}
+
+	@StringGetter(ACCUMULATE_DELAYS)
+	public boolean getAccumulateDelays() {
+		return accumulateDelays;
 	}
 
 	@StringSetter(FALLBACK_BEHAVIOUR)

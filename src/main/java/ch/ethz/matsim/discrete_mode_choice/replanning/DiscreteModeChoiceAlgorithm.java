@@ -26,14 +26,16 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	private final Random random;
 	private final DiscreteModeChoiceModel modeChoiceModel;
+	private final TripListConverter tripListConverter;
 
 	private final PopulationFactory populationFactory;
 
 	public DiscreteModeChoiceAlgorithm(Random random, DiscreteModeChoiceModel modeChoiceModel,
-			PopulationFactory populationFactory) {
+			PopulationFactory populationFactory, TripListConverter tripListConverter) {
 		this.random = random;
 		this.modeChoiceModel = modeChoiceModel;
 		this.populationFactory = populationFactory;
+		this.tripListConverter = tripListConverter;
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class DiscreteModeChoiceAlgorithm implements PlanAlgorithm {
 	 */
 	public void run(Plan plan) {
 		// I) First build a list of DiscreteModeChoiceTrips
-		List<DiscreteModeChoiceTrip> trips = TripListConverter.convert(plan);
+		List<DiscreteModeChoiceTrip> trips = tripListConverter.convert(plan);
 
 		// II) Run mode choice
 
