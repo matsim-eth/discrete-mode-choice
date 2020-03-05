@@ -30,7 +30,7 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 	final private int numberOfTrips;
 	final private int numberOfModes;
 
-	final private int maximumAlternatives;
+	final private long maximumAlternatives;
 
 	private int index = 0;
 
@@ -38,10 +38,10 @@ public class DefaultModeChainGenerator implements ModeChainGenerator {
 		this.availableModes = new ArrayList<>(availableModes);
 		this.numberOfModes = availableModes.size();
 		this.numberOfTrips = numberOfTrips;
-		this.maximumAlternatives = ArithmeticUtils.pow(numberOfModes, numberOfTrips);
+		this.maximumAlternatives = ArithmeticUtils.pow((long) numberOfModes, numberOfTrips);
 	}
 
-	public int getNumberOfAlternatives() {
+	public long getNumberOfAlternatives() {
 		return maximumAlternatives;
 	}
 
