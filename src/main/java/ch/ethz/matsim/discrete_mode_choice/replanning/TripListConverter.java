@@ -117,7 +117,6 @@ public final class TripListConverter {
 			index++;
 
 			tripDuration = getTripDuration(initialTrip, time);
-			System.err.println("TRIP DURATION " + tripDuration);
 		}
 
 		return trips;

@@ -2,11 +2,12 @@
 
 **1.0.10-dev**
 
+- Remove unintended print in TripListConverter
+- Fix integer overflow exceptions for tours with many trips in DefaultModeChainGenerator
 - Add `accumulateDelays` option to sum up delays in TripListConverter (default `false`)
 - Fix bug in TripListConverter when estimating trip durations for maximum duration activities
 - Improve/add tests for ScheduleWaitingTimeEstimator
 - Add Apollo reader
-- fix int overflow exceptions for tours with many trips in DefaultModeChainGenerator
 
 **1.0.9**
 
