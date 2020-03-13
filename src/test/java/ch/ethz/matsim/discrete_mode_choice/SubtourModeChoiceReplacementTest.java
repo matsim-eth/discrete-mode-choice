@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
 import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
@@ -317,7 +318,7 @@ public class SubtourModeChoiceReplacementTest {
 
 	private Set<List<String>> computeDMC(PlanBuilder planBuilder, List<String> modes, List<String> constrainedModes,
 			boolean considerCarAvailability, boolean allowSingleLegs, int samples) throws NoFeasibleChoiceException {
-		TourEstimator estimator = new UniformTourEstimator();
+		TourEstimator estimator = new UniformTourEstimator(ConfigUtils.createConfig());
 		ModeAvailability modeAvailability = considerCarAvailability ? new CarModeAvailability(modes)
 				: new DefaultModeAvailability(modes);
 		TourFinder tourFinder = new PlanTourFinder();

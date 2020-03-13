@@ -80,6 +80,7 @@ public class PlanBuilder {
 
 	public PlanBuilder addLeg(String mode) {
 		Leg leg = factory.createLeg(mode);
+		leg.setTravelTime(3600.0);
 		plan.addLeg(leg);
 		return this;
 	}
@@ -89,10 +90,15 @@ public class PlanBuilder {
 	}
 
 	public Plan buildPlan() {
-		return plan;
+		Plan copy = factory.createPlan();
+		copy.setPerson(person);
+		
+		PopulationUtils.copyFromTo(this.plan, copy);
+		
+		return copy;
 	}
 
 	public List<DiscreteModeChoiceTrip> buildDiscreteModeChoiceTrips() {
-		return new TripListConverter(false).convert(plan);
+		return new TripListConverter(ConfigUtils.createConfig()).convert(plan);
 	}
 }

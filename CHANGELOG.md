@@ -2,6 +2,8 @@
 
 **1.0.10-dev**
 
+- Include duration in estimated routed trips
+- Make use of `PopulationUtils.decideOnActivityEndTime`
 - Remove unintended print in TripListConverter
 - Fix integer overflow exceptions for tours with many trips in DefaultModeChainGenerator
 - Add `accumulateDelays` option to sum up delays in TripListConverter (default `false`)

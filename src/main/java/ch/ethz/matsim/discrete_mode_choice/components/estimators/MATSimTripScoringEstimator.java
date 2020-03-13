@@ -7,6 +7,7 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.core.config.Config;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ModeUtilityParameters;
 import org.matsim.core.scoring.functions.ScoringParameters;
@@ -16,6 +17,7 @@ import org.matsim.pt.routes.ExperimentalTransitRoute;
 
 import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
+import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultRoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 
 /**
@@ -30,10 +32,10 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	private final PTWaitingTimeEstimator waitingTimeEstimator;
 	private final Collection<String> ptLegModes;
 
-	public MATSimTripScoringEstimator(ActivityFacilities facilities, TripRouter tripRouter,
+	public MATSimTripScoringEstimator(Config config, ActivityFacilities facilities, TripRouter tripRouter,
 			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
 			Collection<String> ptModes) {
-		super(tripRouter, facilities);
+		super(config, tripRouter, facilities);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 		this.ptLegModes = ptModes;
@@ -56,7 +58,7 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			result = computeStandardTrip(parameters, elements);
 		}
 
-		return new MATSimTripCandidate(result.utility, mode, elements, result.travelTime);
+		return new DefaultRoutedTripCandidate(result.utility, mode, elements, result.travelTime);
 	}
 
 	private class ComputationResult {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import org.matsim.core.config.Config;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.facilities.ActivityFacilities;
@@ -88,14 +89,14 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 
 	@Provides
 	@Singleton
-	public UniformTripEstimator provideNullTripEstimator() {
-		return new UniformTripEstimator();
+	public UniformTripEstimator provideNullTripEstimator(Config config) {
+		return new UniformTripEstimator(config);
 	}
 
 	@Provides
 	@Singleton
-	public UniformTourEstimator proideNullTourEstimator() {
-		return new UniformTourEstimator();
+	public UniformTourEstimator proideNullTourEstimator(Config config) {
+		return new UniformTourEstimator(config);
 	}
 
 	@Provides
@@ -105,12 +106,12 @@ public class EstimatorModule extends AbstractDiscreteModeChoiceExtension {
 	}
 
 	@Provides
-	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(ActivityFacilities facilities,
+	public MATSimTripScoringEstimator provideMATSimTripScoringEstimator(Config config, ActivityFacilities facilities,
 			TripRouter tripRouter, PTWaitingTimeEstimator waitingTimeEstimator,
 			ScoringParametersForPerson scoringParametersForPerson, DiscreteModeChoiceConfigGroup dmcConfig) {
-		MATSimTripScoringConfigGroup config = dmcConfig.getMATSimTripScoringConfigGroup();
-		return new MATSimTripScoringEstimator(facilities, tripRouter, waitingTimeEstimator, scoringParametersForPerson,
-				config.getPtLegModes());
+		MATSimTripScoringConfigGroup scoringConfig = dmcConfig.getMATSimTripScoringConfigGroup();
+		return new MATSimTripScoringEstimator(config, facilities, tripRouter, waitingTimeEstimator,
+				scoringParametersForPerson, scoringConfig.getPtLegModes());
 	}
 
 	@Provides

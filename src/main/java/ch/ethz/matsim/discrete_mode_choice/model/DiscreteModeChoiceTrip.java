@@ -16,7 +16,7 @@ public final class DiscreteModeChoiceTrip {
 	private final Activity originActivity;
 	private final Activity destinationActivity;
 	private final String initialMode;
-	private final double departureTime;
+	private double departureTime;
 	private final List<? extends PlanElement> initialElements;
 
 	private final int hashCode;
@@ -45,6 +45,10 @@ public final class DiscreteModeChoiceTrip {
 
 	public double getDepartureTime() {
 		return departureTime;
+	}
+	
+	void setDepartureTime(double departureTime) {
+		this.departureTime = departureTime;
 	}
 
 	public String getInitialMode() {

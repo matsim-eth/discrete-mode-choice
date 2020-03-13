@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
 
 import com.google.inject.Provider;
@@ -124,7 +125,7 @@ public class ModelModule extends AbstractModule {
 	}
 
 	@Provides
-	public TripListConverter provideTripListConverter(DiscreteModeChoiceConfigGroup config) {
-		return new TripListConverter(config.getAccumulateDelays());
+	public TripListConverter provideTripListConverter(Config config) {
+		return new TripListConverter(config);
 	}
 }

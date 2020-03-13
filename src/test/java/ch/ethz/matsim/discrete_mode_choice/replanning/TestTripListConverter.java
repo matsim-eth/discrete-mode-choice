@@ -1,6 +1,7 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PopulationFactory;
+import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PopulationUtils;
 
@@ -20,6 +22,8 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 public class TestTripListConverter {
 	@Test
 	public void testActivityEndTime() {
+		Config config = ConfigUtils.createConfig();
+
 		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
 
 		Person person = populationFactory.createPerson(Id.createPersonId("p"));
@@ -34,6 +38,7 @@ public class TestTripListConverter {
 		plan.addActivity(activity);
 
 		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(3000.0);
 		plan.addLeg(leg);
 
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
@@ -41,54 +46,21 @@ public class TestTripListConverter {
 		plan.addActivity(activity);
 
 		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(10.0);
 		plan.addLeg(leg);
 
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(config).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(4234.0, result.get(1).getDepartureTime());
 	}
 
 	@Test
-	public void testLegDepartureTime() {
-		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
-
-		Person person = populationFactory.createPerson(Id.createPersonId("p"));
-		Plan plan = populationFactory.createPlan();
-		plan.setPerson(person);
-
-		Activity activity;
-		Leg leg;
-
-		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
-		activity.setEndTime(1234.0);
-		plan.addActivity(activity);
-
-		leg = PopulationUtils.createLeg("generic");
-		plan.addLeg(leg);
-
-		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
-		activity.setMaximumDuration(400.0);
-		plan.addActivity(activity);
-
-		leg = PopulationUtils.createLeg("generic");
-		leg.setDepartureTime(1400.0);
-		plan.addLeg(leg);
-
-		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
-		plan.addActivity(activity);
-
-		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
-
-		assertEquals(1234.0, result.get(0).getDepartureTime());
-		assertEquals(1400.0, result.get(1).getDepartureTime());
-	}
-
-	@Test
 	public void testActivityMaximumDuration() {
+		Config config = ConfigUtils.createConfig();
 		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
 
 		Person person = populationFactory.createPerson(Id.createPersonId("p"));
@@ -111,12 +83,13 @@ public class TestTripListConverter {
 		plan.addActivity(activity);
 
 		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(5.0);
 		plan.addLeg(leg);
 
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(config).convert(plan);
 
 		assertEquals(1234.0, result.get(0).getDepartureTime());
 		assertEquals(1234.0 + 500.0 + 50.0, result.get(1).getDepartureTime());
@@ -124,6 +97,7 @@ public class TestTripListConverter {
 
 	@Test
 	public void testInvalidChain() {
+		Config config = ConfigUtils.createConfig();
 		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
 
 		Person person = populationFactory.createPerson(Id.createPersonId("p"));
@@ -150,15 +124,14 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
-
-		assertEquals(1234.0, result.get(0).getDepartureTime());
-		assertEquals(1234.0, result.get(1).getDepartureTime());
+		assertThrows(IllegalStateException.class, () -> {
+			new TripListConverter(config).convert(plan);
+		});
 	}
-	
 
 	@Test
 	public void testReconstructTravelTime() {
+		Config config = ConfigUtils.createConfig();
 		PopulationFactory populationFactory = PopulationUtils.createPopulation(ConfigUtils.createConfig()).getFactory();
 
 		Person person = populationFactory.createPerson(Id.createPersonId("p"));
@@ -187,14 +160,15 @@ public class TestTripListConverter {
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		activity.setMaximumDuration(5000.0);
 		plan.addActivity(activity);
-		
+
 		leg = PopulationUtils.createLeg("generic");
+		leg.setTravelTime(0.0);
 		plan.addLeg(leg);
-		
+
 		activity = PopulationUtils.createActivityFromCoord("generic", new Coord(0.0, 0.0));
 		plan.addActivity(activity);
 
-		List<DiscreteModeChoiceTrip> result = new TripListConverter(false).convert(plan);
+		List<DiscreteModeChoiceTrip> result = new TripListConverter(config).convert(plan);
 
 		assertEquals(2, result.size());
 		assertEquals(1000.0, result.get(0).getDepartureTime());
