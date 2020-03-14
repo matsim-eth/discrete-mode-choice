@@ -17,8 +17,6 @@ public abstract class AbstractTourFinder implements TourFinder {
 	public List<List<DiscreteModeChoiceTrip>> findTours(List<DiscreteModeChoiceTrip> trips) {
 		Set<Activity> relevantActivities = findActivities(trips);
 
-		int currentIndex = 0;
-
 		List<List<DiscreteModeChoiceTrip>> tours = new LinkedList<>();
 		List<DiscreteModeChoiceTrip> currentTour = new LinkedList<>();
 

@@ -1,6 +1,5 @@
 package ch.ethz.matsim.discrete_mode_choice.modules.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
