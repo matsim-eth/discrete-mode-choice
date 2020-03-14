@@ -9,8 +9,10 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.ActivityTourFinder;
+import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.HomeTourFinder;
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.PlanTourFinder;
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.HomeFinder;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.ActivityTourFinderConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
@@ -23,13 +25,15 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConf
 public class TourFinderModule extends AbstractDiscreteModeChoiceExtension {
 	public static final String PLAN_BASED = "PlanBased";
 	public static final String ACTIVITY_BASED = "ActivityBased";
+	public static final String HOME_BASED = "HomeBased";
 
-	public static final Collection<String> COMPONENTS = Arrays.asList(PLAN_BASED, ACTIVITY_BASED);
+	public static final Collection<String> COMPONENTS = Arrays.asList(PLAN_BASED, ACTIVITY_BASED, HOME_BASED);
 
 	@Override
 	public void installExtension() {
 		bindTourFinder(PLAN_BASED).to(PlanTourFinder.class);
 		bindTourFinder(ACTIVITY_BASED).to(ActivityTourFinder.class);
+		bindTourFinder(HOME_BASED).to(HomeTourFinder.class);
 	}
 
 	@Provides
@@ -42,7 +46,13 @@ public class TourFinderModule extends AbstractDiscreteModeChoiceExtension {
 	@Singleton
 	public ActivityTourFinder provideActivityBasedTourFinder(DiscreteModeChoiceConfigGroup dmcConfig) {
 		ActivityTourFinderConfigGroup config = dmcConfig.getActivityTourFinderConfigGroup();
-		return new ActivityTourFinder(config.getActivityType());
+		return new ActivityTourFinder(config.getActivityTypes());
+	}
+
+	@Provides
+	@Singleton
+	public HomeTourFinder provideHomeTourFinder(HomeFinder homeFinder) {
+		return new HomeTourFinder(homeFinder);
 	}
 
 	@Provides

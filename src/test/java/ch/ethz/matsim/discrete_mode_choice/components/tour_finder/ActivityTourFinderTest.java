@@ -2,6 +2,7 @@ package ch.ethz.matsim.discrete_mode_choice.components.tour_finder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ActivityTourFinderTest {
 
 	@Test
 	public void testActivityTourFinder() {
-		ActivityTourFinder finder = new ActivityTourFinder("home");
+		ActivityTourFinder finder = new ActivityTourFinder(Arrays.asList("home"));
 
 		List<DiscreteModeChoiceTrip> trips;
 		List<List<DiscreteModeChoiceTrip>> result;
@@ -73,6 +74,48 @@ public class ActivityTourFinderTest {
 		assertEquals(2, result.get(1).size());
 
 		trips = createFixture("home", "work", "home", "home", "work", "home");
+		result = finder.findTours(trips);
+		assertEquals(3, result.size());
+		assertEquals(5, result.stream().mapToInt(List::size).sum());
+		assertEquals(2, result.get(0).size());
+		assertEquals(1, result.get(1).size());
+		assertEquals(2, result.get(2).size());
+	}
+	
+	@Test
+	public void testActivityTourFinderMultiple() {
+		ActivityTourFinder finder = new ActivityTourFinder(Arrays.asList("home1", "home2", "home3", "home4"));
+
+		List<DiscreteModeChoiceTrip> trips;
+		List<List<DiscreteModeChoiceTrip>> result;
+
+		trips = createFixture("home1", "work", "home2");
+		result = finder.findTours(trips);
+		assertEquals(1, result.size());
+		assertEquals(2, result.stream().mapToInt(List::size).sum());
+
+		trips = createFixture("other", "home2", "work", "home1");
+		result = finder.findTours(trips);
+		assertEquals(2, result.size());
+		assertEquals(3, result.stream().mapToInt(List::size).sum());
+		assertEquals(1, result.get(0).size());
+		assertEquals(2, result.get(1).size());
+
+		trips = createFixture("home1", "work", "home2", "other");
+		result = finder.findTours(trips);
+		assertEquals(2, result.size());
+		assertEquals(3, result.stream().mapToInt(List::size).sum());
+		assertEquals(2, result.get(0).size());
+		assertEquals(1, result.get(1).size());
+
+		trips = createFixture("home1", "work", "shop", "home1", "other", "home3");
+		result = finder.findTours(trips);
+		assertEquals(2, result.size());
+		assertEquals(5, result.stream().mapToInt(List::size).sum());
+		assertEquals(3, result.get(0).size());
+		assertEquals(2, result.get(1).size());
+
+		trips = createFixture("home1", "work", "home2", "home3", "work", "home2");
 		result = finder.findTours(trips);
 		assertEquals(3, result.size());
 		assertEquals(5, result.stream().mapToInt(List::size).sum());

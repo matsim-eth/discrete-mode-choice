@@ -6,6 +6,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
 
 import ch.ethz.matsim.discrete_mode_choice.components.tour_finder.TourFinder;
+import ch.ethz.matsim.discrete_mode_choice.components.utils.home_finder.HomeFinder;
 import ch.ethz.matsim.discrete_mode_choice.model.mode_availability.ModeAvailability;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourConstraintFactory;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
@@ -33,6 +34,7 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 	protected MapBinder<String, ModeAvailability> modeAvailabilityBinder;
 	protected MapBinder<String, TourFinder> tourFinderBinder;
+	protected MapBinder<String, HomeFinder> homeFinderBinder;
 
 	protected MapBinder<String, TourFilter> tourFilterBinder;
 	protected MapBinder<String, TripFilter> tripFilterBinder;
@@ -52,6 +54,7 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 		modeAvailabilityBinder = MapBinder.newMapBinder(binder(), String.class, ModeAvailability.class);
 		tourFinderBinder = MapBinder.newMapBinder(binder(), String.class, TourFinder.class);
+		homeFinderBinder = MapBinder.newMapBinder(binder(), String.class, HomeFinder.class);
 
 		installExtension();
 	}
@@ -90,6 +93,10 @@ public abstract class AbstractDiscreteModeChoiceExtension extends AbstractModule
 
 	protected final LinkedBindingBuilder<TourFinder> bindTourFinder(String name) {
 		return tourFinderBinder.addBinding(name);
+	}
+
+	protected final LinkedBindingBuilder<HomeFinder> bindHomeFinder(String name) {
+		return homeFinderBinder.addBinding(name);
 	}
 
 	abstract protected void installExtension();

@@ -1,6 +1,5 @@
 package ch.ethz.matsim.discrete_mode_choice.modules.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,16 +7,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Configuration for the ActivityTourFinder.
+ * Configuration for the ActivityHomeFinder.
  * 
  * @author sebhoerl
  */
-public class ActivityTourFinderConfigGroup extends ComponentConfigGroup {
+public class ActivityHomeFinderConfigGroup extends ComponentConfigGroup {
 	private Collection<String> activityTypes = Arrays.asList("home");
 
 	public static final String ACTIVITY_TYPES = "activityTypes";
 
-	public ActivityTourFinderConfigGroup(String componentType, String componentName) {
+	public ActivityHomeFinderConfigGroup(String componentType, String componentName) {
 		super(componentType, componentName);
 	}
 
@@ -25,8 +24,7 @@ public class ActivityTourFinderConfigGroup extends ComponentConfigGroup {
 	public Map<String, String> getComments() {
 		Map<String, String> comments = new HashMap<>();
 
-		comments.put(ACTIVITY_TYPES,
-				"Comma-separated activity types which should be considered as start and end of a tour. If a plan does not start or end with such an activity additional tours are added.");
+		comments.put(ACTIVITY_TYPES, "Comma-separated activity types which should be considered as home.");
 
 		return comments;
 	}
