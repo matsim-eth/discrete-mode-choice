@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleTourConstraintConfigGroup.HomeType;
-
 /**
  * Config group for VehicleTripConstriant.
  * 
@@ -17,13 +15,9 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.VehicleTourConstraintC
  */
 public class VehicleTripConstraintConfigGroup extends ComponentConfigGroup {
 	private Collection<String> restrictedModes = new HashSet<>(Arrays.asList("car", "bike"));
-	private HomeType homeType = HomeType.USE_FIRST_ACTIVITY;
-	private String homeActivityType = "home";
 	private boolean isAdvanced = true;
 
 	private static final String RESTRICTED_MODES = "restrictedModes";
-	private static final String HOME_TYPE = "homeType";
-	private static final String HOME_ACTIVITY_TYPE = "homeActivityType";
 	private static final String IS_ADVANCED = "isAdvanced";
 
 	public VehicleTripConstraintConfigGroup(String componentType, String componentName) {
@@ -36,13 +30,6 @@ public class VehicleTripConstraintConfigGroup extends ComponentConfigGroup {
 
 		comments.put(RESTRICTED_MODES,
 				"Defines which modes must fulfill continuity constraints (can only be used where they have been brough to before)");
-
-		String options = Arrays.asList(HomeType.values()).stream().map(String::valueOf)
-				.collect(Collectors.joining(", "));
-		comments.put(HOME_TYPE, "Defines how to determine where the home of an agent is: " + options);
-
-		comments.put(HOME_ACTIVITY_TYPE,
-				"If USE_ACTIVITY_TYPE is chosen for homeType, this option defines which activity type to look for.");
 
 		comments.put(IS_ADVANCED, "Defines if the advanced constriant is used (vehicles must be brought back home).");
 
@@ -66,26 +53,6 @@ public class VehicleTripConstraintConfigGroup extends ComponentConfigGroup {
 	@StringGetter(RESTRICTED_MODES)
 	public String getRestrictedModesAsString() {
 		return String.join(", ", restrictedModes);
-	}
-
-	@StringGetter(HOME_ACTIVITY_TYPE)
-	public String getHomeActivityType() {
-		return homeActivityType;
-	}
-
-	@StringSetter(HOME_ACTIVITY_TYPE)
-	public void setHomeActivityType(String homeActivityType) {
-		this.homeActivityType = homeActivityType;
-	}
-
-	@StringGetter(HOME_TYPE)
-	public HomeType getHomeType() {
-		return homeType;
-	}
-
-	@StringSetter(HOME_TYPE)
-	public void setHomeType(HomeType homeType) {
-		this.homeType = homeType;
 	}
 
 	@StringGetter(IS_ADVANCED)
