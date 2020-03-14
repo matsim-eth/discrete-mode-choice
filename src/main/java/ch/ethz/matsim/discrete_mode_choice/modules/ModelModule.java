@@ -46,6 +46,7 @@ public class ModelModule extends AbstractModule {
 		install(new SelectorModule());
 		install(new ConstraintModule());
 		install(new FilterModule());
+		install(new HomeFinderModule());
 
 		bind(ModeChainGeneratorFactory.class).to(DefaultModeChainGenerator.Factory.class);
 	}

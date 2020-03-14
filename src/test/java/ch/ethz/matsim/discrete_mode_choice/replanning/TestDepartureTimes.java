@@ -203,7 +203,7 @@ public class TestDepartureTimes {
 		TourFilter tourFilter = new CompositeTourFilter(Collections.emptySet());
 		ModeAvailability modeAvailability = new DefaultModeAvailability(Arrays.asList("car"));
 		TourConstraintFactory constraintFactory = new CompositeTourConstraintFactory();
-		TourFinder tourFinder = new ActivityTourFinder("home");
+		TourFinder tourFinder = new ActivityTourFinder(Arrays.asList("home"));
 		UtilitySelectorFactory selectorFactory = new RandomSelector.Factory();
 		FallbackBehaviour fallbackBehaviour = FallbackBehaviour.EXCEPTION;
 		ModeChainGeneratorFactory modeChainGeneratorFactory = new DefaultModeChainGenerator.Factory();

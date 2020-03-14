@@ -2,6 +2,9 @@
 
 **1.0.10-dev**
 
+- Changed `ActivityTourFinder` and `ActivityHomeFinder`to not only check for a single activity type, but now a list of activity types can be provided through the `activityTypes` parameter
+- Added `HomeTourFinder` which determines tours by using the location from the home finder
+- Added `HomeFinder` as a general component that can be bound in `AbstractDiscreteModeChoiceExtension`
 - `MATSimTripCandidate` was removed because now all `TripCandidate`s provide the trip duration
 - Make delay accumulation optional through `accumulateEstimationDelays`
 - BC: Improve time calculation and propagation of delays during estimation

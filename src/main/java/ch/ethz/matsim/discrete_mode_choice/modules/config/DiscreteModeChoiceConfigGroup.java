@@ -19,6 +19,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.ConstraintModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.DiscreteModeChoiceModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.EstimatorModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.FilterModule;
+import ch.ethz.matsim.discrete_mode_choice.modules.HomeFinderModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModeAvailabilityModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule;
 import ch.ethz.matsim.discrete_mode_choice.modules.ModelModule.ModelType;
@@ -40,6 +41,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	private String modeAvailability = ModeAvailabilityModule.CAR;
 	private String tourFinder = TourFinderModule.ACTIVITY_BASED;
+	private String homeFinder = HomeFinderModule.ACTIVITY_BASED;
 	private String selector = SelectorModule.RANDOM;
 
 	private Collection<String> tourConstraints = new HashSet<>(Arrays.asList(ConstraintModule.VEHICLE_CONTINUITY));
@@ -64,6 +66,7 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String MODE_AVAILABILITY = "modeAvailability";
 	public static final String TOUR_FINDER = "tourFinder";
+	public static final String HOME_FINDER = "homeFinder";
 	public static final String SELECTOR = "selector";
 
 	public static final String TOUR_CONSTRAINTS = "tourConstraints";
@@ -155,6 +158,16 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 	@StringGetter(TOUR_FINDER)
 	public String getTourFinder() {
 		return tourFinder;
+	}
+
+	@StringSetter(HOME_FINDER)
+	public void setHomeFinder(String homeFinder) {
+		this.homeFinder = homeFinder;
+	}
+
+	@StringGetter(HOME_FINDER)
+	public String getHomeFinder() {
+		return homeFinder;
 	}
 
 	@StringSetter(SELECTOR)
@@ -296,6 +309,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 
 		registry.put(new Tuple<>(TOUR_FINDER, TourFinderModule.ACTIVITY_BASED), //
 				ActivityTourFinderConfigGroup::new);
+		registry.put(new Tuple<>(HOME_FINDER, HomeFinderModule.ACTIVITY_BASED), //
+				ActivityHomeFinderConfigGroup::new);
 		registry.put(new Tuple<>(MODE_AVAILABILITY, ModeAvailabilityModule.DEFAULT), //
 				ModeAvailabilityConfigGroup::new);
 		registry.put(new Tuple<>(MODE_AVAILABILITY, ModeAvailabilityModule.CAR), //
@@ -372,6 +387,10 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 		return (ActivityTourFinderConfigGroup) getComponentConfig(TOUR_FINDER, TourFinderModule.ACTIVITY_BASED);
 	}
 
+	public ActivityHomeFinderConfigGroup getActivityHomeFinderConfigGroup() {
+		return (ActivityHomeFinderConfigGroup) getComponentConfig(HOME_FINDER, HomeFinderModule.ACTIVITY_BASED);
+	}
+
 	public ModeAvailabilityConfigGroup getDefaultModeAvailabilityConfig() {
 		return (ModeAvailabilityConfigGroup) getComponentConfig(MODE_AVAILABILITY, ModeAvailabilityModule.DEFAULT);
 	}
@@ -437,6 +456,8 @@ public class DiscreteModeChoiceConfigGroup extends ReflectiveConfigGroup {
 				+ String.join(", ", ModeAvailabilityModule.COMPONENTS));
 		comments.put(TOUR_FINDER, "Defines which TourFinder component to use. Built-in choices: "
 				+ String.join(", ", TourFinderModule.COMPONENTS));
+		comments.put(HOME_FINDER, "Defines how home activities are identified. Built-in choices: "
+				+ String.join(", ", HomeFinderModule.COMPONENTS));
 		comments.put(SELECTOR, "Defines which Selector component to use. Built-in choices: "
 				+ String.join(", ", SelectorModule.COMPONENTS));
 		comments.put(TOUR_CONSTRAINTS,
