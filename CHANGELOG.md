@@ -2,6 +2,7 @@
 
 **1.0.10-dev**
 
+- Make delay accumulation optional through `accumulateEstimationDelays`
 - BC: Improve time calculation and propagation of delays during estimation
 - Include duration in estimated routed trips
 - Remove unintended print in TripListConverter

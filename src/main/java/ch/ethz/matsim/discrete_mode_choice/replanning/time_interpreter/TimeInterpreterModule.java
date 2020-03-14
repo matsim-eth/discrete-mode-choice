@@ -6,6 +6,8 @@ import org.matsim.core.controler.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
+
 public class TimeInterpreterModule extends AbstractModule {
 	@Override
 	public void install() {
@@ -13,9 +15,10 @@ public class TimeInterpreterModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	public TimeInterpreter.Factory provideTimeInterpreterFactory(Config config) {
+	public TimeInterpreter.Factory provideTimeInterpreterFactory(Config config,
+			DiscreteModeChoiceConfigGroup dmcConfig) {
 		double startTime = config.qsim().getStartTime();
-		boolean onlyAdvance = true;
+		boolean onlyAdvance = dmcConfig.getAccumulateEstimationDelays();
 
 		switch (config.plans().getActivityDurationInterpretation()) {
 		case endTimeOnly:
