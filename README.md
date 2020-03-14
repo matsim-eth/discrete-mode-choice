@@ -56,7 +56,7 @@ For creating the backports, the recommended workflow is as follows: Branch `back
 
 The Discrete Mode Choice extension has been used in the following publications:
 
-- Becker, H., M. Balac, F. Ciari and K.W. Axhausen (2019) [Assessing the welfare impacts of Shared Mobility and Mobility as a Service (MaaS)](https://www.sciencedirect.com/science/article/pii/S0965856418311212), *Transportation Research: Part A*, In Press.
+- Becker, H., M. Balac, F. Ciari and K.W. Axhausen (2019) [Assessing the welfare impacts of Shared Mobility and Mobility as a Service (MaaS)](https://www.sciencedirect.com/science/article/pii/S0965856418311212), *Transportation Research: Part A*, **131**, 228-243.
 - Hörl, S., M. Balac and K.W. Axhausen (2019) [Dynamic demand estimation for an AMoD system in Paris](https://ieeexplore.ieee.org/document/8814051), paper presented at the 30th IEEE Intelligent Vehicles Symposium, June 2019, Paris, France.
 - Hörl, S., M. Balac and K.W. Axhausen (2019) [Pairing discrete mode choice models and agent-based transport simulation with MATSim](https://www.research-collection.ethz.ch/handle/20.500.11850/303667), presented at the 98th Annual Meeting of the Transportation Research Board, January 2019, Washington D.C.
 - Balac, M., H. Becker, F. Ciari and K.W. Axhausen (2019) [Modeling competing free-floating carsharing operators – A case study for Zurich, Switzerland](https://www.sciencedirect.com/science/article/pii/S0968090X18316656), *Transportation Research: Part C*, **98**, 101-117.
