@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
 
 import com.google.inject.Provider;
@@ -29,6 +28,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.ethz.matsim.discrete_mode_choice.replanning.TripListConverter;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * Internal module that sets up the acutal choice models according to
@@ -71,17 +71,18 @@ public class ModelModule extends AbstractModule {
 	public TourBasedModel provideTourBasedModel(ModeAvailability modeAvailability, TourFilter tourFilter,
 			TourEstimator tourEstimator, TourConstraintFactory tourConstraintFactory, TourFinder tourFinder,
 			UtilitySelectorFactory selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
-			DiscreteModeChoiceConfigGroup dmcConfig) {
+			DiscreteModeChoiceConfigGroup dmcConfig, TimeInterpreter.Factory timeInterpreterFactory) {
 		return new TourBasedModel(tourEstimator, modeAvailability, tourConstraintFactory, tourFinder, tourFilter,
-				selectorFactory, modeChainGeneratorFactory, dmcConfig.getFallbackBehaviour());
+				selectorFactory, modeChainGeneratorFactory, dmcConfig.getFallbackBehaviour(), timeInterpreterFactory);
 	}
 
 	@Provides
 	public TripBasedModel provideTripBasedModel(TripEstimator estimator, TripFilter tripFilter,
 			ModeAvailability modeAvailability, TripConstraintFactory constraintFactory,
-			UtilitySelectorFactory selectorFactory, DiscreteModeChoiceConfigGroup dmcConfig) {
+			UtilitySelectorFactory selectorFactory, DiscreteModeChoiceConfigGroup dmcConfig,
+			TimeInterpreter.Factory timeInterpreterFactory) {
 		return new TripBasedModel(estimator, tripFilter, modeAvailability, constraintFactory, selectorFactory,
-				dmcConfig.getFallbackBehaviour());
+				dmcConfig.getFallbackBehaviour(), timeInterpreterFactory);
 	}
 
 	@Provides
@@ -125,7 +126,7 @@ public class ModelModule extends AbstractModule {
 	}
 
 	@Provides
-	public TripListConverter provideTripListConverter(Config config) {
-		return new TripListConverter(config);
+	public TripListConverter provideTripListConverter() {
+		return new TripListConverter();
 	}
 }

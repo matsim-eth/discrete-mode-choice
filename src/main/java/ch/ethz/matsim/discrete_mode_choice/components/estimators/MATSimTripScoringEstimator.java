@@ -7,7 +7,6 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.core.config.Config;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ModeUtilityParameters;
 import org.matsim.core.scoring.functions.ScoringParameters;
@@ -19,6 +18,7 @@ import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimat
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultRoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This trip estimator tries to resemble the MATSim scoring functions as closely
@@ -32,10 +32,10 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	private final PTWaitingTimeEstimator waitingTimeEstimator;
 	private final Collection<String> ptLegModes;
 
-	public MATSimTripScoringEstimator(Config config, ActivityFacilities facilities, TripRouter tripRouter,
+	public MATSimTripScoringEstimator(ActivityFacilities facilities, TripRouter tripRouter,
 			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
-			Collection<String> ptModes) {
-		super(config, tripRouter, facilities);
+			TimeInterpreter.Factory timeInterpreterFactory, Collection<String> ptModes) {
+		super(tripRouter, facilities, timeInterpreterFactory);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 		this.ptLegModes = ptModes;

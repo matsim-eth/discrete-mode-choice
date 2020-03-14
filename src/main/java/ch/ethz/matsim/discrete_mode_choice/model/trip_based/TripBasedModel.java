@@ -16,6 +16,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This class defines a trip-based discrete choice model.
@@ -32,16 +33,18 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 	private final TripConstraintFactory constraintFactory;
 	private final UtilitySelectorFactory selectorFactory;
 	private final FallbackBehaviour fallbackBehaviour;
+	private final TimeInterpreter.Factory timeInterpreterFactory;
 
 	public TripBasedModel(TripEstimator estimator, TripFilter tripFilter, ModeAvailability modeAvailability,
 			TripConstraintFactory constraintFactory, UtilitySelectorFactory selectorFactory,
-			FallbackBehaviour fallbackBehaviour) {
+			FallbackBehaviour fallbackBehaviour, TimeInterpreter.Factory timeInterpreterFactory) {
 		this.estimator = estimator;
 		this.tripFilter = tripFilter;
 		this.modeAvailability = modeAvailability;
 		this.constraintFactory = constraintFactory;
 		this.selectorFactory = selectorFactory;
 		this.fallbackBehaviour = fallbackBehaviour;
+		this.timeInterpreterFactory = timeInterpreterFactory;
 	}
 
 	@Override
@@ -54,8 +57,12 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 		List<String> tripCandidateModes = new ArrayList<>(trips.size());
 
 		int tripIndex = 0;
+		TimeInterpreter time = timeInterpreterFactory.createTimeInterpreter();
 
 		for (DiscreteModeChoiceTrip trip : trips) {
+			time.addActivity(trip.getOriginActivity());
+			trip.setDepartureTime(time.getCurrentTime());
+
 			TripCandidate finalTripCandidate = null;
 
 			if (tripFilter.filter(person, trip)) {
@@ -103,6 +110,8 @@ public class TripBasedModel implements DiscreteModeChoiceModel {
 
 			tripCandidates.add(finalTripCandidate);
 			tripCandidateModes.add(finalTripCandidate.getMode());
+
+			time.addTime(finalTripCandidate.getDuration());
 		}
 
 		return tripCandidates;

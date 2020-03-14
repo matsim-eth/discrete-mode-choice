@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.algorithms.ChooseRandomLegModeForSubtour;
 import org.matsim.core.population.algorithms.PermissibleModesCalculator;
 import org.matsim.core.population.algorithms.PermissibleModesCalculatorImpl;
@@ -43,6 +42,8 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourFilter;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.RandomSelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.EndTimeThenDurationInterpreter;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 import ch.ethz.matsim.discrete_mode_choice.test_utils.PlanBuilder;
 import ch.ethz.matsim.discrete_mode_choice.test_utils.PlanTester;
 
@@ -318,7 +319,9 @@ public class SubtourModeChoiceReplacementTest {
 
 	private Set<List<String>> computeDMC(PlanBuilder planBuilder, List<String> modes, List<String> constrainedModes,
 			boolean considerCarAvailability, boolean allowSingleLegs, int samples) throws NoFeasibleChoiceException {
-		TourEstimator estimator = new UniformTourEstimator(ConfigUtils.createConfig());
+		TimeInterpreter.Factory timeInterpreterFactory = new EndTimeThenDurationInterpreter.Factory(0.0, true);
+
+		TourEstimator estimator = new UniformTourEstimator(timeInterpreterFactory);
 		ModeAvailability modeAvailability = considerCarAvailability ? new CarModeAvailability(modes)
 				: new DefaultModeAvailability(modes);
 		TourFinder tourFinder = new PlanTourFinder();
@@ -340,7 +343,7 @@ public class SubtourModeChoiceReplacementTest {
 		TourFilter tourFilter = new CompositeTourFilter(Collections.emptySet());
 
 		DiscreteModeChoiceModel model = new TourBasedModel(estimator, modeAvailability, constraintFactory, tourFinder,
-				tourFilter, selectorFactory, modeChainGeneratorFactory, fallbackBehaviour);
+				tourFilter, selectorFactory, modeChainGeneratorFactory, fallbackBehaviour, timeInterpreterFactory);
 
 		Plan plan = planBuilder.buildPlan();
 		List<DiscreteModeChoiceTrip> trips = planBuilder.buildDiscreteModeChoiceTrips();

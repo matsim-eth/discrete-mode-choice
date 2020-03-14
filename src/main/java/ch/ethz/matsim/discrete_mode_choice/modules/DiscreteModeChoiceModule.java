@@ -8,6 +8,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConf
 import ch.ethz.matsim.discrete_mode_choice.modules.utils.ModeChoiceInTheLoopChecker;
 import ch.ethz.matsim.discrete_mode_choice.replanning.DiscreteModeChoiceStrategyProvider;
 import ch.ethz.matsim.discrete_mode_choice.replanning.NonSelectedPlanSelector;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreterModule;
 
 /**
  * Main module of the Discrete Mode Choice extension. Should be added as an
@@ -34,5 +35,6 @@ public class DiscreteModeChoiceModule extends AbstractModule {
 		}
 
 		install(new ModelModule());
+		install(new TimeInterpreterModule());
 	}
 }
