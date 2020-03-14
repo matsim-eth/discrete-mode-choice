@@ -11,6 +11,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.tour_based.TourEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This class is a TourEstimator which is based on a TripEstimator. Every trip
@@ -20,10 +21,12 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
  * @author sebhoerl
  */
 public class CumulativeTourEstimator implements TourEstimator {
-	final private TripEstimator delegate;
+	private final TimeInterpreter.Factory timeInterpreterFactory;
+	private final TripEstimator delegate;
 
-	public CumulativeTourEstimator(TripEstimator delegate) {
+	public CumulativeTourEstimator(TripEstimator delegate, TimeInterpreter.Factory timeInterpreterFactory) {
 		this.delegate = delegate;
+		this.timeInterpreterFactory = timeInterpreterFactory;
 	}
 
 	@Override
@@ -32,12 +35,21 @@ public class CumulativeTourEstimator implements TourEstimator {
 		List<TripCandidate> tripCandidates = new LinkedList<>();
 		double utility = 0.0;
 
+		TimeInterpreter time = timeInterpreterFactory.createTimeInterpreter();
+		time.setTime(trips.get(0).getDepartureTime());
+
 		for (int i = 0; i < modes.size(); i++) {
 			String mode = modes.get(i);
 			DiscreteModeChoiceTrip trip = trips.get(i);
 
+			if (i > 0) { // We're already at the end of the first origin activity
+				time.addActivity(trip.getOriginActivity());
+				trip.setDepartureTime(time.getCurrentTime());
+			}
+
 			TripCandidate tripCandidate = delegate.estimateTrip(person, mode, trip, tripCandidates);
 			utility += tripCandidate.getUtility();
+			time.addTime(tripCandidate.getDuration());
 
 			tripCandidates.add(tripCandidate);
 		}

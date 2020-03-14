@@ -8,6 +8,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This estimator simply return a zero utility for every trip candidate that it
@@ -16,9 +17,22 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
  * @author sebhoerl
  */
 public class UniformTripEstimator implements TripEstimator {
+	private final TimeInterpreter.Factory timeInterpreterFactory;
+
+	public UniformTripEstimator(TimeInterpreter.Factory timeInterpreterFactory) {
+		this.timeInterpreterFactory = timeInterpreterFactory;
+	}
+
 	@Override
 	public TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips) {
-		return new DefaultTripCandidate(1.0, mode);
+		TimeInterpreter time = timeInterpreterFactory.createTimeInterpreter();
+
+		time.setTime(trip.getDepartureTime());
+		time.addPlanElements(trip.getInitialElements());
+
+		double duration = time.getCurrentTime() - trip.getDepartureTime();
+
+		return new DefaultTripCandidate(1.0, mode, duration);
 	}
 }

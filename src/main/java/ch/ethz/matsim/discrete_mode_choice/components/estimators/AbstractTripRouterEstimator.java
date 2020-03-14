@@ -13,6 +13,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.TripEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultRoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This is an abstract estimator class that makes it easy to rely on MATSim's
@@ -25,17 +26,20 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 public abstract class AbstractTripRouterEstimator implements TripEstimator {
 	private final TripRouter tripRouter;
 	private final ActivityFacilities facilities;
+	private final TimeInterpreter.Factory timeInterpreterFactory;
 
-	public AbstractTripRouterEstimator(TripRouter tripRouter, ActivityFacilities facilities) {
+	public AbstractTripRouterEstimator(TripRouter tripRouter, ActivityFacilities facilities,
+			TimeInterpreter.Factory timeInterpreterFactory) {
 		this.tripRouter = tripRouter;
 		this.facilities = facilities;
+		this.timeInterpreterFactory = timeInterpreterFactory;
 	}
 
 	@Override
 	public final TripCandidate estimateTrip(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips) {
 		// I) Find the correct origin and destination facilities
-		
+
 		Facility originFacility = FacilitiesUtils.toFacility(trip.getOriginActivity(), facilities);
 		Facility destinationFacility = FacilitiesUtils.toFacility(trip.getDestinationActivity(), facilities);
 
@@ -62,7 +66,14 @@ public abstract class AbstractTripRouterEstimator implements TripEstimator {
 	 */
 	protected TripCandidate estimateTripCandidate(Person person, String mode, DiscreteModeChoiceTrip trip,
 			List<TripCandidate> previousTrips, List<? extends PlanElement> routedTrip) {
+
+		TimeInterpreter time = timeInterpreterFactory.createTimeInterpreter();
+		time.setTime(trip.getDepartureTime());
+		time.addPlanElements(routedTrip);
+
 		double utility = estimateTrip(person, mode, trip, previousTrips, routedTrip);
-		return new DefaultRoutedTripCandidate(utility, mode, routedTrip);
+
+		double duration = time.getCurrentTime() - trip.getDepartureTime();
+		return new DefaultRoutedTripCandidate(utility, mode, routedTrip, duration);
 	}
 }

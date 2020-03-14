@@ -2,6 +2,10 @@
 
 **1.0.10-dev**
 
+- `MATSimTripCandidate` was removed because now all `TripCandidate`s provide the trip duration
+- Make delay accumulation optional through `accumulateEstimationDelays`
+- BC: Improve time calculation and propagation of delays during estimation
+- Include duration in estimated routed trips
 - Remove unintended print in TripListConverter
 - Fix integer overflow exceptions for tours with many trips in DefaultModeChainGenerator
 - Add `accumulateDelays` option to sum up delays in TripListConverter (default `false`)

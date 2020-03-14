@@ -20,6 +20,7 @@ import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandi
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilityCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelector;
 import ch.ethz.matsim.discrete_mode_choice.model.utilities.UtilitySelectorFactory;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * A choice model that makes decision on a tour basis. The major difference over
@@ -39,11 +40,12 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 	final private UtilitySelectorFactory selectorFactory;
 	final private ModeChainGeneratorFactory modeChainGeneratorFactory;
 	final private FallbackBehaviour fallbackBehaviour;
+	final private TimeInterpreter.Factory timeInterpreterFactory;
 
 	public TourBasedModel(TourEstimator estimator, ModeAvailability modeAvailability,
 			TourConstraintFactory constraintFactory, TourFinder tourFinder, TourFilter tourFilter,
 			UtilitySelectorFactory selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
-			FallbackBehaviour fallbackBehaviour) {
+			FallbackBehaviour fallbackBehaviour, TimeInterpreter.Factory timeInterpreterFactory) {
 		this.estimator = estimator;
 		this.modeAvailability = modeAvailability;
 		this.constraintFactory = constraintFactory;
@@ -52,6 +54,7 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		this.selectorFactory = selectorFactory;
 		this.modeChainGeneratorFactory = modeChainGeneratorFactory;
 		this.fallbackBehaviour = fallbackBehaviour;
+		this.timeInterpreterFactory = timeInterpreterFactory;
 	}
 
 	@Override
@@ -64,8 +67,14 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 		List<List<String>> tourCandidateModes = new LinkedList<>();
 
 		int tripIndex = 1;
+		TimeInterpreter time = timeInterpreterFactory.createTimeInterpreter();
 
 		for (List<DiscreteModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
+			time.addActivity(tourTrips.get(0).getOriginActivity());
+
+			// We pass the departure time through the first origin activity
+			tourTrips.get(0).setDepartureTime(time.getCurrentTime());
+
 			TourCandidate finalTourCandidate = null;
 
 			if (tourFilter.filter(person, tourTrips)) {
@@ -120,6 +129,14 @@ public class TourBasedModel implements DiscreteModeChoiceModel {
 					finalTourCandidate.getTripCandidates().stream().map(c -> c.getMode()).collect(Collectors.toList()));
 
 			tripIndex += tourTrips.size();
+
+			for (int i = 0; i < tourTrips.size(); i++) {
+				if (i > 0) { // Our time object is already at the end of the first activity
+					time.addActivity(tourTrips.get(i).getOriginActivity());
+				}
+
+				time.addTime(finalTourCandidate.getTripCandidates().get(i).getDuration());
+			}
 		}
 
 		return createTripCandidates(tourCandidates);

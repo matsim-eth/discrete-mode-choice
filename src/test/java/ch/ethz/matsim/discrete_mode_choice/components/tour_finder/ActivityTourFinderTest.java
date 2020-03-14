@@ -33,7 +33,7 @@ public class ActivityTourFinderTest {
 		for (Trip trip : trips) {
 			String initialMode = trip.getLegsOnly().get(0).getMode();
 			modeChoiceTrips.add(new DiscreteModeChoiceTrip(trip.getOriginActivity(), trip.getDestinationActivity(),
-					initialMode, trip.getTripElements(), 0.0, 0, 0));
+					initialMode, trip.getTripElements(), 0, 0));
 		}
 
 		return modeChoiceTrips;

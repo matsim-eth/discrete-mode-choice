@@ -15,6 +15,7 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -48,7 +49,8 @@ public class PlanBuilder {
 		return this;
 	}
 
-	public PlanBuilder addActivity(String type, double endTime, Id<Link> linkId, Id<ActivityFacility> facilityId) {
+	public PlanBuilder addActivity(String type, double endTime, double duration, Id<Link> linkId,
+			Id<ActivityFacility> facilityId) {
 		if (Double.isNaN(endTime)) {
 			endTime = currentTime + 3600.0;
 		}
@@ -58,30 +60,44 @@ public class PlanBuilder {
 		Activity activity = factory.createActivityFromLinkId(type, linkId);
 		activity.setFacilityId(facilityId);
 		activity.setEndTime(endTime);
+		activity.setMaximumDuration(duration);
 		plan.addActivity(activity);
 		return this;
 	}
 
 	public PlanBuilder addActivityWithLinkId(String type, String linkId) {
-		return addActivity(type, Double.NaN, Id.createLinkId(linkId), null);
+		return addActivity(type, Double.NaN, Double.NaN, Id.createLinkId(linkId), null);
 	}
 
 	public PlanBuilder addActivityWithFacilityId(String type, String facilityId) {
-		return addActivity(type, Double.NaN, null, Id.create(facilityId, ActivityFacility.class));
+		return addActivity(type, Double.NaN, Double.NaN, null, Id.create(facilityId, ActivityFacility.class));
 	}
 
 	public PlanBuilder addActivityWithLinkId(String type, double endTime, String linkId) {
-		return addActivity(type, endTime, Id.createLinkId(linkId), null);
+		return addActivity(type, endTime, Time.getUndefinedTime(), Id.createLinkId(linkId), null);
 	}
 
 	public PlanBuilder addActivityWithFacilityId(String type, double endTime, String facilityId) {
-		return addActivity(type, endTime, null, Id.create(facilityId, ActivityFacility.class));
+		return addActivity(type, endTime, Time.getUndefinedTime(), null, Id.create(facilityId, ActivityFacility.class));
+	}
+
+	public PlanBuilder addActivityWithEndTime(String type, double endTime) {
+		return addActivity(type, endTime, Time.getUndefinedTime(), null, null);
+	}
+
+	public PlanBuilder addActivityWithDuration(String type, double duration) {
+		return addActivity(type, Time.getUndefinedTime(), duration, null, null);
+	}
+
+	public PlanBuilder addLeg(String mode, double traveTime) {
+		Leg leg = factory.createLeg(mode);
+		leg.setTravelTime(traveTime);
+		plan.addLeg(leg);
+		return this;
 	}
 
 	public PlanBuilder addLeg(String mode) {
-		Leg leg = factory.createLeg(mode);
-		plan.addLeg(leg);
-		return this;
+		return addLeg(mode, 3600.0);
 	}
 
 	public PlanBuilder addLeg() {
@@ -89,10 +105,15 @@ public class PlanBuilder {
 	}
 
 	public Plan buildPlan() {
-		return plan;
+		Plan copy = factory.createPlan();
+		copy.setPerson(person);
+
+		PopulationUtils.copyFromTo(this.plan, copy);
+
+		return copy;
 	}
 
 	public List<DiscreteModeChoiceTrip> buildDiscreteModeChoiceTrips() {
-		return new TripListConverter(false).convert(plan);
+		return new TripListConverter().convert(plan);
 	}
 }

@@ -16,7 +16,9 @@ import org.matsim.pt.routes.ExperimentalTransitRoute;
 
 import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
+import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.DefaultRoutedTripCandidate;
 import ch.ethz.matsim.discrete_mode_choice.model.trip_based.candidates.TripCandidate;
+import ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter.TimeInterpreter;
 
 /**
  * This trip estimator tries to resemble the MATSim scoring functions as closely
@@ -32,8 +34,8 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 
 	public MATSimTripScoringEstimator(ActivityFacilities facilities, TripRouter tripRouter,
 			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
-			Collection<String> ptModes) {
-		super(tripRouter, facilities);
+			TimeInterpreter.Factory timeInterpreterFactory, Collection<String> ptModes) {
+		super(tripRouter, facilities, timeInterpreterFactory);
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 		this.ptLegModes = ptModes;
@@ -56,7 +58,7 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 			result = computeStandardTrip(parameters, elements);
 		}
 
-		return new MATSimTripCandidate(result.utility, mode, elements, result.travelTime);
+		return new DefaultRoutedTripCandidate(result.utility, mode, elements, result.travelTime);
 	}
 
 	private class ComputationResult {
