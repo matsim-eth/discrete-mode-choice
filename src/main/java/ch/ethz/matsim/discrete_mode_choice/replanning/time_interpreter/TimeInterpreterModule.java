@@ -2,6 +2,7 @@ package ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter;
 
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.utils.misc.Time;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -18,6 +19,11 @@ public class TimeInterpreterModule extends AbstractModule {
 	public TimeInterpreter.Factory provideTimeInterpreterFactory(Config config,
 			DiscreteModeChoiceConfigGroup dmcConfig) {
 		double startTime = config.qsim().getStartTime();
+
+		if (Time.isUndefinedTime(startTime)) {
+			startTime = 0.0;
+		}
+
 		boolean onlyAdvance = dmcConfig.getAccumulateEstimationDelays();
 
 		switch (config.plans().getActivityDurationInterpretation()) {

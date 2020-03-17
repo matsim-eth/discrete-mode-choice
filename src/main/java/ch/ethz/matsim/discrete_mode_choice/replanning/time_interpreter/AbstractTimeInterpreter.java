@@ -27,6 +27,8 @@ public abstract class AbstractTimeInterpreter implements TimeInterpreter {
 		this.currentTime = currentTime;
 		this.previousTime = previousTime;
 		this.onlyAdvance = onlyAdvance;
+		
+		verify();
 	}
 
 	@Override
