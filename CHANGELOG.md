@@ -2,6 +2,7 @@
 
 **1.0.10-dev**
 
+- Interpret an undefined start time as 00:00:00
 - Changed `ActivityTourFinder` and `ActivityHomeFinder`to not only check for a single activity type, but now a list of activity types can be provided through the `activityTypes` parameter
 - Added `HomeTourFinder` which determines tours by using the location from the home finder
 - Added `HomeFinder` as a general component that can be bound in `AbstractDiscreteModeChoiceExtension`
