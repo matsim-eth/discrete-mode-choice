@@ -1,6 +1,7 @@
 package ch.ethz.matsim.discrete_mode_choice.components.estimators;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.matsim.api.core.v01.TransportMode;
@@ -35,7 +36,7 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 	public MATSimTripScoringEstimator(ActivityFacilities facilities, TripRouter tripRouter,
 			PTWaitingTimeEstimator waitingTimeEstimator, ScoringParametersForPerson scoringParametersForPerson,
 			TimeInterpreter.Factory timeInterpreterFactory, Collection<String> ptModes) {
-		super(tripRouter, facilities, timeInterpreterFactory);
+		super(tripRouter, facilities, timeInterpreterFactory, Collections.emptySet());
 		this.waitingTimeEstimator = waitingTimeEstimator;
 		this.scoringParametersForPerson = scoringParametersForPerson;
 		this.ptLegModes = ptModes;
