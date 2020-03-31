@@ -8,12 +8,16 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.api.core.v01.population.Route;
 import org.matsim.core.router.TripRouter;
 import org.matsim.core.scoring.functions.ModeUtilityParameters;
 import org.matsim.core.scoring.functions.ScoringParameters;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.facilities.ActivityFacilities;
+import org.matsim.pt.routes.DefaultTransitPassengerRoute;
 import org.matsim.pt.routes.ExperimentalTransitRoute;
+import org.matsim.pt.routes.TransitPassengerRoute;
 
 import ch.ethz.matsim.discrete_mode_choice.components.utils.PTWaitingTimeEstimator;
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -122,8 +126,14 @@ public class MATSimTripScoringEstimator extends AbstractTripRouterEstimator {
 				Leg leg = (Leg) element;
 
 				if (ptLegModes.contains(leg.getMode())) {
-					ExperimentalTransitRoute route = (ExperimentalTransitRoute) leg.getRoute();
-					totalWaitingTime += waitingTimeEstimator.estimateWaitingTime(time, route);
+					TransitPassengerRoute route = (TransitPassengerRoute) leg.getRoute();
+					OptionalTime boardingTime = route.getBoardingTime();
+					
+					if (boardingTime.isDefined()) {
+						totalWaitingTime += boardingTime.seconds() - leg.getDepartureTime();
+					} else {
+						totalWaitingTime += waitingTimeEstimator.estimateWaitingTime(time, route);
+					}
 
 					numberOfVehicularLegs++;
 				}

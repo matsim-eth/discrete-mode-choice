@@ -42,7 +42,7 @@ public class ScheduleWaitingTimeEstimatorTest {
 
 		waitingTime = estimator.estimateWaitingTime(elements);
 		assertEquals(5.0, waitingTime, 1e-6);
-		
+
 		// Test 1
 		elements = createElements(schedule, Arrays.asList( //
 				new Trip(2035.0, "f3") // 5 seconds after 2000 bus departs there, take 3000!
@@ -51,7 +51,7 @@ public class ScheduleWaitingTimeEstimatorTest {
 		waitingTime = estimator.estimateWaitingTime(elements);
 		assertEquals(995.0, waitingTime, 1e-6);
 	}
-	
+
 	@Test
 	public void testValidMultiCase() throws IOException {
 		TransitSchedule schedule = createSchedule();
@@ -70,7 +70,6 @@ public class ScheduleWaitingTimeEstimatorTest {
 		waitingTime = estimator.estimateWaitingTime(elements);
 		assertEquals(20.0 + 995.0, waitingTime, 1e-6);
 	}
-	
 
 	@Test
 	public void testInvalidCase() throws IOException {

@@ -15,7 +15,6 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 
 import ch.ethz.matsim.discrete_mode_choice.model.DiscreteModeChoiceTrip;
@@ -51,42 +50,49 @@ public class PlanBuilder {
 
 	public PlanBuilder addActivity(String type, double endTime, double duration, Id<Link> linkId,
 			Id<ActivityFacility> facilityId) {
-		if (Double.isNaN(endTime)) {
-			endTime = currentTime + 3600.0;
-		}
-
 		currentTime = endTime;
 
 		Activity activity = factory.createActivityFromLinkId(type, linkId);
 		activity.setFacilityId(facilityId);
-		activity.setEndTime(endTime);
-		activity.setMaximumDuration(duration);
+
+		if (Double.isNaN(endTime)) {
+			activity.setEndTimeUndefined();
+		} else {
+			activity.setEndTime(endTime);
+		}
+
+		if (Double.isNaN(duration)) {
+			activity.setMaximumDurationUndefined();
+		} else {
+			activity.setMaximumDuration(duration);
+		}
+
 		plan.addActivity(activity);
 		return this;
 	}
 
 	public PlanBuilder addActivityWithLinkId(String type, String linkId) {
-		return addActivity(type, Double.NaN, Double.NaN, Id.createLinkId(linkId), null);
+		return addActivity(type, Double.NaN, 3600.0, Id.createLinkId(linkId), null);
 	}
 
 	public PlanBuilder addActivityWithFacilityId(String type, String facilityId) {
-		return addActivity(type, Double.NaN, Double.NaN, null, Id.create(facilityId, ActivityFacility.class));
+		return addActivity(type, Double.NaN, 3600.0, null, Id.create(facilityId, ActivityFacility.class));
 	}
 
 	public PlanBuilder addActivityWithLinkId(String type, double endTime, String linkId) {
-		return addActivity(type, endTime, Time.getUndefinedTime(), Id.createLinkId(linkId), null);
+		return addActivity(type, endTime, Double.NaN, Id.createLinkId(linkId), null);
 	}
 
 	public PlanBuilder addActivityWithFacilityId(String type, double endTime, String facilityId) {
-		return addActivity(type, endTime, Time.getUndefinedTime(), null, Id.create(facilityId, ActivityFacility.class));
+		return addActivity(type, endTime, Double.NaN, null, Id.create(facilityId, ActivityFacility.class));
 	}
 
 	public PlanBuilder addActivityWithEndTime(String type, double endTime) {
-		return addActivity(type, endTime, Time.getUndefinedTime(), null, null);
+		return addActivity(type, endTime, Double.NaN, null, null);
 	}
 
 	public PlanBuilder addActivityWithDuration(String type, double duration) {
-		return addActivity(type, Time.getUndefinedTime(), duration, null, null);
+		return addActivity(type, Double.NaN, duration, null, null);
 	}
 
 	public PlanBuilder addLeg(String mode, double traveTime) {

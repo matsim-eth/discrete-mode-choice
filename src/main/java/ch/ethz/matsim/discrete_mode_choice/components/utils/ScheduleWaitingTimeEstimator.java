@@ -11,7 +11,7 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.misc.Time;
-import org.matsim.pt.routes.ExperimentalTransitRoute;
+import org.matsim.pt.routes.TransitPassengerRoute;
 import org.matsim.pt.transitSchedule.api.Departure;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
@@ -60,7 +60,7 @@ public class ScheduleWaitingTimeEstimator implements PTWaitingTimeEstimator {
 				Leg leg = (Leg) element;
 
 				if (leg.getMode().equals("pt")) {
-					ExperimentalTransitRoute route = (ExperimentalTransitRoute) leg.getRoute();
+					TransitPassengerRoute route = (TransitPassengerRoute) leg.getRoute();
 					totalWaitingTime += estimateWaitingTime(leg.getDepartureTime(), route);
 				}
 			}
@@ -70,7 +70,7 @@ public class ScheduleWaitingTimeEstimator implements PTWaitingTimeEstimator {
 	}
 
 	@Override
-	public double estimateWaitingTime(double agentDepartureTime, ExperimentalTransitRoute route) {
+	public double estimateWaitingTime(double agentDepartureTime, TransitPassengerRoute route) {
 		TransitLine transitLine = transitSchedule.getTransitLines().get(route.getLineId());
 		TransitRoute transitRoute = transitLine.getRoutes().get(route.getRouteId());
 

@@ -1,7 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter;
 
 import org.matsim.api.core.v01.population.Activity;
-import org.matsim.core.utils.misc.Time;
 
 /**
  * This TimeInterpreter compares the end time of an activity with a time
@@ -26,12 +25,12 @@ public class MinimumEndTimeAndDurationInterpreter extends AbstractTimeInterprete
 
 	@Override
 	public void addActivity(Activity activity) {
-		if (Time.isUndefinedTime(activity.getMaximumDuration()) || Time.isUndefinedTime(activity.getEndTime())) {
+		if (activity.getMaximumDuration().isUndefined() || activity.getEndTime().isUndefined()) {
 			throw new IllegalStateException(
 					"Found an activity with undefined maximum duration or undefined activity end time. Both must be defined if minOfDurationAndEndTime is used!");
 		}
 
-		advance(Math.min(currentTime + activity.getMaximumDuration(), activity.getEndTime()));
+		advance(Math.min(currentTime + activity.getMaximumDuration().seconds(), activity.getEndTime().seconds()));
 	}
 
 	@Override

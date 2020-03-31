@@ -1,6 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice.components.utils;
 
-import org.matsim.pt.routes.ExperimentalTransitRoute;
+import org.matsim.pt.routes.TransitPassengerRoute;
 
 /**
  * This interface is used by the MATSim utility function estimator. It returns
@@ -11,5 +11,5 @@ import org.matsim.pt.routes.ExperimentalTransitRoute;
  * @author sebhoerl
  */
 public interface PTWaitingTimeEstimator {
-	double estimateWaitingTime(double departureTime, ExperimentalTransitRoute route);
+	double estimateWaitingTime(double departureTime, TransitPassengerRoute route);
 }
