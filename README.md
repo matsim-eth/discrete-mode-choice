@@ -24,7 +24,7 @@ The DMC extension is currently kept compatible with the following MATSim version
 
 Alternatively, you can clone this repository and use the current development
 version from the `develop` branch. Currently, it is `1.0.10-dev` and compatible
-with MATSim `12.0-2020w08`. However, we
+with MATSim `12.0-2020w13`. However, we
 recommend using the DMC extension with a stable version of MATSim.
 
 To use the Discrete Mode Choice extension you first need to add the ETH MATSim Bintray repository to your `pom.xml`:

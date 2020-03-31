@@ -51,9 +51,9 @@ public class TestSiouxFalls {
 
 		controller.run();
 
-		assertEquals(42502, listener.counts.get("pt"));
-		assertEquals(132094, listener.counts.get("car"));
-		assertEquals(79098, listener.counts.get("walk"));
+		assertEquals(42520, listener.counts.get("pt"));
+		assertEquals(132100, listener.counts.get("car"));
+		assertEquals(79106, listener.counts.get("walk"));
 	}
 
 	static class ModeListener implements PersonArrivalEventHandler {

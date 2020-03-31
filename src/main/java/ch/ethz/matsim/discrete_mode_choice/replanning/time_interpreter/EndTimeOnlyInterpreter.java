@@ -1,7 +1,6 @@
 package ch.ethz.matsim.discrete_mode_choice.replanning.time_interpreter;
 
 import org.matsim.api.core.v01.population.Activity;
-import org.matsim.core.utils.misc.Time;
 
 /**
  * This TimeInterpreter advances the time along a plan by examining the end time
@@ -25,8 +24,8 @@ public class EndTimeOnlyInterpreter extends AbstractTimeInterpreter {
 
 	@Override
 	public void addActivity(Activity activity) {
-		if (!Time.isUndefinedTime(activity.getEndTime())) {
-			advance(activity.getEndTime());
+		if (activity.getEndTime().isDefined()) {
+			advance(activity.getEndTime().seconds());
 		} else {
 			throw new IllegalStateException("Found activity that has no end time defined");
 		}
