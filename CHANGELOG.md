@@ -2,6 +2,7 @@
 
 **1.0.10-dev**
 
+- Make NonSelectedPlanSelector raise exception if too many plans are available
 - Add preprouted modes to `AbstractTripRouterEstimator`
 - Interpret an undefined start time as 00:00:00
 - Changed `ActivityTourFinder` and `ActivityHomeFinder`to not only check for a single activity type, but now a list of activity types can be provided through the `activityTypes` parameter
