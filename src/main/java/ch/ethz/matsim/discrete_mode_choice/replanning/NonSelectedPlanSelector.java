@@ -18,6 +18,11 @@ public class NonSelectedPlanSelector implements PlanSelector<Plan, Person> {
 
 	@Override
 	public Plan selectPlan(HasPlansAndId<Plan, Person> member) {
+		if (member.getPlans().size() > 2) {
+			throw new IllegalStateException(
+					"NonSelectedPlanSelector only makes sense if there is no more than two plans!");
+		}
+
 		for (Plan plan : member.getPlans()) {
 			if (!plan.equals(member.getSelectedPlan())) {
 				return plan;
