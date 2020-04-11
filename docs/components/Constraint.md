@@ -1,6 +1,6 @@
 # Constraints
 
-A constraint is used to filter out trip or tour alternatives that do not make sense or are forbidden for some reason. The classic example is to forbid the `car` mode at a location where the vehicle has not been moved to. This is not a dynamic constraint, but can already be inferred when the mode chain is constructed since the origin and destination locations of each trip are known in advance.
+A constraint is used to filter out trip or tour alternatives that do not make sense or are forbidden for some reason. The classic example is to forbid the `car` mode at a location where the vehicle has not been moved to. This is not a dynamic constraint, but can already be inferred when the mode chain is constructed since the origin and destination locations of each trip are known in advance. 
 
 The DMC extension contains a number of predefined constraints, but it is also possible to write custom ones. How to do that is explained in [Customizing the model](../Customizing.md).
 
