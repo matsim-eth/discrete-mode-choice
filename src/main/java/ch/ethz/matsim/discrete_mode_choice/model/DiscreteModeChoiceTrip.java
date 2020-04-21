@@ -21,13 +21,15 @@ public final class DiscreteModeChoiceTrip {
 	private final List<? extends PlanElement> initialElements;
 
 	private final int hashCode;
+	private final int index;
 
 	public DiscreteModeChoiceTrip(Activity originActivity, Activity destinationActivity, String initialMode,
-			List<? extends PlanElement> initialElements, int personHash, int tripHash) {
+			List<? extends PlanElement> initialElements, int personHash, int tripHash, int index) {
 		this.originActivity = originActivity;
 		this.destinationActivity = destinationActivity;
 		this.initialMode = initialMode;
 		this.initialElements = initialElements;
+		this.index = index;
 
 		int hashCode = 12;
 		hashCode += 37 * (int) (personHash ^ (personHash >>> 32));
@@ -62,5 +64,9 @@ public final class DiscreteModeChoiceTrip {
 	@Override
 	public int hashCode() {
 		return hashCode;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 }

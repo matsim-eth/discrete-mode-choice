@@ -34,7 +34,7 @@ public class ActivityTourFinderTest {
 		for (Trip trip : trips) {
 			String initialMode = trip.getLegsOnly().get(0).getMode();
 			modeChoiceTrips.add(new DiscreteModeChoiceTrip(trip.getOriginActivity(), trip.getDestinationActivity(),
-					initialMode, trip.getTripElements(), 0, 0));
+					initialMode, trip.getTripElements(), 0, 0, 0));
 		}
 
 		return modeChoiceTrips;
@@ -81,7 +81,7 @@ public class ActivityTourFinderTest {
 		assertEquals(1, result.get(1).size());
 		assertEquals(2, result.get(2).size());
 	}
-	
+
 	@Test
 	public void testActivityTourFinderMultiple() {
 		ActivityTourFinder finder = new ActivityTourFinder(Arrays.asList("home1", "home2", "home3", "home4"));
