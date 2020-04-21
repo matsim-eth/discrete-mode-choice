@@ -2,6 +2,7 @@
 
 **1.0.10-dev**
 
+- Add trip index to DiscreteModeChoiceTrip
 - Make NonSelectedPlanSelector raise exception if too many plans are available
 - Add preprouted modes to `AbstractTripRouterEstimator`
 - Interpret an undefined start time as 00:00:00
