@@ -1,5 +1,10 @@
 # Discrete Mode Choice for MATSim
 
+> **Attention!**
+> This repository is only kept for historical reasons. The Discrete Mode Choice extension has been converted to the [Discrete Mode Choice contrib](https://github.com/matsim-org/matsim-libs/tree/master/contribs/discrete_mode_choice) in the main [MATSim repository](https://github.com/matsim-org/matsim-libs/tree/master/contribs/discrete_mode_choice). It is further maintained there and can be used more easily as a part of MATSim.
+
+----
+
 The Discrete Mode Choice extension for MATSim makes it easy to define fine-grained and custom mode choice behaviour in MATSim simulations. Have a look at the [Getting Started](docs/GettingStarted.md) guide to dive right in or have a look at the existing [Components](docs/Components.md) if you are already familiar with the basic concepts.
 
 The extensions offers three major pathways for improving mode choice in MATSim:
